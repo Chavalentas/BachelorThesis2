@@ -187,6 +187,21 @@ export class NodeConfigGenerator{
         return nodeConfig;
     }
 
+    generateCommentNode(id, commentName, x, y, flowTabId, wireIds){
+        let commentNode =  {
+            "id": id,
+            "type": "comment",
+            "z": flowTabId,
+            "name": commentName,
+            "info": "",
+            "x": x,
+            "y": y,
+            "wires": this.getWires(wireIds)
+        };
+
+        return commentNode;
+    }
+
     generateDatabaseNode(id, nodename, x, y, flowTabId, statementCode, dbConfigId, wireIds, provider, queryOpt = "", queryOptType = ""){    
         switch (provider){
             case 'postgres':
