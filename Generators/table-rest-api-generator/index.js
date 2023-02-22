@@ -19,13 +19,15 @@ class TableRestApiGenerator{
         // Start coordinates
         let startX = 150;
         let startY = 140;
-        let y = startY;
         let x = startX;
+        let y = startY;
     
-        //let getEndPoints = this.generateGetEndPoints(tableData.name, tableData.properties, dbConfigNodeId, provider, startX, startY, flowTabId);
         config.push(flowTabNode);
         config.push(dbConfigNode);
 
+        // Subflow that catches the errors
+        let catchSublow = this.generateCatchSubFlow(x, 250, y, flowTabId);
+        y += 100;
         let getEndPoint = this.generateGetEndPoint(tableData, dbConfigNodeId, provider, x, 250, y, flowTabId);
         y += 100;
         let postEndPoint = this.generatePostEndPoint(tableData, dbConfigNodeId, provider, x, 250, y, flowTabId);
@@ -34,14 +36,45 @@ class TableRestApiGenerator{
         y += 100;
         let deleteEndPoint = this.generateDeleteEndPoint(tableData, dbConfigNodeId, provider, x, 250, y, flowTabId);
 
-       
 
+        // Concat the generated nodes into the configuration
+        config = config.concat(catchSublow);
         config = config.concat(getEndPoint);
         config = config.concat(postEndPoint);
         config = config.concat(putEndPoint);
         config = config.concat(deleteEndPoint);
     
         return config;
+    }
+
+    generateCatchSubFlow(startX, xOffset, startY, flowId){
+        let x = startX;
+        let y = startY;
+
+        // Step 1: Generate the catch node
+        let catchNodeId = this.generateId(16, this.usedids);
+        this.usedids.push(catchNodeId);
+        let nextNodeId = this.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let catchNode = this.generateCatchErrorNode(catchNodeId, null, x, y, flowId, [nextNodeId]);
+
+        x += xOffset;
+
+        // Step 2: Generate the create error node
+        let functionCode = "// Store the error message \n// in the payload property.\nmsg.payload = msg.error;\nreturn msg;";
+        let functionNodeId = nextNodeId;
+        nextNodeId = this.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let functionNode = this.generateFunctionNode(functionNodeId, "CreateError", x, y, flowId, functionCode, [nextNodeId]);
+
+        x += xOffset;
+
+        // Step 3: Generate the response node
+        let respondeNodeId = nextNodeId;
+        let responseNode = this.generateHttpResponseNode(respondeNodeId, 400, x, y, flowId);
+ 
+        let resultingNodes = [catchNode, functionNode, responseNode];
+        return resultingNodes;
     }
 
     generateGetEndPoint(tableData, dbConfigNodeId, provider, startX, xOffset, startY, flowId){
@@ -314,7 +347,7 @@ class TableRestApiGenerator{
 
     generateInsertQueryForMssql(tableData){
         var propertyNames = tableData.properties.map(p => p.propertyName);
-        var propertyValues = tableData.properties.map(p => `{{{queryParameters.${p.propertyName}}}}`);
+        var propertyValues = tableData.properties.map(p => `'{{{queryParameters.${p.propertyName}}}}'`);
 
         var query = `INSERT INTO ${tableData.schema}.${tableData.name} (${propertyNames.join(",")}) VALUES (${propertyValues.join(",")});`;
         return query;
@@ -348,9 +381,9 @@ class TableRestApiGenerator{
             return item.propertyName != tableData.pk;
         });
 
-        var propertyNameValuePairs = propertiesWithoutPk.map(p => `${p.propertyName} = {{{queryParameters.${p.propertyName}}}}`);
+        var propertyNameValuePairs = propertiesWithoutPk.map(p => `${p.propertyName} = '{{{queryParameters.${p.propertyName}}}}'`);
 
-        var query = `UPDATE ${tableData.schema}.${tableData.name} SET ${propertyNameValuePairs.join(",")} WHERE ${tableData.pk}={{{queryParameters.pkvalue}}};`;
+        var query = `UPDATE ${tableData.schema}.${tableData.name} SET ${propertyNameValuePairs.join(",")} WHERE ${tableData.pk}='{{{queryParameters.pkvalue}}}';`;
         return query;
     }
 
@@ -371,7 +404,8 @@ class TableRestApiGenerator{
             ifCodes.push(ifCode);
         }
 
-        var code = `msg.queryProperties = [];\n${ifCodes.join("\n\n")}\n\nreturn msg;`;
+        var propertiesInString = tableData.properties.map(p => `\"${p.propertyName}\"`);
+        var code = `msg.queryProperties = [];\nvar properties = [${propertiesInString.join(",")}];\nvar queryProperties = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n${ifCodes.join("\n\n")}\n\nreturn msg;`;
         return code;
     }
 
@@ -380,7 +414,7 @@ class TableRestApiGenerator{
             case 'postgres':
                 return  `var selectQuery = 'SELECT * FROM ${tableData.schema}.${tableData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`\${msg.queryProperties[i].propertyName} = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
             case 'mssql':
-                return  `var selectQuery = 'SELECT * FROM ${tableData.schema}.${tableData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`\${msg.queryProperties[i].propertyName} = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
+                return  `var selectQuery = 'SELECT * FROM ${tableData.schema}.${tableData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`CONVERT(VARCHAR, \${msg.queryProperties[i].propertyName}) = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
             default:
                 throw new Error("Unknown database provider identified!");
         }
@@ -507,6 +541,22 @@ class TableRestApiGenerator{
                 throw new Error("Unknown database provider identified!");
         }
     }
+
+    generateCatchErrorNode(id, scope, x, y, flowTabId, wireIds){
+        var catchErrorNode = {
+            "id": id,
+            "type": "catch",
+            "z": flowTabId,
+            "name": "",
+            "scope": scope,
+            "uncaught": false,
+            "x": x,
+            "y": y,
+            "wires": this.getWires(wireIds)
+        };
+    
+        return catchErrorNode;
+    }
     
     generateHttpInNode(id, url, method, x, y, flowTabId, wireIds){
         var httpInNodeConfig = {
@@ -612,7 +662,7 @@ var dbConfig1 = {
 
 
 var generator = new TableRestApiGenerator();
-var restApi = generator.generateRestApiForTable(tableData1, dbConfig, "TestApi", "postgres");
-//var restApi = generator.generateRestApiForTable(tableData2, dbConfig1, "TestApi", "mssql");
+//var restApi = generator.generateRestApiForTable(tableData1, dbConfig, "TestApi", "postgres");
+var restApi = generator.generateRestApiForTable(tableData2, dbConfig1, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
 //console.log(generator.getWires(["a", "b"]));
