@@ -50,25 +50,31 @@ export class RelationRestApiGenerator extends Generator{
         let getComment = this.nodeConfGen.generateCommentNode(getCommentId, "GetEndPoint (table attributes are query parameters)", x + 300, y, flowTabId, []);
         config.push(getComment);
         y += 50;
-        let getEndPoint = this.generateGetEndPoint(entityData, dbConfigNodeId, provider, x, 250, y, flowTabId);
+        let getEndPoint = this.generateGetEndPoint(entityData, dbConfigNodeId, provider, x, 300, y, flowTabId);
         y += 100;
         let postCommentId = this.helper.generateId(16, this.usedids);
         let postComment = this.nodeConfGen.generateCommentNode(postCommentId, "PostEndPoint (request body contains the attributes of the table, no request parameters)", x + 300, y, flowTabId, []);
         config.push(postComment);
         y += 50;
-        let postEndPoint = this.generatePostEndPoint(entityData, dbConfigNodeId, provider, x, 250, y, flowTabId);
+        let postEndPoint = this.generatePostEndPoint(entityData, dbConfigNodeId, provider, x, 300, y, flowTabId);
         y += 100;
         let putCommentId = this.helper.generateId(16, this.usedids);
         let putComment = this.nodeConfGen.generateCommentNode(putCommentId, "PutEndPoint (request body contains the attributes of the table, request parameters the primary key)", x + 300, y, flowTabId, []);
         config.push(putComment);
         y += 50;
-        let putEndPoint = this.generatePutEndPoint(entityData, dbConfigNode, provider, x, 250, y, flowTabId);
+        let putEndPoint = this.generatePutEndPoint(entityData, dbConfigNode, provider, x, 300, y, flowTabId);
         y += 100;
         let deleteCommentId = this.helper.generateId(16, this.usedids);
         let deleteComment = this.nodeConfGen.generateCommentNode(deleteCommentId, "DeleteEndPoint (no request body, request parameters contain the primary key)", x + 300, y, flowTabId, []);
         config.push(deleteComment);
         y += 50;
-        let deleteEndPoint = this.generateDeleteEndPoint(entityData, dbConfigNodeId, provider, x, 250, y, flowTabId);
+        let deleteEndPoint = this.generateDeleteEndPoint(entityData, dbConfigNodeId, provider, x, 300, y, flowTabId);
+        y += 100;
+        let deleteWithQueryCommentId = this.helper.generateId(16, this.usedids);
+        let deleteWithQuery = this.nodeConfGen.generateCommentNode(deleteWithQueryCommentId, "DeleteEndPoint (table attributes are query parameters)", x + 300, y, flowTabId, []);
+        config.push(deleteWithQuery);
+        y += 50;
+        let deleteWithQueryEndPoint = this.generateDeleteEndPointWithQueryParams(entityData, dbConfigNodeId, provider, x, 300, y, flowTabId);
 
 
         // Concat the generated endpoints into the configuration
@@ -77,6 +83,7 @@ export class RelationRestApiGenerator extends Generator{
         config = config.concat(postEndPoint);
         config = config.concat(putEndPoint);
         config = config.concat(deleteEndPoint);
+        config = config.concat(deleteWithQueryEndPoint);
     
         return config;
     }
@@ -126,7 +133,7 @@ export class RelationRestApiGenerator extends Generator{
         x += xOffset;
     
         // Step 2: Generate the function node (that sets the query parameters)
-        let functionCode = this.generateSetQueryForReadOperation(entityData, 'msg.payload');
+        let functionCode = this.generateQueryProperties(entityData, 'msg.req.query');
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -289,6 +296,55 @@ export class RelationRestApiGenerator extends Generator{
        let resultingNodes = [httpInNode, functionNode, queryNode, responseNode];
        return resultingNodes;
     }
+
+    generateDeleteEndPointWithQueryParams(entityData, dbConfigNodeId, provider, startX, xOffset, startY, flowId){
+        let x = startX;
+        let y = startY;
+     
+        // Step 1: Generate the http in endpoint (DELETE request)
+        let httpInNodeId = this.helper.generateId(16, this.usedids);
+        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}`;
+        this.usedids.push(httpInNodeId);
+        let nextNodeId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'delete', x, y, flowId, [nextNodeId]);
+
+        x += xOffset;
+    
+        // Step 2: Generate the function node (that sets the query parameters)
+        let functionCode = this.generateQueryProperties(entityData, 'msg.req.query');
+        let functionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+
+        x += xOffset;
+
+        // Step 3: Generate the function node (that creates the delete query)
+        let queryFunctionCode = this.generateCreateDelectQueryForDeleteOperation(entityData, provider);
+        let queryFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, 'CreateDeleteQuery', x, y, flowId, queryFunctionCode, [nextNodeId]);
+
+        x += xOffset;
+
+        // Step 4: Generate the database node (that executes the query)
+        let queryCode = ``; // The query was stored in msg.query of the previous function node
+        let queryNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16,  this.usedids);
+        this.usedids.push(nextNodeId);
+        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "query", "msg");
+
+        x += xOffset;
+
+       // Step 5: Create the response node (that returns the result)
+       let respondeNodeId = nextNodeId;
+       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
+
+       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseNode];
+       return resultingNodes;
+    }
     
     generateDeleteQueryCode(entityData, provider){
         switch (provider){
@@ -373,7 +429,7 @@ export class RelationRestApiGenerator extends Generator{
         return result;
     }
 
-    generateSetQueryForReadOperation(entityData, prefix){
+    generateQueryProperties(entityData, prefix){
         var ifCodes = [];
         for (let i = 0; i < entityData.properties.length; i++){
             var ifCode = `\nif (${prefix}.${entityData.properties[i].propertyName} != undefined){\n    msg.queryProperties.push({\"propertyName\": \"${entityData.properties[i].propertyName}\", \"propertyValue\" : \`\${${prefix}.${entityData.properties[i].propertyName}}\`});\n}\n`;
@@ -391,6 +447,17 @@ export class RelationRestApiGenerator extends Generator{
                 return  `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`\${msg.queryProperties[i].propertyName} = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
             case 'mssql':
                 return  `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`CONVERT(VARCHAR, \${msg.queryProperties[i].propertyName}) = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
+            default:
+                throw new Error("Unknown database provider identified!");
+        }
+    }
+
+    generateCreateDelectQueryForDeleteOperation(entityData, provider){
+        switch (provider){
+            case 'postgres':
+                return  `var deleteQuery = 'DELETE FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`\${msg.queryProperties[i].propertyName} = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\deleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
+            case 'mssql':
+                return  `var deleteQuery = 'DELETE FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`CONVERT(VARCHAR, \${msg.queryProperties[i].propertyName}) = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\deleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
             default:
                 throw new Error("Unknown database provider identified!");
         }
