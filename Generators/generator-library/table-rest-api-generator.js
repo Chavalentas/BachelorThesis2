@@ -1,4 +1,4 @@
-class TableRestApiGenerator{
+export class TableRestApiGenerator{
     constructor(){
         this.usedids = [];
     }
@@ -659,10 +659,3 @@ var dbConfig1 = {
     "user" : "sa",
     "password" : "strongPassword123!"
 }
-
-
-var generator = new TableRestApiGenerator();
-//var restApi = generator.generateRestApiForTable(tableData1, dbConfig, "TestApi", "postgres");
-var restApi = generator.generateRestApiForTable(tableData2, dbConfig1, "TestApi", "mssql");
-console.log(JSON.stringify(restApi));
-//console.log(generator.getWires(["a", "b"]));
