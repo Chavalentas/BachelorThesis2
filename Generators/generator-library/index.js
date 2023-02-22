@@ -1,5 +1,6 @@
 import { TableRestApiGenerator }  from "./table-rest-api-generator.js"
-import { ViewRestApiGenerator } from "./view-rest-api-generator.js"
+import { ViewRestApiGenerator }  from "./view-rest-api-generator.js"
+
 
 var tableData = {
     "name": "testtable",
@@ -31,14 +32,13 @@ var tableData12 = {
 }
 
 var viewData1 = {
-    "name": "peoplenamedjohn",
+    "name": "buildingview",
     "schema" : "public",
     "properties" : [
-        {"propertyName" : "id"},
-        {"propertyName" : "firstname"},
-        {"propertyName" : "lastname"}
+        {"propertyName" : "buildingId"},
+        {"propertyName" : "buildingName"}
     ],
-    "pk" : "id"
+    "pk" : "buildingId"
 }
 
 var tableData2 = {
@@ -53,14 +53,13 @@ var tableData2 = {
 }
 
 var viewData2 = {
-    "name": "peoplenamedjohn",
+    "name": "buildingview",
     "schema" : "dbo",
     "properties" : [
-        {"propertyName" : "id"},
-        {"propertyName" : "firstname"},
-        {"propertyName" : "lastname"}
+        {"propertyName" : "buildingId"},
+        {"propertyName" : "buildingName"}
     ],
-    "pk" : "id"
+    "pk" : "buildingId"
 }
 
 var tableData22 = {
@@ -93,15 +92,15 @@ var dbConfig1 = {
 }
 
 
-
-var generator = new TableRestApiGenerator();
-var restApi = generator.generate(tableData12, dbConfig, "TestApi", "postgres");
-//var restApi = generator.generate(tableData22, dbConfig1, "TestApi", "mssql");
-console.log(JSON.stringify(restApi));
-
 /*
+var generator = new TableRestApiGenerator();
+//var restApi = generator.generate(tableData12, dbConfig, "TestApi", "postgres");
+var restApi = generator.generate(tableData22, dbConfig1, "TestApi", "mssql");
+console.log(JSON.stringify(restApi));
+*/
+
+
 var generator = new ViewRestApiGenerator();
 //var restApi = generator.generate(viewData1, dbConfig, "TestApi", "postgres");
 var restApi = generator.generate(viewData2, dbConfig1, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
-*/
