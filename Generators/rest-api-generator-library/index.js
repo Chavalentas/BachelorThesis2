@@ -31,6 +31,26 @@ var tableData12 = {
     "pk" : "buildingId"
 }
 
+var tableData222 = {
+    "name": "houses",
+    "schema" : "public",
+    "properties" : [
+        {"propertyName" : "houseid"},
+        {"propertyName" : "housename"},
+    ],
+    "pk" : "houseid"
+}
+
+var tableData2221 = {
+    "name": "houses",
+    "schema" : "dbo",
+    "properties" : [
+        {"propertyName" : "houseid"},
+        {"propertyName" : "housename"},
+    ],
+    "pk" : "houseid"
+}
+
 var viewData1 = {
     "name": "buildingview",
     "schema" : "public",
@@ -72,6 +92,16 @@ var tableData22 = {
     "pk" : "buildingId"
 }
 
+var tableData22 = {
+    "name": "buildingpersons",
+    "schema" : "public",
+    "properties" : [
+        {"propertyName" : "personid"},
+        {"propertyName" : "personname"},
+    ],
+    "pk" : "personid"
+}
+
 
 var dbConfig = {
     "host" : "localhost",
@@ -92,15 +122,17 @@ var dbConfig1 = {
 }
 
 
-/*
+
 var generator = new TableRestApiGenerator();
-//var restApi = generator.generate(tableData12, dbConfig, "TestApi", "postgres");
-var restApi = generator.generate(tableData22, dbConfig1, "TestApi", "mssql");
+var restApi = generator.generate(tableData222, dbConfig, "TestApi", "postgres");
+//var restApi = generator.generate(tableData2221, dbConfig1, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
-*/
 
 
+
+/*
 var generator = new ViewRestApiGenerator();
 //var restApi = generator.generate(viewData1, dbConfig, "TestApi", "postgres");
 var restApi = generator.generate(viewData2, dbConfig1, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
+*/

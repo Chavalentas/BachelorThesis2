@@ -60,7 +60,7 @@ export class RelationRestApiGenerator extends Generator{
         let putComment = this.nodeConfGen.generateCommentNode(putCommentId, "PutEndPoint (request body contains the attributes of the table, request parameters the primary key)", x + 300, y, flowTabId, []);
         config.push(putComment);
         y += 50;
-        let putEndPoint = this.generatePutEndPoint(entityData, dbConfigNode, provider, x, 300, y, flowTabId);
+        let putEndPoint = this.generatePutEndPoint(entityData, dbConfigNodeId, provider, x, 300, y, flowTabId);
         y += 100;
         let deleteCommentId = this.helper.generateId(16, this.usedids);
         let deleteComment = this.nodeConfGen.generateCommentNode(deleteCommentId, "DeleteEndPoint (no request body, request parameters contain the primary key)", x + 300, y, flowTabId, []);
