@@ -1,36 +1,6 @@
 import { TableRestApiGenerator }  from "./table-rest-api-generator.js"
 import { ViewRestApiGenerator }  from "./view-rest-api-generator.js"
 
-
-var tableData = {
-    "name": "testtable",
-    "properties" : [
-        {"propertyName" : "testproperty1"},
-        {"propertyName" : "testproperty2"}
-    ]
-}
-
-var tableData1 = {
-    "name": "dummy",
-    "schema" : "public",
-    "properties" : [
-        {"propertyName" : "id"},
-        {"propertyName" : "firstname"},
-        {"propertyName" : "lastname"}
-    ],
-    "pk" : "id"
-}
-
-var tableData12 = {
-    "name": "buildings",
-    "schema" : "public",
-    "properties" : [
-        {"propertyName" : "buildingId"},
-        {"propertyName" : "buildingName"},
-    ],
-    "pk" : "buildingId"
-}
-
 var tableData222 = {
     "name": "houses",
     "schema" : "public",
@@ -51,55 +21,24 @@ var tableData2221 = {
     "pk" : "houseid"
 }
 
-var viewData1 = {
-    "name": "buildingview",
+var viewData222 = {
+    "name": "housesview",
     "schema" : "public",
     "properties" : [
-        {"propertyName" : "buildingId"},
-        {"propertyName" : "buildingName"}
+        {"propertyName" : "houseid"},
+        {"propertyName" : "housename"},
     ],
-    "pk" : "buildingId"
+    "pk" : "houseid"
 }
 
-var tableData2 = {
-    "name": "dummy",
+var viewData2221 = {
+    "name": "housesview",
     "schema" : "dbo",
     "properties" : [
-        {"propertyName" : "id"},
-        {"propertyName" : "firstname"},
-        {"propertyName" : "lastname"}
+        {"propertyName" : "houseid"},
+        {"propertyName" : "housename"},
     ],
-    "pk" : "id"
-}
-
-var viewData2 = {
-    "name": "buildingview",
-    "schema" : "dbo",
-    "properties" : [
-        {"propertyName" : "buildingId"},
-        {"propertyName" : "buildingName"}
-    ],
-    "pk" : "buildingId"
-}
-
-var tableData22 = {
-    "name": "buildings",
-    "schema" : "dbo",
-    "properties" : [
-        {"propertyName" : "buildingId"},
-        {"propertyName" : "buildingName"},
-    ],
-    "pk" : "buildingId"
-}
-
-var tableData22 = {
-    "name": "buildingpersons",
-    "schema" : "public",
-    "properties" : [
-        {"propertyName" : "personid"},
-        {"propertyName" : "personname"},
-    ],
-    "pk" : "personid"
+    "pk" : "houseid"
 }
 
 
@@ -122,17 +61,15 @@ var dbConfig1 = {
 }
 
 
-
+/*
 var generator = new TableRestApiGenerator();
 var restApi = generator.generate(tableData222, dbConfig, "TestApi", "postgres");
 //var restApi = generator.generate(tableData2221, dbConfig1, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
-
-
-
-/*
-var generator = new ViewRestApiGenerator();
-//var restApi = generator.generate(viewData1, dbConfig, "TestApi", "postgres");
-var restApi = generator.generate(viewData2, dbConfig1, "TestApi", "mssql");
-console.log(JSON.stringify(restApi));
 */
+
+
+var generator = new ViewRestApiGenerator();
+//var restApi = generator.generate(viewData222, dbConfig, "TestApi", "postgres");
+var restApi = generator.generate(viewData2221, dbConfig1, "TestApi", "mssql");
+console.log(JSON.stringify(restApi));
