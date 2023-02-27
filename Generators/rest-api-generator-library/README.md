@@ -19,8 +19,9 @@ module.exports = {
 }
 ```
 E.g., if you want to use the REST-API generator for SQL tables, use: 
+```javascript
 var generator = tableGen.generate(entityData, databaseConfiguration, restApiName, provider);
-
+```
 
 ## The generator of the REST-API for SQL tables 
 Currenty two providers are supported: PostgreSQL and Microsoft SQL Server.
