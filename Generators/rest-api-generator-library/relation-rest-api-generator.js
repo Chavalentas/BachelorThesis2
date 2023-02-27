@@ -1,6 +1,6 @@
-import { Generator } from "./generator.js";
+const gen = require('./generator.js');
 
-export class RelationRestApiGenerator extends Generator{
+const RelationRestApiGenerator = class extends gen.Generator{
     constructor(){
         super();
         if (this.constructor == RelationRestApiGenerator) {
@@ -460,4 +460,8 @@ export class RelationRestApiGenerator extends Generator{
                 throw new Error("Unknown database provider identified!");
         }
     }
+}
+
+module.exports = {
+    RelationRestApiGenerator
 }

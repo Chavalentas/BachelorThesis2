@@ -1,7 +1,11 @@
-import { RoutineRestApiGenerator } from "./routine-rest-api-generator.js";
+const routineGen = require('./routine-rest-api-generator.js');
 
-export class FunctionRestApiGenerator extends RoutineRestApiGenerator{
+const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerator{
     generate(entityData, databaseConfiguration, restApiName, provider){
         return super.generate(entityData, databaseConfiguration, restApiName, provider);
     }
+}
+
+module.exports = {
+    FunctionRestApiGenerator
 }

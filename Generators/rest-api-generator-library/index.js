@@ -1,8 +1,8 @@
+/*
+const tableGen = require('./table-rest-api-generator.js');
+const viewGen = require('./view-rest-api-generator.js');
 
-import { TableRestApiGenerator }  from "./table-rest-api-generator.js"
-import { ViewRestApiGenerator }  from "./view-rest-api-generator.js"
-
-var tableData222 = {
+var tableDataPostgres = {
     "name": "houses",
     "schema" : "public",
     "properties" : [
@@ -12,7 +12,7 @@ var tableData222 = {
     "pk" : "houseid"
 }
 
-var tableData2221 = {
+var tableDataMssql = {
     "name": "houses",
     "schema" : "dbo",
     "properties" : [
@@ -22,7 +22,7 @@ var tableData2221 = {
     "pk" : "houseid"
 }
 
-var viewData222 = {
+var viewDataPostgres = {
     "name": "housesview",
     "schema" : "public",
     "properties" : [
@@ -32,7 +32,7 @@ var viewData222 = {
     "pk" : "houseid"
 }
 
-var viewData2221 = {
+var viewDataMssql = {
     "name": "housesview",
     "schema" : "dbo",
     "properties" : [
@@ -43,7 +43,7 @@ var viewData2221 = {
 }
 
 
-var dbConfig = {
+var dbConfigPostgres = {
     "host" : "localhost",
     "port" : 5432,
     "database" : "postgres",
@@ -53,7 +53,7 @@ var dbConfig = {
 
 
 
-var dbConfig1 = {
+var dbConfigMssql = {
     "host" : "localhost",
     "port" : 1433,
     "database" : "master",
@@ -61,19 +61,27 @@ var dbConfig1 = {
     "password" : "strongPassword123!"
 }
 
-
-
-var generator = new TableRestApiGenerator();
-var restApi = generator.generate(tableData222, dbConfig, "TestApi", "postgres");
-//var restApi = generator.generate(tableData2221, dbConfig1, "TestApi", "mssql");
+var generator = new tableGen.TableRestApiGenerator();
+var restApi = generator.generate(tableDataPostgres, dbConfigPostgres, "TestApi", "postgres");
+//var restApi = generator.generate(tableDataMssql, dbConfigMssql, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
 
 
 
-/*
-var generator = new ViewRestApiGenerator();
-//var restApi = generator.generate(viewData222, dbConfig, "TestApi", "postgres");
-var restApi = generator.generate(viewData2221, dbConfig1, "TestApi", "mssql");
-console.log(JSON.stringify(restApi));
+var generator = new viewGen.ViewRestApiGenerator();
+//var restApi2 = generator.generate(viewDataPostgres, dbConfigPostgres, "TestApi", "postgres");
+var restApi2 = generator.generate(viewDataMssql, dbConfigMssql, "TestApi", "mssql");
+console.log(JSON.stringify(restApi2));
 */
 
+const tableGen = require('./table-rest-api-generator.js');
+const viewGen = require('./view-rest-api-generator.js');
+const procGen = require('./function-rest-api-generator.js');
+const funcGen = require('./stored-procedure-rest-api-generator.js');
+
+module.exports = {
+   tableGen,
+   viewGen,
+   procGen,
+   funcGen
+}

@@ -1,9 +1,11 @@
-import { Helper } from "./helper-functions.js";
-import { NodeConfigGenerator } from "./node-config-generator.js";
-import { RelationRestApiGenerator } from "./relation-rest-api-generator.js";
+const relGen = require('./relation-rest-api-generator.js');
 
-export class ViewRestApiGenerator extends RelationRestApiGenerator{
+const ViewRestApiGenerator = class extends relGen.RelationRestApiGenerator{
     generate(entityData, databaseConfiguration, restApiName, provider){
         return super.generate(entityData, databaseConfiguration, restApiName, provider);
     }
+}
+
+module.exports = {
+    ViewRestApiGenerator
 }

@@ -1,4 +1,4 @@
-export class NodeConfigGenerator{
+const NodeConfigGenerator = class {
     generateHttpResponseNode(id, statusCode, x, y, flowTabId){
         var responseNodeConfig = {
             "id": id,
@@ -233,4 +233,8 @@ export class NodeConfigGenerator{
 
         return result;
     }
+}
+
+module.exports = {
+    NodeConfigGenerator
 }

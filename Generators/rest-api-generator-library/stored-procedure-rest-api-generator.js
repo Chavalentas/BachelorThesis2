@@ -1,7 +1,12 @@
-import { RoutineRestApiGenerator } from "./routine-rest-api-generator.js";
+const routineGen = require('./routine-rest-api-generator.js');
 
-export class StoredProcedureRestApiGenerator extends RoutineRestApiGenerator{
+const  StoredProcedureRestApiGenerator =  class extends routineGen.RoutineRestApiGenerator{
     generate(entityData, databaseConfiguration, restApiName, provider){
         return super.generate(entityData, databaseConfiguration, restApiName, provider);
     }
 }
+
+module.exports = {
+    StoredProcedureRestApiGenerator
+}
+

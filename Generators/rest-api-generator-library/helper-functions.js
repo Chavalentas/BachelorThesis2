@@ -1,4 +1,4 @@
-export class Helper{
+const Helper = class{
     generateId(length, except){
         var id = "";
     
@@ -23,4 +23,8 @@ export class Helper{
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
     }
+}
+
+module.exports = {
+    Helper
 }
