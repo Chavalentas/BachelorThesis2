@@ -450,7 +450,7 @@ export class RelationRestApiGenerator extends Generator{
         }
     }
 
-    generateCreateDelectQueryForDeleteOperation(entityData, provider){
+    generateCreateDeleteQueryForDeleteOperation(entityData, provider){
         switch (provider){
             case 'postgres':
                 return  `var deleteQuery = 'DELETE FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`\${msg.queryProperties[i].propertyName} = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\deleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;

@@ -61,15 +61,17 @@ var dbConfig1 = {
 }
 
 
-/*
+
 var generator = new TableRestApiGenerator();
 var restApi = generator.generate(tableData222, dbConfig, "TestApi", "postgres");
 //var restApi = generator.generate(tableData2221, dbConfig1, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
-*/
 
 
+
+/*
 var generator = new ViewRestApiGenerator();
 //var restApi = generator.generate(viewData222, dbConfig, "TestApi", "postgres");
 var restApi = generator.generate(viewData2221, dbConfig1, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
+*/
