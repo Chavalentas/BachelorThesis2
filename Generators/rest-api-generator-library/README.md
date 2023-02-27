@@ -2,6 +2,26 @@
 
 The document contains the documentation of the generator library.
 
+## Usage as package
+The module exports following constants: **tableGen**, **viewGen**, **procGen** and **funcGen**.
+
+```javascript
+const tableGen = require('./table-rest-api-generator.js');
+const viewGen = require('./view-rest-api-generator.js');
+const procGen = require('./function-rest-api-generator.js');
+const funcGen = require('./stored-procedure-rest-api-generator.js');
+
+module.exports = {
+   tableGen,
+   viewGen,
+   procGen,
+   funcGen
+}
+```
+E.g., if you want to use the REST-API generator for SQL tables, use: 
+var generator = tableGen.generate(entityData, databaseConfiguration, restApiName, provider);
+
+
 ## The generator of the REST-API for SQL tables 
 Currenty two providers are supported: PostgreSQL and Microsoft SQL Server.
 The generator can be instantiated like this:
