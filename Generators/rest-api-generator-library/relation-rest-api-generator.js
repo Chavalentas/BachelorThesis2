@@ -319,7 +319,7 @@ export class RelationRestApiGenerator extends Generator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the delete query)
-        let queryFunctionCode = this.generateCreateDelectQueryForDeleteOperation(entityData, provider);
+        let queryFunctionCode = this.generateCreateDeleteQueryForDeleteOperation(entityData, provider);
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
