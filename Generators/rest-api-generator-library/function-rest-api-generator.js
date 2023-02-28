@@ -95,19 +95,26 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
 
         x += xOffset;
 
-       // Step 5: Create the response node (that returns the result)
+        // Step 5:  Create the function node (that sets the response payload)
+        let responseFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16,  this.usedids);
+        let responseFunctionCode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"resultSet\" : response  \n};\nreturn msg;', [nextNodeId]);
+
+        x += xOffset;
+
+       // Step 6: Create the response node (that returns the result)
        let respondeNodeId = nextNodeId;
-       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 400, x, y, flowId);
+       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
 
 
-       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseNode];
+       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionCode, responseNode];
        return resultingNodes;
     }
 
     generateQueryProperties(entityData, prefix){
         var ifCodes = [];
         for (let i = 0; i < entityData.parameters.length; i++){
-            var ifCode = `\nif (${prefix}[\'${entityData.parameters[i].parameterName}\'] != undefined){\n    msg.queryParameters.push({\"parameterName\": \"${entityData.properties[i].parameterName}\", \"parameterValue\" : \`\${${prefix}.${entityData.properties[i].parameterName}}\`});\n}\n`;
+            var ifCode = `\nif (${prefix}[\'${entityData.parameters[i].parameterName}\'] != undefined){\n    msg.queryParameters.push({\"parameterName\": \"${entityData.parameters[i].parameterName}\", \"parameterValue\" : \`\${${prefix}[\'${entityData.parameters[i].parameterName}\']}\`});\n}\n`;
             ifCodes.push(ifCode);
         }
 
@@ -119,9 +126,9 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
     generateCreateSelectQuery(entityData, provider){
         switch (provider){
             case 'postgres':
-                return  `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}(';\nvar functionArgs = [];\n\nif (msg.queryParameters.length > 0){\n    for (let i = 0; i < msg.queryParameters.length; i++){\n        if (msg.queryParameters[i].parameterValue =='default'){\n            functionArgs.push('default');\n        }\n        else{\n        functionArgs.push(\`\\'\${msg.queryParameters[i].parameterValue}\\'\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
-            case 'mssql':
                 return  `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}(';\nvar functionArgs = [];\n\nif (msg.queryParameters.length > 0){\n    for (let i = 0; i < msg.queryParameters.length; i++){\n        if (msg.queryParameters[i].parameterValue !='default'){\n        functionArgs.push(\`\\'\${msg.queryParameters[i].parameterValue}\\'\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
+            case 'mssql':
+                return  `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}(';\nvar functionArgs = [];\n\nif (msg.queryParameters.length > 0){\n    for (let i = 0; i < msg.queryParameters.length; i++){\n        if (msg.queryParameters[i].parameterValue =='default'){\n            functionArgs.push('default');\n        }\n        else{\n        functionArgs.push(\`\\'\${msg.queryParameters[i].parameterValue}\\'\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
             default:
                 throw new Error("Unknown database provider identified!");
         }
