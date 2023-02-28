@@ -1,4 +1,4 @@
-/*
+
 const tableGen = require('./table-rest-api-generator.js');
 const viewGen = require('./view-rest-api-generator.js');
 
@@ -20,6 +20,16 @@ var tableDataMssql = {
         {"propertyName" : "housename"},
     ],
     "pk" : "houseid"
+}
+
+var tabledFunctionDataMssql = {
+    "name" : "tvf_test",
+    "schema" : "dbo",
+    "parameters" : [
+        {"parameterName" : "@p1"},
+        {"parameterName" : "@p2"},
+        {"parameterName" : "@p3"}
+    ]
 }
 
 var viewDataPostgres = {
@@ -67,13 +77,14 @@ var restApi = generator.generate(tableDataPostgres, dbConfigPostgres, "TestApi",
 console.log(JSON.stringify(restApi));
 
 
-
+/*
 var generator = new viewGen.ViewRestApiGenerator();
 //var restApi2 = generator.generate(viewDataPostgres, dbConfigPostgres, "TestApi", "postgres");
 var restApi2 = generator.generate(viewDataMssql, dbConfigMssql, "TestApi", "mssql");
 console.log(JSON.stringify(restApi2));
 */
 
+/*
 const tableGen = require('./table-rest-api-generator.js');
 const viewGen = require('./view-rest-api-generator.js');
 const procGen = require('./function-rest-api-generator.js');
@@ -85,3 +96,4 @@ module.exports = {
    procGen,
    funcGen
 }
+*/
