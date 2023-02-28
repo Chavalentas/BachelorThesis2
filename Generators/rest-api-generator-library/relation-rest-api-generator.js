@@ -88,36 +88,6 @@ const RelationRestApiGenerator = class extends gen.Generator{
         return config;
     }
 
-    generateCatchSubFlow(startX, xOffset, startY, flowId){
-        let x = startX;
-        let y = startY;
-
-        // Step 1: Generate the catch node
-        let catchNodeId = this.helper.generateId(16, this.usedids);
-        this.usedids.push(catchNodeId);
-        let nextNodeId = this.helper.generateId(16, this.usedids);
-        this.usedids.push(nextNodeId);
-        let catchNode = this.nodeConfGen.generateCatchErrorNode(catchNodeId, null, x, y, flowId, [nextNodeId]);
-
-        x += xOffset;
-
-        // Step 2: Generate the create error node
-        let functionCode = "// Store the error message \n// in the payload property.\nmsg.payload = msg.error;\nreturn msg;";
-        let functionNodeId = nextNodeId;
-        nextNodeId = this.helper.generateId(16, this.usedids);
-        this.usedids.push(nextNodeId);
-        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, "CreateError", x, y, flowId, functionCode, [nextNodeId]);
-
-        x += xOffset;
-
-        // Step 3: Generate the response node
-        let respondeNodeId = nextNodeId;
-        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 400, x, y, flowId);
- 
-        let resultingNodes = [catchNode, functionNode, responseNode];
-        return resultingNodes;
-    }
-
     generateGetEndPoint(entityData, dbConfigNodeId, provider, startX, xOffset, startY, flowId){
         let x = startX;
         let y = startY;
