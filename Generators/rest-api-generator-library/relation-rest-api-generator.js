@@ -78,7 +78,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
         let deleteWithQueryEndPoint = this.generateDeleteEndPointWithQueryParams(entityData, dbConfigNodeId, provider, x, 300, y, flowTabId);
 
 
-        // Concat the generated endpoints into the configuration
+        // Concat the generated subflows into the configuration
         config = config.concat(catchSublow);
         config = config.concat(getEndPoint);
         config = config.concat(postEndPoint);
