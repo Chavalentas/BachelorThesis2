@@ -44,13 +44,12 @@ const RelationRestApiGenerator = class extends gen.Generator{
         y += 50;
         let catchSublow = this.generateCatchSubFlow(x, 250, y, flowTabId);
         y += 100;
+
+        // The endpoints
         let getCommentId = this.helper.generateId(16, this.usedids);
         let getComment = this.nodeConfGen.generateCommentNode(getCommentId, "GetEndPoint (table attributes are query parameters)", x + 300, y, flowTabId, []);
         config.push(getComment);
-
         y += 50;
-
-        // The endpoints
         let getEndPoint = this.generateGetEndPoint(entityData, dbConfigNodeId, provider, x, 300, y, flowTabId);
         y += 100;
         let postCommentId = this.helper.generateId(16, this.usedids);
