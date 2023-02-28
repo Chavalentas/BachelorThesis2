@@ -2,7 +2,7 @@ const routineGen = require('./routine-rest-api-generator.js');
 
 const  StoredProcedureRestApiGenerator =  class extends routineGen.RoutineRestApiGenerator{
     generate(entityData, databaseConfiguration, restApiName, provider){
-        return super.generate(entityData, databaseConfiguration, restApiName, provider);
+        
     }
 }
 
