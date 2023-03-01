@@ -49,7 +49,7 @@ const NodeConfigGenerator = class {
         return catchErrorNode;
     }
 
-    generateMssqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds, queryOpt, queryOptType){
+    generateMssqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds, modeOpt, modeOptType, queryOpt, queryOptType, paramsOpt, paramsOptType, returnType){
         var msSqlNodeConfig = {
             "id": id,
             "type": "MSSQL",
@@ -57,15 +57,16 @@ const NodeConfigGenerator = class {
             "mssqlCN": dbConfigId,
             "name": nodeName,
             "outField": "payload",
-            "returnType": 0,
+            "returnType": returnType,
             "throwErrors": 1,
             "query": statementCode,
-            "modeOpt": "queryMode",
-            "modeOptType": "query",
+            "modeOpt": modeOpt, //queryMode
+            "modeOptType": modeOptType, //query
             "queryOpt": queryOpt,
             "queryOptType": queryOptType,
-            "paramsOpt": "queryParams",
-            "paramsOptType": "none",
+            "paramsOpt": paramsOpt, //queryParams
+            "paramsOptType": paramsOptType, // none
+            "outputType" : "driver",
             "rows": "rows",
             "rowsType": "msg",
             "parseMustache": true,
@@ -202,15 +203,24 @@ const NodeConfigGenerator = class {
         return commentNode;
     }
 
-    generateDatabaseNode(id, nodename, x, y, flowTabId, statementCode, dbConfigId, wireIds, provider, queryOpt = "", queryOptType = ""){    
-        switch (provider){
-            case 'postgres':
-                return this.generatePostgresqlNode(id, nodename, x, y, flowTabId, statementCode, dbConfigId, wireIds);
-            case 'mssql':
-                return this.generateMssqlNode(id, nodename, x, y, flowTabId, statementCode, dbConfigId, wireIds, queryOpt, queryOptType);
-            default:
-                throw new Error("Unknown database provider identified!");
-        }
+    generateSwitchNode(id, switchName, x, y, flowTabId, wireIds, outputs, property, propertyType, rules){
+        let switchNode =  {
+            "id": id,
+            "type": "switch",
+            "z": flowTabId,
+            "name": switchName,
+            "property": property,
+            "propertyType": propertyType,
+            "rules": rules,
+            "checkall": "true",
+            "repair": false,
+            "outputs": outputs,
+            "x": x,
+            "y": y,
+            "wires": this.getWires(wireIds)
+        };
+
+        return switchNode;
     }
     
     generateDatabaseConfigNode(databaseConfiguration, id, provider){

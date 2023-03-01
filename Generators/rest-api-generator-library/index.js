@@ -3,6 +3,7 @@
 const tableGen = require('./table-rest-api-generator.js');
 const viewGen = require('./view-rest-api-generator.js');
 const funcGen = require('./function-rest-api-generator.js');
+const procGen = require('./stored-procedure-rest-api-generator.js');
 
 var tableDataPostgres = {
     "name": "houses",
@@ -51,6 +52,16 @@ var tabledFunctionDataPostgres = {
     ]
 }
 
+var storedProcedureDataMssql = {
+    "name" : "pr_test",
+    "schema" : "dbo",
+    "parameters" : [
+        {"parameterName" : "@p1"},
+        {"parameterName" : "@p2"},
+        {"parameterName" : "@p3"}
+    ]
+}
+
 var viewDataPostgres = {
     "name": "housesview",
     "schema" : "public",
@@ -92,11 +103,10 @@ var dbConfigMssql = {
 */
 /*
 var generator = new tableGen.TableRestApiGenerator();
-//var restApi = generator.generate(tableDataPostgres, dbConfigPostgres, "TestApi", "postgres");
-var restApi = generator.generate(tableDataMssql, dbConfigMssql, "TestApi", "mssql");
+var restApi = generator.generate(tableDataPostgres, dbConfigPostgres, "TestApi", "postgres");
+//var restApi = generator.generate(tableDataMssql, dbConfigMssql, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
 */
-
 
 
 /*
@@ -106,12 +116,23 @@ var restApi2 = generator.generate(viewDataMssql, dbConfigMssql, "TestApi", "mssq
 console.log(JSON.stringify(restApi2));
 */
 
+
 /*
 var generator = new funcGen.FunctionRestApiGenerator();
 //var restApi = generator.generate(tabledFunctionDataPostgres, dbConfigPostgres, "TestFunction", "postgres");
 var restApi = generator.generate(tabledFunctionDataMssql, dbConfigMssql, "TestFunction", "mssql");
 console.log(JSON.stringify(restApi));
 */
+
+
+/*
+var generator = new procGen.StoredProcedureRestApiGenerator();
+//var restApi = generator.generate(tabledFunctionDataPostgres, dbConfigPostgres, "TestProc", "postgres");
+var restApi = generator.generate(storedProcedureDataMssql, dbConfigMssql, "TestProc", "mssql");
+console.log(JSON.stringify(restApi));
+*/
+
+
 
 const tableGen = require('./table-rest-api-generator.js');
 const viewGen = require('./view-rest-api-generator.js');

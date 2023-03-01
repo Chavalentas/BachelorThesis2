@@ -125,7 +125,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "query", "msg");
+        let queryNode = this.generateDatabaseNodeForGetRequest(provider, queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
@@ -166,7 +166,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "", "editor");
+        let queryNode = this.generateDatabaseNodeForPostRequest(provider, queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
@@ -211,7 +211,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "", "editor");
+        let queryNode = this.generateDatabaseNodeForPutRequest(provider, queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
        
         x += xOffset;
 
@@ -255,7 +255,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "", "editor");
+        let queryNode = this.generateDatabaseNodeForDeleteRequest(provider, queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
@@ -304,7 +304,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "query", "msg");
+        let queryNode = this.generateDatabaseNodeForDeleteRequest(provider, queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
@@ -428,6 +428,50 @@ const RelationRestApiGenerator = class extends gen.Generator{
                 return  `var deleteQuery = 'DELETE FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`\${msg.queryProperties[i].propertyName} = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\deleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
             case 'mssql':
                 return  `var deleteQuery = 'DELETE FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`CONVERT(VARCHAR, \${msg.queryProperties[i].propertyName}) = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\deleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
+            default:
+                throw new Error("Unknown database provider identified!");
+        }
+    }
+
+    generateDatabaseNodeForGetRequest(provider, id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds){
+        switch (provider){
+            case 'postgres':
+                return  this.nodeConfGen.generatePostgresqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds);
+            case 'mssql':
+                return this.nodeConfGen.generateMssqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds, "queryMode", "query", "query", "msg", "queryParams", "none", 0);
+            default:
+                throw new Error("Unknown database provider identified!");
+        }
+    }
+
+    generateDatabaseNodeForPostRequest(provider, id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds){
+        switch (provider){
+            case 'postgres':
+                return  this.nodeConfGen.generatePostgresqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds);
+            case 'mssql':
+                return this.nodeConfGen.generateMssqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds, "queryMode", "query", "", "editor", "queryParams", "none", 0);
+            default:
+                throw new Error("Unknown database provider identified!");
+        }
+    }
+
+    generateDatabaseNodeForPutRequest(provider, id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds){
+        switch (provider){
+            case 'postgres':
+                return  this.nodeConfGen.generatePostgresqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds);
+            case 'mssql':
+                return this.nodeConfGen.generateMssqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds, "queryMode", "query", "", "editor", "queryParams", "none", 0);
+            default:
+                throw new Error("Unknown database provider identified!");
+        }
+    }
+
+    generateDatabaseNodeForDeleteRequest(provider, id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds){
+        switch (provider){
+            case 'postgres':
+                return  this.nodeConfGen.generatePostgresqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds);
+            case 'mssql':
+                return this.nodeConfGen.generateMssqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds, "queryMode", "query", "query", "msg", "queryParams", "none", 0);
             default:
                 throw new Error("Unknown database provider identified!");
         }

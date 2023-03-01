@@ -91,7 +91,7 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "", "editor");
+        let queryNode = this.generateDatabaseNode(provider, queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
@@ -109,29 +109,6 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
 
        let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionCode, responseNode];
        return resultingNodes;
-    }
-
-    generateQueryProperties(entityData, prefix){
-        var ifCodes = [];
-        for (let i = 0; i < entityData.parameters.length; i++){
-            var ifCode = `\nif (${prefix}[\'${entityData.parameters[i].parameterName}\'] != undefined){\n    msg.queryParameters.push({\"parameterName\": \"${entityData.parameters[i].parameterName}\", \"parameterValue\" : \`\${${prefix}[\'${entityData.parameters[i].parameterName}\']}\`});\n}\n`;
-            ifCodes.push(ifCode);
-        }
-
-        var parametersInString = entityData.parameters.map(p => `\"${p.parameterName}\"`);
-        var code = `msg.queryParameters = [];\nvar parameters = [${parametersInString.join(",")}];\nvar queryParameters = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryParameters.some(p => !parameters.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (queryParameters.some(p => !parameters.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n${ifCodes.join("\n\n")}\n\nreturn msg;`;
-        return code;
-    }
-
-    generateCreateSelectQuery(entityData, provider){
-        switch (provider){
-            case 'postgres':
-                return  `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}(';\nvar functionArgs = [];\n\nif (msg.queryParameters.length > 0){\n    for (let i = 0; i < msg.queryParameters.length; i++){\n        if (msg.queryParameters[i].parameterValue !='default'){\n        functionArgs.push(\`\\'\${msg.queryParameters[i].parameterValue}\\'\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
-            case 'mssql':
-                return  `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}(';\nvar functionArgs = [];\n\nif (msg.queryParameters.length > 0){\n    for (let i = 0; i < msg.queryParameters.length; i++){\n        if (msg.queryParameters[i].parameterValue =='default'){\n            functionArgs.push('default');\n        }\n        else{\n        functionArgs.push(\`\\'\${msg.queryParameters[i].parameterValue}\\'\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
-            default:
-                throw new Error("Unknown database provider identified!");
-        }
     }
 
     generateSetParametersCode(entityData, provider){
@@ -195,6 +172,17 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
 
         var code = `select * from ${entityData.schema}.${entityData.name}(${inputValueCodes.join(",")});`;
         return code;
+    }
+
+    generateDatabaseNode(provider, id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds){
+        switch (provider){
+            case 'postgres':
+                return  this.nodeConfGen.generatePostgresqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds);
+            case 'mssql':
+                return this.nodeConfGen.generateMssqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds, "queryMode", "query", "", "editor", "queryParams", "none", 0);
+            default:
+                throw new Error("Unknown database provider identified!");
+        }
     }
 }
 
