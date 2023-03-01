@@ -1,4 +1,5 @@
 
+/*
 const tableGen = require('./table-rest-api-generator.js');
 const viewGen = require('./view-rest-api-generator.js');
 const funcGen = require('./function-rest-api-generator.js');
@@ -81,7 +82,7 @@ var dbConfigMssql = {
     "user" : "sa",
     "password" : "strongPassword123!"
 }
-
+*/
 
 /*
 var generator = new tableGen.TableRestApiGenerator();
