@@ -67,31 +67,31 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
 
         x += xOffset;
     
-        // Step 2: Generate the function node (that sets the query parameters)
-        let functionCode = this.generateQueryProperties(entityData, 'msg.req.query');
+        // Step 2: Generate the function node (that checks the function parameters)
+        let functionCode = this.generateCheckFunctionParametersCode(entityData, 'msg.req.query');
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'CheckFunctionParameters', x, y, flowId, functionCode, [nextNodeId]);
 
 
         x += xOffset;
 
-        // Step 3: Generate the function node (that creates the select query)
-        let queryFunctionCode = this.generateCreateSelectQuery(entityData, provider);
+        // Step 3: Generate the function node (that sets the query parameters)
+        let queryFunctionCode = this.generateSetParametersCode(entityData, provider);
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, 'CreateSelectQuery', x, y, flowId, queryFunctionCode, [nextNodeId]);
+        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, 'SetQueryParameters', x, y, flowId, queryFunctionCode, [nextNodeId]);
 
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query was stored in msg.query of the previous function node
+        let queryCode = this.generateQueryCode(entityData, provider); 
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "query", "msg");
+        let queryNode = this.nodeConfGen.generateDatabaseNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], provider, "", "editor");
 
         x += xOffset;
 
@@ -132,6 +132,69 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
             default:
                 throw new Error("Unknown database provider identified!");
         }
+    }
+
+    generateSetParametersCode(entityData, provider){
+        switch (provider){
+            case 'postgres':
+                return  `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}(';\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0){\n    for (let i = 0; i < msg.functionParameters.length; i++){\n        if (msg.functionParameters[i].parameterValue !='default'){\n          functionArgs.push(\`\\'\${msg.functionParameters[i].parameterValue}\\'\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
+            case 'mssql':
+                return this.generateSetParametersQueryForMssql(entityData);
+            default:
+                throw new Error("Unknown database provider identified!");
+        }
+    }
+
+    generateSetParametersQueryForMssql(entityData){
+        var keyValuePairCodes = [];
+        for (let i = 0; i < entityData.parameters.length; i++){
+            var keyValuePairCode = `\n\"${entityData.parameters[i].parameterName}\" : queryParameters[${i}]`;
+            keyValuePairCodes.push(keyValuePairCode);
+        }
+
+        var code = `var queryParameters = [];\n\nfor (let i = 0; i < msg.functionParameters.length; i++){\n    if (msg.functionParameters[i].parameterValue == 'default'){\n        queryParameters.push('default');\n    } else{\n        queryParameters.push(\`\\'\${msg.functionParameters[i].parameterValue}\\'\`);\n    }\n}\n\nmsg.queryParameters = {${keyValuePairCodes.join(",")}\n};\n\nreturn msg;`;
+        return code;
+    }
+
+    generateCheckFunctionParametersCode(entityData, prefix){
+        var ifCodes = [];
+        for (let i = 0; i < entityData.parameters.length; i++){
+            var ifCode = `\nif (${prefix}[\'${entityData.parameters[i].parameterName}\'] == undefined){\n    throw new Error(\`The parameter ${entityData.parameters[i].parameterName} was not defined!\`);\n}\n`;
+            ifCodes.push(ifCode);
+        }
+
+        var parameterPushes = [];
+        for (let i = 0; i < entityData.parameters.length; i++){
+            var parameterPush = `msg.functionParameters.push({\"parameterName\" : \"${entityData.parameters[i].parameterName}\", \"parameterValue\" : msg.req.query['${entityData.parameters[i].parameterName}']});`;
+            parameterPushes.push(parameterPush);
+        }
+
+        var parametersInString = entityData.parameters.map(p => `\"${p.parameterName}\"`);
+
+        var code = `var parameters = [${parametersInString.join(",")}];\nvar queryParameters = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryParameters.some(p => !parameters.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n${ifCodes.join("\n\n")}\nmsg.functionParameters = [];\n${parameterPushes.join("\n")}\n\nreturn msg;`
+        return code;
+    }
+
+    generateQueryCode(entityData, provider){
+        switch (provider){
+            case 'postgres':
+                return  ``; // The query was stored dynamically in msg.query as default values have to be left out in the parameters
+            case 'mssql':
+                return this.generateQueryCodeForMssql(entityData);
+            default:
+                throw new Error("Unknown database provider identified!");
+        }
+    }
+
+    generateQueryCodeForMssql(entityData){
+        var inputValueCodes = [];
+        for (let i = 0; i < entityData.parameters.length; i++){
+            var inputValueCode = `{{{queryParameters.${entityData.parameters[i].parameterName}}}}`;
+            inputValueCodes.push(inputValueCode);
+        }
+
+        var code = `select * from ${entityData.schema}.${entityData.name}(${inputValueCodes.join(",")});`;
+        return code;
     }
 }
 
