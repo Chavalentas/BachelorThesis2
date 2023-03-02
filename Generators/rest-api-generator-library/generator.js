@@ -10,9 +10,11 @@ const Generator = class{
         this.usedids = [];
         this.nodeConfGen = new nodeConfigGen.NodeConfigGenerator();
         this.helper = new help.Helper();
+        this.startX = 150;
+        this.startY = 140;
     }
 
-    generate(entityData, databaseConfiguration, restApiName, provider){
+    generate(entityData, databaseConfiguration, restApiName){
         throw new Error("Method 'generate(entityData, databaseConfiguration, restApiName, provider' must be implemented.");
     }
 

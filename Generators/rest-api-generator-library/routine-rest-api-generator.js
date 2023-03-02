@@ -8,8 +8,8 @@ const RoutineRestApiGenerator = class extends gen.Generator{
         }
     }
 
-    generate(entityData, databaseConfiguration, restApiName, provider){
-        throw new Error("generate(entityData, databaseConfiguration, restApiName, provider) must be implemented!");
+    generate(entityData, databaseConfiguration, restApiName){
+        throw new Error("generate(entityData, databaseConfiguration, restApiName) must be implemented!");
     }
 }
 

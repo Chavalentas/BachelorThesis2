@@ -1,9 +1,5 @@
 
-/*
-const tableGen = require('./table-rest-api-generator.js');
-const viewGen = require('./view-rest-api-generator.js');
-const funcGen = require('./function-rest-api-generator.js');
-const procGen = require('./stored-procedure-rest-api-generator.js');
+
 
 var tableDataPostgres = {
     "name": "houses",
@@ -100,48 +96,84 @@ var dbConfigMssql = {
     "user" : "sa",
     "password" : "strongPassword123!"
 }
-*/
+
 /*
-var generator = new tableGen.TableRestApiGenerator();
-var restApi = generator.generate(tableDataPostgres, dbConfigPostgres, "TestApi", "postgres");
-//var restApi = generator.generate(tableDataMssql, dbConfigMssql, "TestApi", "mssql");
+//var restApi = generate(tableDataPostgres, "table", dbConfigPostgres, "TestApi", "postgres");
+var restApi = generate(tableDataMssql, "table", dbConfigMssql, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
 */
 
 
 /*
-var generator = new viewGen.ViewRestApiGenerator();
-//var restApi2 = generator.generate(viewDataPostgres, dbConfigPostgres, "TestApi", "postgres");
-var restApi2 = generator.generate(viewDataMssql, dbConfigMssql, "TestApi", "mssql");
-console.log(JSON.stringify(restApi2));
-*/
-
-
-/*
-var generator = new funcGen.FunctionRestApiGenerator();
-//var restApi = generator.generate(tabledFunctionDataPostgres, dbConfigPostgres, "TestFunction", "postgres");
-var restApi = generator.generate(tabledFunctionDataMssql, dbConfigMssql, "TestFunction", "mssql");
+//var restApi = generate(viewDataPostgres, "view", dbConfigPostgres, "TestApi", "postgres");
+var restApi = generate(viewDataMssql, "view", dbConfigMssql, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
 */
 
 
 /*
-var generator = new procGen.StoredProcedureRestApiGenerator();
-//var restApi = generator.generate(tabledFunctionDataPostgres, dbConfigPostgres, "TestProc", "postgres");
-var restApi = generator.generate(storedProcedureDataMssql, dbConfigMssql, "TestProc", "mssql");
+//var restApi = generate(tabledFunctionDataPostgres, "function", dbConfigPostgres, "TestFunction", "postgres");
+var restApi = generate(tabledFunctionDataMssql, "function", dbConfigMssql, "TestFunction", "mssql");
 console.log(JSON.stringify(restApi));
 */
 
 
+/*
+//var restApi = generate(tabledFunctionDataPostgres, "function", dbConfigPostgres, "TestFunction", "postgres");
+var restApi = generate(storedProcedureDataMssql, "strp", dbConfigMssql, "TestProc", "mssql");
+console.log(JSON.stringify(restApi));
+*/
 
-const tableGen = require('./table-rest-api-generator.js');
-const viewGen = require('./view-rest-api-generator.js');
-const procGen = require('./function-rest-api-generator.js');
-const funcGen = require('./stored-procedure-rest-api-generator.js');
+const postgresTableGen = require('./postgres-table-rest-api-generator.js');
+const mssqlTableGen = require('./mssql-table-rest-api-generator.js');
+const postgresViewGen = require('./postgres-view-rest-api-generator.js');
+const mssqlViewGen = require('./mssql-view-rest-api-generator.js');
+const postgresFuncGen = require('./postgres-function-rest-api-generator.js');
+const mssqlFuncGen = require('./mssql-function-rest-api-generator.js');
+const postgresProcGen = require('./postgres-stored-procedure-rest-api-generator.js');
+const mssqlProcGen = require('./mssql-stored-procedure-rest-api-generator.js');
+
+function generate(entityData, entityType, databaseConfiguration, restApiName, provider) {
+    switch(provider){
+        case 'postgres':
+            return generateForPostgres(entityData, databaseConfiguration, entityType, restApiName);
+        case 'mssql':
+            return generateForMssql(entityData, databaseConfiguration, entityType, restApiName);
+        default:
+            throw new Error(`The provider ${provider} is not supported!`);
+    }
+}
+
+function generateForPostgres(entityData, databaseConfiguration, entityType, restApiName){
+    switch (entityType){
+        case 'table':
+            return new postgresTableGen.PostgresTableRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+        case 'view':
+            return new postgresViewGen.PostgresViewRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+        case 'function':
+            return new postgresFuncGen.PostgresFunctionRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+        case 'strp':
+            return new postgresProcGen.PostgresStoredProcedureRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+        default:
+            throw new Error('Unsupported entity type detected!');
+    }
+}
+
+function generateForMssql(entityData, databaseConfiguration, entityType, restApiName){
+    switch (entityType){
+        case 'table':
+            return new mssqlTableGen.MssqlTableRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+        case 'view':
+            return new mssqlViewGen.MssqlViewRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+        case 'function':
+            return new mssqlFuncGen.MssqlFunctionRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+        case 'strp':
+            return new mssqlProcGen.MssqlStoredProcedureRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+        default:
+            throw new Error('Unsupported entity type detected!');
+    }
+}
 
 module.exports = {
-   tableGen,
-   viewGen,
-   procGen,
-   funcGen
-}
+    generate : generate
+};
