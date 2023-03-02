@@ -1,6 +1,4 @@
-
-
-
+/*
 var tableDataPostgres = {
     "name": "houses",
     "schema" : "public",
@@ -58,6 +56,15 @@ var storedProcedureDataMssql = {
     ]
 }
 
+var storedProcedureDataPostgres = {
+    "name" : "count_procedure3",
+    "schema" : "public",
+    "parameters" : [
+        {"parameterName" : "param"},
+        {"parameterName" : "param2"}
+    ]
+}
+
 var viewDataPostgres = {
     "name": "housesview",
     "schema" : "public",
@@ -96,7 +103,7 @@ var dbConfigMssql = {
     "user" : "sa",
     "password" : "strongPassword123!"
 }
-
+*/
 /*
 //var restApi = generate(tableDataPostgres, "table", dbConfigPostgres, "TestApi", "postgres");
 var restApi = generate(tableDataMssql, "table", dbConfigMssql, "TestApi", "mssql");
@@ -119,7 +126,7 @@ console.log(JSON.stringify(restApi));
 
 
 /*
-//var restApi = generate(tabledFunctionDataPostgres, "function", dbConfigPostgres, "TestFunction", "postgres");
+//var restApi = generate(storedProcedureDataPostgres, "strp", dbConfigPostgres, "TestProc", "postgres");
 var restApi = generate(storedProcedureDataMssql, "strp", dbConfigMssql, "TestProc", "mssql");
 console.log(JSON.stringify(restApi));
 */
