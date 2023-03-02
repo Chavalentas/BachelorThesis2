@@ -71,7 +71,7 @@ The generator can be called like this:
 ```javascript
 generate(entityData, entityType, databaseConfiguration, restApiName, provider);
 ```
-**entityData** : contains the data relevant for the parsing of the entity
+**entityData** : contains the data relevant for the parsing of the entity, 
 use the following structure for the table
 ```javascript
 var entityData = {
@@ -112,7 +112,7 @@ The generator can be called like this:
 ```javascript
 generate(entityData, entityType, databaseConfiguration, restApiName, provider);
 ```
-**entityData** : contains the data relevant for the parsing of the entity
+**entityData** : contains the data relevant for the parsing of the entity, 
 use the following structure for the view
 ```javascript
 var entityData = {
@@ -153,7 +153,7 @@ The generator can be called like this:
 ```javascript
 generate(entityData, entityType, databaseConfiguration, restApiName, provider);
 ```
-**entityData** : contains the data relevant for the parsing of the entity
+**entityData** : contains the data relevant for the parsing of the entity, 
 use the following structure for the function
 ```javascript
 var entityData = {
@@ -170,6 +170,48 @@ var entityData = {
 
 **NOTE**: The names of the parameters have to correspond exactly to the names of the function parameters.
 The sequence of parameters must correspond to the order of the parameters of the function.
+
+
+**entityType** : table, view, function or strp (for stored procedure)
+
+**databaseConfiguration** : contains the data needed to connect to the database
+use the following structure
+```javascript
+var databaseConfiguration = {
+    "host" : "host",
+    "port" : 1111,
+    "database" : "db",
+    "user" : "user",
+    "password" : "pw"
+}
+```
+**restApiName** : name of the REST-API
+
+**provider**: used provider (postgres or mssql)
+
+## The generator of the REST-API for SQL stored procedures
+Currenty two providers are supported: PostgreSQL and Microsoft SQL Server.
+The generator can be called like this:
+```javascript
+generate(entityData, entityType, databaseConfiguration, restApiName, provider);
+```
+**entityData** : contains the data relevant for the parsing of the entity, 
+use the following structure for the stored procedure
+```javascript
+var entityData = {
+    "name" : "procedurename",
+    "schema" : "procedureschema",
+    "parameters" : [
+        {"parameterName" : "param1"},
+        {"parameterName" : "param2"},
+        {"parameterName" : "param3"},
+         ...
+    ]
+}
+```
+
+**NOTE**: The names of the parameters have to correspond exactly to the names of the stored procedure parameters.
+The sequence of parameters must correspond to the order of the parameters of the stored procedure.
 
 
 **entityType** : table, view, function or strp (for stored procedure)
