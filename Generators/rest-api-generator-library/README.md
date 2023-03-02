@@ -91,7 +91,7 @@ Currently, only one primary key is supported (so passing an array of more primar
 
 **entityType** : table, view, function or strp (for stored procedure)
 
-**databaseConfiguration** : contains the data needed to connect to the database
+**databaseConfiguration** : contains the data needed to connect to the database, 
 use the following structure
 ```javascript
 var databaseConfiguration = {
@@ -132,7 +132,7 @@ Currently, only one primary key is supported (so passing an array of more primar
 
 **entityType** : table, view, function or strp (for stored procedure)
 
-**databaseConfiguration** : contains the data needed to connect to the database
+**databaseConfiguration** : contains the data needed to connect to the database, 
 use the following structure
 ```javascript
 var databaseConfiguration = {
@@ -174,7 +174,7 @@ The sequence of parameters must correspond to the order of the parameters of the
 
 **entityType** : table, view, function or strp (for stored procedure)
 
-**databaseConfiguration** : contains the data needed to connect to the database
+**databaseConfiguration** : contains the data needed to connect to the database, 
 use the following structure
 ```javascript
 var databaseConfiguration = {
@@ -216,7 +216,7 @@ The sequence of parameters must correspond to the order of the parameters of the
 
 **entityType** : table, view, function or strp (for stored procedure)
 
-**databaseConfiguration** : contains the data needed to connect to the database
+**databaseConfiguration** : contains the data needed to connect to the database, 
 use the following structure
 ```javascript
 var databaseConfiguration = {
