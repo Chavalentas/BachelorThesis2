@@ -1,4 +1,4 @@
-
+/*
 var tableDataPostgres = {
     "name": "houses",
     "schema" : "public",
@@ -103,7 +103,7 @@ var dbConfigMssql = {
     "user" : "sa",
     "password" : "strongPassword123!"
 }
-
+*/
 /*
 //var restApi = generate(tableDataPostgres, "table", dbConfigPostgres, "TestApi", "postgres");
 var restApi = generate(tableDataMssql, "table", dbConfigMssql, "TestApi", "mssql");
