@@ -16,7 +16,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         // Db config
         let dbConfigNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(dbConfigNodeId);
-        let dbConfigNode = this.nodeConfGen.generateMssqlConfigurationNode(databaseConfiguration, dbConfigNodeId);
+        let dbConfigNode = this.nodeConfGen.generatePostgresqlConfigurationNode(databaseConfiguration, dbConfigNodeId);
 
         // Header
         let headerCommentId = this.helper.generateId(16, this.usedids);

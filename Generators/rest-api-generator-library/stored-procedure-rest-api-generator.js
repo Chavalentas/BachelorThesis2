@@ -15,7 +15,7 @@ const StoredProcedureRestApiGenerator = class extends routineGen.RoutineRestApiG
     generateCheckProcedureParametersCode(entityData, prefix){
         var ifCodes = [];
         for (let i = 0; i < entityData.parameters.length; i++){
-            var ifCode = `\nif (${prefix}[\'${entityData.parameters[i].parameterName}\'] == undefined){\n    throw new Error(\`The parameter ${entityData.parameters[i].parameterName} was not defined!\`);\n}\n`;
+            var ifCode = `\nif (${prefix}[\'${entityData.parameters[i].parameterName}\'] === undefined){\n    throw new Error(\`The parameter ${entityData.parameters[i].parameterName} was not defined!\`);\n}\n`;
             ifCodes.push(ifCode);
         }
 

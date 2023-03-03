@@ -184,7 +184,3 @@ function generateForMssql(entityData, databaseConfiguration, entityType, restApi
 module.exports = {
     generate : generate
 };
-
-//var restApi = generate(viewDataPostgres, "view", dbConfigPostgres, "TestApi", "postgres");
-var restApi = generate(viewDataMssql, "view", dbConfigMssql, "TestApi", "mssql");
-console.log(JSON.stringify(restApi));
