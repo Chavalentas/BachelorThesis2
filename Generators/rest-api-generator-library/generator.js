@@ -32,7 +32,7 @@ const Generator = class{
         x += xOffset;
 
         // Step 2: Generate the create error node
-        let functionCode = "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\" : msg.error\n}\nreturn msg;";
+        let functionCode = "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\" : msg.error.message\n}\nreturn msg;";
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

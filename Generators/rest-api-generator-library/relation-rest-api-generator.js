@@ -15,7 +15,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
     generateQueryProperties(entityData, prefix){
         var ifCodes = [];
         for (let i = 0; i < entityData.properties.length; i++){
-            var ifCode = `\nif (${prefix}.${entityData.properties[i].propertyName} != undefined){\n    msg.queryProperties.push({\"propertyName\": \"${entityData.properties[i].propertyName}\", \"propertyValue\" : \`\${${prefix}.${entityData.properties[i].propertyName}}\`});\n}\n`;
+            var ifCode = `\nif (${prefix}.${entityData.properties[i].propertyName} !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"${entityData.properties[i].propertyName}\", \"propertyValue\" : \`\${${prefix}.${entityData.properties[i].propertyName}}\`});\n}\n`;
             ifCodes.push(ifCode);
         }
 
@@ -31,6 +31,17 @@ const RelationRestApiGenerator = class extends gen.Generator{
             result += `\n    ${properties[i].propertyName} : ${prefix}.${properties[i].propertyName},`;
         }
 
+        return result;
+    }
+
+    generateRequestBodyChecks(properties){
+        var ifCodes = [];
+        for (let i = 0; i < properties.length; i++){
+            var ifCode = `if (msg.req.body.${properties[i].propertyName} === undefined){\n    throw new Error('The body parameter \\'${properties[i].propertyName}\\' was undefined!');\n}`;
+            ifCodes.push(ifCode);
+        }
+
+        var result = ifCodes.join("\n\n");
         return result;
     }
 }

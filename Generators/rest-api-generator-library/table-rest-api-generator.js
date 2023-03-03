@@ -19,6 +19,10 @@ const TableRestApiGenerator = class extends relGen.RelationRestApiGenerator{
     generateJsonPropertiesCode(properties, prefix){
         return super.generateJsonPropertiesCode(properties, prefix);
     }
+
+    generateRequestBodyChecks(properties){
+        return super.generateRequestBodyChecks(properties);
+    }
 }
 
 module.exports = {

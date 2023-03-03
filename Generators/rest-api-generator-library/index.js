@@ -1,4 +1,4 @@
-/*
+
 var tableDataPostgres = {
     "name": "houses",
     "schema" : "public",
@@ -103,7 +103,7 @@ var dbConfigMssql = {
     "user" : "sa",
     "password" : "strongPassword123!"
 }
-*/
+
 /*
 //var restApi = generate(tableDataPostgres, "table", dbConfigPostgres, "TestApi", "postgres");
 var restApi = generate(tableDataMssql, "table", dbConfigMssql, "TestApi", "mssql");
@@ -184,3 +184,7 @@ function generateForMssql(entityData, databaseConfiguration, entityType, restApi
 module.exports = {
     generate : generate
 };
+
+//var restApi = generate(viewDataPostgres, "view", dbConfigPostgres, "TestApi", "postgres");
+var restApi = generate(viewDataMssql, "view", dbConfigMssql, "TestApi", "mssql");
+console.log(JSON.stringify(restApi));

@@ -33,6 +33,10 @@ const ViewRestApiGenerator = class extends relGen.RelationRestApiGenerator{
 
         return result;
     }
+
+    generateRequestBodyChecks(properties){
+        return super.generateRequestBodyChecks(properties);
+    }
 }
 
 module.exports = {

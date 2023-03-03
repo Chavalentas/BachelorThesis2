@@ -103,7 +103,7 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the select query)
-        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`\${msg.queryProperties[i].propertyName} = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
+        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -120,12 +120,19 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
         x += xOffset;
 
-       // Step 5: Create the response node (that returns the result)
-       let respondeNodeId = nextNodeId;
-       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
+        // Step 5:  Create the function node (that sets the response payload)
+        let responseFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16,  this.usedids);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"resultSet\" : response  \n};\nreturn msg;', [nextNodeId]);
 
-       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseNode];
-       return resultingNodes;
+        x += xOffset;
+
+        // Step 6: Create the response node (that returns the result)
+        let respondeNodeId = nextNodeId;
+        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
+
+        let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionNode, responseNode];
+        return resultingNodes;
     }
 
     generatePostEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
@@ -143,8 +150,9 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
         // Step 2: Generate the function node (that sets the query parameters)
-        let propertiesToInsert = `{${this.generateJsonPropertiesCode(entityData.properties, 'msg.payload')}\n}`;
-        let functionCode = `var data = ${propertiesToInsert};\n\nmsg.queryParameters = data;\nreturn msg;`;
+        let propertiesToInsert = `{${this.generateJsonPropertiesCode(entityData.properties, 'msg.req.body')}\n}`;
+        let propertiesCheck = this.generateRequestBodyChecks(entityData.properties);
+        let functionCode = `${propertiesCheck}\n\nvar data = ${propertiesToInsert};\n\nmsg.queryParameters = data;\nreturn msg;`;
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -161,12 +169,19 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
         x += xOffset;
 
-        // Step 4: Create the response node (that returns the result)
-       let respondeNodeId = nextNodeId;
-       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 201, x, y, flowId);
+        // Step 4:  Create the function node (that sets the response payload)
+        let responseFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16,  this.usedids);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+        
+        x += xOffset;
+
+        // Step 5: Create the response node (that returns the result)
+        let respondeNodeId = nextNodeId;
+        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 201, x, y, flowId);
     
-       let resultingNodes = [httpInNode, functionNode, queryNode, responseNode];
-       return resultingNodes;
+        let resultingNodes = [httpInNode, functionNode, queryNode, responseFunctionNode, responseNode];
+        return resultingNodes;
     }
     
     generatePutEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
@@ -177,7 +192,7 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         let x = startX;
         let y = startY;
 
-        // Step 1: Generate the http in endpoint (DELETE request)
+        // Step 1: Generate the http in endpoint (PUT request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
         let httpInNodeUrl = `/${entityData.schema}.${entityData.name}/:${entityData.pk}`;
         this.usedids.push(httpInNodeId);
@@ -189,7 +204,8 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
        // Step 2: Generate the function node (that sets the query parameters)
        let updateProperties = `${this.generateJsonPropertiesCode(entityData.properties, 'msg.payload')}`;
-       let functionCode = `var data = {\n    pkvalue : msg.req.params.${entityData.pk},${updateProperties}\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
+       let requestBodyChecks = this.generateRequestBodyChecks(entityData.properties);
+       let functionCode = `if (msg.req.params.${entityData.pk} === undefined){\n    throw new Error('The query parameter \\'${entityData.pk}\\' was undefined!');\n}\n\n${requestBodyChecks}\n\nvar data = {\n    pkvalue : msg.req.params.${entityData.pk},${updateProperties}\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
        let functionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16, this.usedids);
        this.usedids.push(nextNodeId);
@@ -197,20 +213,27 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
        x += xOffset;
 
-        // Step 3: Generate the database node (that executes the query)
-        let queryCode = this.generateUpdateQueryCode(entityData);
-        let queryNodeId = nextNodeId;
-        nextNodeId = this.helper.generateId(16,  this.usedids);
-        this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
+       // Step 3: Generate the database node (that executes the query)
+       let queryCode = this.generateUpdateQueryCode(entityData);
+       let queryNodeId = nextNodeId;
+       nextNodeId = this.helper.generateId(16,  this.usedids);
+       this.usedids.push(nextNodeId);
+       let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
        
-        x += xOffset;
+       x += xOffset;
 
-        // Step 4: Create the response node (that returns the result)
+       // Step 4:  Create the function node (that sets the response payload)
+       let responseFunctionNodeId = nextNodeId;
+       nextNodeId = this.helper.generateId(16,  this.usedids);
+       let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+                
+       x += xOffset;
+
+       // Step 5: Create the response node (that returns the result)
        let respondeNodeId = nextNodeId;
        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
     
-       let resultingNodes = [httpInNode, functionNode, queryNode, responseNode];
+       let resultingNodes = [httpInNode, functionNode, queryNode, responseFunctionNode, responseNode];
        return resultingNodes;
     }
     
@@ -233,7 +256,7 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
        // Step 2: Generate the function node (that sets the query parameters)
-       let functionCode = `var data = {\n    pkvalue : msg.req.params.${entityData.pk}\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
+       let functionCode = `if (msg.req.params.${entityData.pk} === undefined){\n    throw new Error('The query parameter \\'${entityData.pk}\\' was undefined!');\n}\n\nvar data = {\n    pkvalue : msg.req.params.${entityData.pk}\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
        let functionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16, this.usedids);
        this.usedids.push(nextNodeId);
@@ -250,11 +273,18 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
         x += xOffset;
 
-       // Step 4: Create the response node (that returns the result)
+       // Step 4:  Create the function node (that sets the response payload)
+       let responseFunctionNodeId = nextNodeId;
+       nextNodeId = this.helper.generateId(16,  this.usedids);
+       let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+                
+       x += xOffset;
+
+       // Step 5: Create the response node (that returns the result)
        let respondeNodeId = nextNodeId;
        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
 
-       let resultingNodes = [httpInNode, functionNode, queryNode, responseNode];
+       let resultingNodes = [httpInNode, functionNode, queryNode, responseFunctionNode, responseNode];
        return resultingNodes;
     }
 
@@ -282,7 +312,7 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the delete query)
-        let queryFunctionCode = `var deleteQuery = 'DELETE FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \`\${msg.queryProperties[i].propertyName} = \'\${msg.queryProperties[i].propertyValue}\'\`;\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\deleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
+        let queryFunctionCode = `var deleteQuery = 'DELETE FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\ndeleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -299,11 +329,18 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
         x += xOffset;
 
-       // Step 5: Create the response node (that returns the result)
+        // Step 5:  Create the function node (that sets the response payload)
+       let responseFunctionNodeId = nextNodeId;
+       nextNodeId = this.helper.generateId(16,  this.usedids);
+       let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+                
+       x += xOffset;
+
+       // Step 6: Create the response node (that returns the result)
        let respondeNodeId = nextNodeId;
        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
 
-       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseNode];
+       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionNode, responseNode];
        return resultingNodes;
     }
 
@@ -316,11 +353,7 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
     }
 
     generateUpdateQueryCode(entityData){
-        var propertiesWithoutPk = entityData.properties.filter(function(item){
-            return item.propertyName != entityData.pk;
-        });
-
-        var propertyNameValuePairs = propertiesWithoutPk.map(p => `${p.propertyName} = $${p.propertyName}`);
+        var propertyNameValuePairs = entityData.properties.map(p => `${p.propertyName} = $${p.propertyName}`);
 
         var query = `UPDATE ${entityData.schema}.${entityData.name} SET ${propertyNameValuePairs.join(",")} WHERE ${entityData.pk}=$pkvalue;`;
         return query;
