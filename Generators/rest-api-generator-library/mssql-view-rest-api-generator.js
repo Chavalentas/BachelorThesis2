@@ -2,6 +2,18 @@ const gen = require('./view-rest-api-generator.js');
 
 const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
     generate(entityData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(databaseConfiguration)){
+            throw new Error('The parameter databaseConfiguration was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(restApiName)){
+            throw new Error('The parameter restApiName was null or undefined!');
+        }
+
         let config = [];
     
         // Start coordinates
@@ -80,6 +92,30 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
     }
 
     generateGetEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(dbConfigNodeId)){
+            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startX)){
+            throw new Error('The parameter startX was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(xOffset)){
+            throw new Error('The parameter xOffset was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startY)){
+            throw new Error('The parameter startY was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(flowId)){
+            throw new Error('The parameter flowId was null or undefined!');
+        }
+
         let x = startX;
         let y = startY;
      
@@ -136,6 +172,30 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
     }
 
     generatePostEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(dbConfigNodeId)){
+            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startX)){
+            throw new Error('The parameter startX was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(xOffset)){
+            throw new Error('The parameter xOffset was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startY)){
+            throw new Error('The parameter startY was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(flowId)){
+            throw new Error('The parameter flowId was null or undefined!');
+        }
+
         let x = startX;
         let y = startY;
      
@@ -185,6 +245,30 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
     }
     
     generatePutEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(dbConfigNodeId)){
+            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startX)){
+            throw new Error('The parameter startX was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(xOffset)){
+            throw new Error('The parameter xOffset was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startY)){
+            throw new Error('The parameter startY was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(flowId)){
+            throw new Error('The parameter flowId was null or undefined!');
+        }
+
         if (!entityData.properties.some(p => p.propertyName == entityData.pk)){
             throw new Error("Wrong primary key was specified!");
         }
@@ -238,6 +322,30 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
     }
     
     generateDeleteEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(dbConfigNodeId)){
+            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startX)){
+            throw new Error('The parameter startX was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(xOffset)){
+            throw new Error('The parameter xOffset was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startY)){
+            throw new Error('The parameter startY was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(flowId)){
+            throw new Error('The parameter flowId was null or undefined!');
+        }
+
         if (!entityData.properties.some(p => p.propertyName == entityData.pk)){
             throw new Error("Wrong primary key was specified!");
         }
@@ -289,6 +397,30 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
     }
 
     generateDeleteEndPointWithQueryParams(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(dbConfigNodeId)){
+            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startX)){
+            throw new Error('The parameter startX was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(xOffset)){
+            throw new Error('The parameter xOffset was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startY)){
+            throw new Error('The parameter startY was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(flowId)){
+            throw new Error('The parameter flowId was null or undefined!');
+        }
+
         let x = startX;
         let y = startY;
      
@@ -345,6 +477,10 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
     }
 
     generateInsertQueryCode(entityData){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
         var propertyNames = entityData.properties.map(p => p.propertyName);
         var propertyValues = entityData.properties.map(p => `'{{{queryParameters.${p.propertyName}}}}'`);
 
@@ -353,6 +489,10 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
     }
 
     generateUpdateQueryCode(entityData){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+
         var propertyNameValuePairs = entityData.properties.map(p => `${p.propertyName} = '{{{queryParameters.${p.propertyName}}}}'`);
 
         var query = `UPDATE ${entityData.schema}.${entityData.name} SET ${propertyNameValuePairs.join(",")} WHERE ${entityData.pk}='{{{queryParameters.pkvalue}}}';`;

@@ -9,10 +9,30 @@ const StoredProcedureRestApiGenerator = class extends routineGen.RoutineRestApiG
     }
 
     generate(entityData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(databaseConfiguration)){
+            throw new Error('The parameter databaseConfiguration was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(restApiName)){
+            throw new Error('The parameter restApiName was null or undefined!');
+        }
+
         throw new Error("generate(entityData, databaseConfiguration, restApiName) must be implemented!");
     }
 
     generateCheckProcedureParametersCode(entityData, prefix){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(prefix)){
+            throw new Error('The parameter prefix was null or undefined!');
+        }
+
         var ifCodes = [];
         for (let i = 0; i < entityData.parameters.length; i++){
             var ifCode = `\nif (${prefix}[\'${entityData.parameters[i].parameterName}\'] === undefined){\n    throw new Error(\`The parameter ${entityData.parameters[i].parameterName} was not defined!\`);\n}\n`;

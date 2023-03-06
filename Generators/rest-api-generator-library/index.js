@@ -103,31 +103,39 @@ var dbConfigMssql = {
     "user" : "sa",
     "password" : "strongPassword123!"
 }
+
+var dbConfigMssql2 = {
+    "host" : "localhost",
+    "port" : 79,
+    "database" : "master",
+    "user" : "sa",
+    "password" : "strongPassword123!"
+}
 */
 /*
 //var restApi = generate(tableDataPostgres, "table", dbConfigPostgres, "TestApi", "postgres");
-var restApi = generate(tableDataMssql, "table", dbConfigMssql, "TestApi", "mssql");
+var restApi = generate(tableDataMssql, "table", dbConfigMssql2, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
 */
 
 
 /*
 //var restApi = generate(viewDataPostgres, "view", dbConfigPostgres, "TestApi", "postgres");
-var restApi = generate(viewDataMssql, "view", dbConfigMssql, "TestApi", "mssql");
+var restApi = generate(viewDataMssql, "view", dbConfigMssql2, "TestApi", "mssql");
 console.log(JSON.stringify(restApi));
 */
 
 
 /*
 //var restApi = generate(tabledFunctionDataPostgres, "function", dbConfigPostgres, "TestFunction", "postgres");
-var restApi = generate(tabledFunctionDataMssql, "function", dbConfigMssql, "TestFunction", "mssql");
+var restApi = generate(tabledFunctionDataMssql, "function", dbConfigMssql2, "TestFunction", "mssql");
 console.log(JSON.stringify(restApi));
 */
 
 
 /*
 //var restApi = generate(storedProcedureDataPostgres, "strp", dbConfigPostgres, "TestProc", "postgres");
-var restApi = generate(storedProcedureDataMssql, "strp", dbConfigMssql, "TestProc", "mssql");
+var restApi = generate(storedProcedureDataMssql, "strp", dbConfigMssql2, "TestProc", "mssql");
 console.log(JSON.stringify(restApi));
 */
 
@@ -139,8 +147,31 @@ const postgresFuncGen = require('./postgres-function-rest-api-generator.js');
 const mssqlFuncGen = require('./mssql-function-rest-api-generator.js');
 const postgresProcGen = require('./postgres-stored-procedure-rest-api-generator.js');
 const mssqlProcGen = require('./mssql-stored-procedure-rest-api-generator.js');
+const helperLib = require('./helper-functions.js');
 
 function generate(entityData, entityType, databaseConfiguration, restApiName, provider) {
+    const helper = new helperLib.Helper();
+
+    if (helper.isNullOrUndefined(entityData)){
+        throw new Error('The parameter entityData was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(entityType)){
+        throw new Error('The parameter entityType was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(databaseConfiguration)){
+        throw new Error('The parameter databaseConfiguration was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(restApiName)){
+        throw new Error('The parameter restApiName was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(provider)){
+        throw new Error('The parameter provider was null or undefined!');
+    }
+
     switch(provider){
         case 'postgres':
             return generateForPostgres(entityData, databaseConfiguration, entityType, restApiName);
@@ -152,6 +183,24 @@ function generate(entityData, entityType, databaseConfiguration, restApiName, pr
 }
 
 function generateForPostgres(entityData, databaseConfiguration, entityType, restApiName){
+    const helper = new helperLib.Helper();
+
+    if (helper.isNullOrUndefined(entityData)){
+        throw new Error('The parameter entityData was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(databaseConfiguration)){
+        throw new Error('The parameter databaseConfiguration was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(entityType)){
+        throw new Error('The parameter entityType was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(restApiName)){
+        throw new Error('The parameter restApiName was null or undefined!');
+    }
+
     switch (entityType){
         case 'table':
             return new postgresTableGen.PostgresTableRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
@@ -167,6 +216,24 @@ function generateForPostgres(entityData, databaseConfiguration, entityType, rest
 }
 
 function generateForMssql(entityData, databaseConfiguration, entityType, restApiName){
+    const helper = new helperLib.Helper();
+
+    if (helper.isNullOrUndefined(entityData)){
+        throw new Error('The parameter entityData was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(databaseConfiguration)){
+        throw new Error('The parameter databaseConfiguration was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(entityType)){
+        throw new Error('The parameter entityType was null or undefined!');
+    }
+
+    if (helper.isNullOrUndefined(restApiName)){
+        throw new Error('The parameter restApiName was null or undefined!');
+    }
+
     switch (entityType){
         case 'table':
             return new mssqlTableGen.MssqlTableRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);

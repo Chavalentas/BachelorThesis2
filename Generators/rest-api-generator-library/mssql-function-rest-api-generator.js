@@ -2,6 +2,18 @@ const gen = require('./function-rest-api-generator.js');
 
 const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator{
     generate(entityData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(databaseConfiguration)){
+            throw new Error('The parameter databaseConfiguration was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(restApiName)){
+            throw new Error('The parameter restApiName was null or undefined!');
+        }
+
         let config = [];
     
         // Start coordinates
@@ -51,6 +63,30 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
     }
 
     generateGetEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(dbConfigNodeId)){
+            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startX)){
+            throw new Error('The parameter startX was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(xOffset)){
+            throw new Error('The parameter xOffset was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(startY)){
+            throw new Error('The parameter startY was null or undefined!');
+        }
+    
+        if (this.helper.isNullOrUndefined(flowId)){
+            throw new Error('The parameter flowId was null or undefined!');
+        }
+
         let x = startX;
         let y = startY;
      
@@ -110,6 +146,10 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
     }
 
     generateSetParametersCode(entityData){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+
         var keyValuePairCodes = [];
         for (let i = 0; i < entityData.parameters.length; i++){
             var keyValuePairCode = `\n\"${entityData.parameters[i].parameterName}\" : queryParameters[${i}]`;
@@ -121,6 +161,10 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
     }
 
     generateQueryCode(entityData){
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+        
         var inputValueCodes = [];
         for (let i = 0; i < entityData.parameters.length; i++){
             var inputValueCode = `{{{queryParameters.${entityData.parameters[i].parameterName}}}}`;

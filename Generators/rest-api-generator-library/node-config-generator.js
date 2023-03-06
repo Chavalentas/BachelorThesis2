@@ -1,4 +1,10 @@
+const help = require('./helper-functions.js');
+
 const NodeConfigGenerator = class {
+    constructor(){
+        this.helper = new help.Helper();
+    }
+
     generateHttpResponseNode(id, statusCode, x, y, flowTabId){
         var responseNodeConfig = {
             "id": id,
@@ -224,6 +230,10 @@ const NodeConfigGenerator = class {
     }
     
     generateDatabaseConfigNode(databaseConfiguration, id, provider){
+        if (this.helper.isNullOrUndefined(provider)){
+            throw new Error('The parameter provider was null or undefined!');
+        }
+
         switch (provider){
             case 'postgres':
                 return this.generatePostgresqlConfigurationNode(databaseConfiguration, id);
@@ -235,6 +245,10 @@ const NodeConfigGenerator = class {
     }
 
     getWires(array){
+        if (this.helper.isNullOrUndefined(array)){
+            throw new Error('The parameter array was null or undefined!');
+        }
+
         let result = [];
 
         for (let i = 0; i < array.length; i++){

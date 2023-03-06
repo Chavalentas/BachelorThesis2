@@ -15,10 +15,38 @@ const Generator = class{
     }
 
     generate(entityData, databaseConfiguration, restApiName){
-        throw new Error("Method 'generate(entityData, databaseConfiguration, restApiName, provider' must be implemented.");
+        if (this.helper.isNullOrUndefined(entityData)){
+            throw new Error('The parameter entityData was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(databaseConfiguration)){
+            throw new Error('The parameter databaseConfiguration was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(restApiName)){
+            throw new Error('The parameter restApiName was null or undefined!');
+        }
+
+        throw new Error("Method 'generate(entityData, databaseConfiguration, restApiName' must be implemented.");
     }
 
     generateCatchSubFlow(startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(startX)){
+            throw new Error('The parameter startX was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(xOffset)){
+            throw new Error('The parameter xOffset was null or undefined!');
+        }
+
+        if (this.helper.isNullOrUndefined(startY)){
+            throw new Error('The parameter startY was null or undefined!');
+        }
+        
+        if (this.helper.isNullOrUndefined(flowId)){
+            throw new Error('The parameter flowId was null or undefined!');
+        }
+
         let x = startX;
         let y = startY;
 

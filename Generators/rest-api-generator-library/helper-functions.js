@@ -1,5 +1,13 @@
 const Helper = class{
     generateId(length, except){
+        if (this.isNullOrUndefined(length)){
+            throw new Error('The parameter length was null or undefined!');
+        }
+
+        if (this.isNullOrUndefined(except)){
+            throw new Error('The parameter except was null or undefined!');
+        }
+
         var id = "";
     
         do {
@@ -19,9 +27,21 @@ const Helper = class{
     }
     
     getRandomInt(min, max) {
+        if (this.isNullOrUndefined(min)){
+            throw new Error('The parameter min was null or undefined!');
+        }
+
+        if (this.isNullOrUndefined(max)){
+            throw new Error('The parameter max was null or undefined!');
+        }
+
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+    }
+
+    isNullOrUndefined(value){
+        return value === null || value === undefined;
     }
 }
 
