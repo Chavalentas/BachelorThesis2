@@ -60,12 +60,12 @@ const NodeConfigGenerator = class {
             "returnType": returnType,
             "throwErrors": 1,
             "query": statementCode,
-            "modeOpt": modeOpt, //queryMode
-            "modeOptType": modeOptType, //query
+            "modeOpt": modeOpt, 
+            "modeOptType": modeOptType, 
             "queryOpt": queryOpt,
             "queryOptType": queryOptType,
-            "paramsOpt": paramsOpt, //queryParams
-            "paramsOptType": paramsOptType, // none
+            "paramsOpt": paramsOpt, 
+            "paramsOptType": paramsOptType, 
             "outputType" : "driver",
             "rows": "rows",
             "rowsType": "msg",
