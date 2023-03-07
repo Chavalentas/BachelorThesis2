@@ -112,6 +112,7 @@ var dbConfigMssql2 = {
     "password" : "strongPassword123!"
 }
 */
+// Test cases: uncomment parts above and below
 /*
 //var restApi = generate(tableDataPostgres, "table", dbConfigPostgres, "TestApi", "postgres");
 var restApi = generate(tableDataMssql, "table", dbConfigMssql2, "TestApi", "mssql");
@@ -138,7 +139,6 @@ console.log(JSON.stringify(restApi));
 var restApi = generate(storedProcedureDataMssql, "strp", dbConfigMssql2, "TestProc", "mssql");
 console.log(JSON.stringify(restApi));
 */
-
 const postgresTableGen = require('./postgres-table-rest-api-generator.js');
 const mssqlTableGen = require('./mssql-table-rest-api-generator.js');
 const postgresViewGen = require('./postgres-view-rest-api-generator.js');
