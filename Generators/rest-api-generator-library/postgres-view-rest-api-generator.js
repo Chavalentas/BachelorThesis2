@@ -210,9 +210,10 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 2: Generate the function node (that sets the query parameters)
-        let propertiesToInsert = `{${this.generateJsonPropertiesCode(entityData.properties, 'msg.req.body')}\n}`;
-        let propertiesCheck = this.generateRequestBodyChecks(entityData.properties);
-        let functionCode = `${propertiesCheck}\n\nvar data = ${propertiesToInsert};\n\nmsg.queryParameters = data;\nreturn msg;`;
+        let propertyNames = entityData.properties.map(p => `\"${p.propertyName}\"`);
+        let propertyNamesJoined = propertyNames.join(",");
+        let propertiesCheck = this.generateRequestBodyPushes(entityData.properties);
+        let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\n${propertiesCheck}\n\nreturn msg;`;
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -220,8 +221,17 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
 
         x += xOffset;
 
-        // Step 3: Generate the database node (that executes the query)
-        let queryCode = this.generateInsertQueryCode(entityData);
+        // Step 3: Generate the function node (that creates the query)
+        let createQueryFunctionCode = `var insertQuery = 'INSERT INTO ${entityData.schema}.${entityData.name}';\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => \`\'\${p.propertyValue}\'\`);\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += ' VALUES ';\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ';';\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
+        let createQuerynFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let createQueryFunctionNode = this.nodeConfGen.generateFunctionNode(createQuerynFunctionNodeId, 'CreateInsertQuery', x, y, flowId, createQueryFunctionCode, [nextNodeId]);
+
+        x += xOffset;
+
+        // Step 4: Generate the database node (that executes the query)
+        let queryCode = ``; // The query is built dynamically
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
@@ -229,18 +239,18 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
 
         x += xOffset;
 
-        // Step 4:  Create the function node (that sets the response payload)
+        // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
         
         x += xOffset;
 
-        // Step 5: Create the response node (that returns the result)
+        // Step 6: Create the response node (that returns the result)
         let respondeNodeId = nextNodeId;
         let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 201, x, y, flowId);
     
-        let resultingNodes = [httpInNode, functionNode, queryNode, responseFunctionNode, responseNode];
+        let resultingNodes = [httpInNode, functionNode, createQueryFunctionNode, queryNode, responseFunctionNode, responseNode];
         return resultingNodes;
     }
     
@@ -287,9 +297,10 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
        // Step 2: Generate the function node (that sets the query parameters)
-       let updateProperties = `${this.generateJsonPropertiesCode(entityData.properties, 'msg.payload')}`;
-       let requestBodyChecks = this.generateRequestBodyChecks(entityData.properties);
-       let functionCode = `if (msg.req.params.${entityData.pk} === undefined){\n    throw new Error('The query parameter \\'${entityData.pk}\\' was undefined!');\n}\n\n${requestBodyChecks}\n\nvar data = {\n    pkvalue : msg.req.params.${entityData.pk},${updateProperties}\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
+       let propertyNames = entityData.properties.map(p => `\"${p.propertyName}\"`);
+       let propertyNamesJoined = propertyNames.join(",");
+       let propertiesCheck = this.generateRequestBodyPushes(entityData.properties);
+       let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${entityData.pk} === undefined){\n    throw new Error('The query parameter \\'${entityData.pk}\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"${entityData.pk}\", \"propertyValue\" : msg.req.params.${entityData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
        let functionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16, this.usedids);
        this.usedids.push(nextNodeId);
@@ -297,8 +308,17 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
 
        x += xOffset;
 
-       // Step 3: Generate the database node (that executes the query)
-       let queryCode = this.generateUpdateQueryCode(entityData);
+       // Step 3: Generate the function node (that creates the query)
+       let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => \`\'\${p.propertyValue}\'\`);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var equation = \`\${propertyNames[i]} = \${propertyValues[i]}\`;\n    equations.push(equation);\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${entityData.schema}.${entityData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${msg.pk.propertyValue};\`;\nmsg.query = updateQuery;\nreturn msg;`;
+       let createQuerynFunctionNodeId = nextNodeId;
+       nextNodeId = this.helper.generateId(16, this.usedids);
+       this.usedids.push(nextNodeId);
+       let createQueryFunctionNode = this.nodeConfGen.generateFunctionNode(createQuerynFunctionNodeId, 'CreateUpdateQuery', x, y, flowId, createQueryFunctionCode, [nextNodeId]);
+
+       x += xOffset;
+
+       // Step 4: Generate the database node (that executes the query)
+       let queryCode = ``;  // The query is built dynamically
        let queryNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16,  this.usedids);
        this.usedids.push(nextNodeId);
@@ -306,18 +326,18 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
        
        x += xOffset;
 
-       // Step 4:  Create the function node (that sets the response payload)
+       // Step 5:  Create the function node (that sets the response payload)
        let responseFunctionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16,  this.usedids);
        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
                 
        x += xOffset;
 
-       // Step 5: Create the response node (that returns the result)
+       // Step 6: Create the response node (that returns the result)
        let respondeNodeId = nextNodeId;
        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
     
-       let resultingNodes = [httpInNode, functionNode, queryNode, responseFunctionNode, responseNode];
+       let resultingNodes = [httpInNode, functionNode, createQueryFunctionNode, queryNode, responseFunctionNode, responseNode];
        return resultingNodes;
     }
     

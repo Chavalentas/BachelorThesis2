@@ -44,32 +44,14 @@ const RelationRestApiGenerator = class extends gen.Generator{
         return code;
     }
 
-    generateJsonPropertiesCode(properties, prefix){
-        if (this.helper.isNullOrUndefined(properties)){
-            throw new Error('The parameter properties was null or undefined!');
-        }
-
-        if (this.helper.isNullOrUndefined(prefix)){
-            throw new Error('The parameter prefix was null or undefined!');
-        }
-
-        let result = '';
-
-        for (let i = 0; i < properties.length; i++){
-            result += `\n    ${properties[i].propertyName} : ${prefix}.${properties[i].propertyName},`;
-        }
-
-        return result;
-    }
-
-    generateRequestBodyChecks(properties){
+    generateRequestBodyPushes(properties){
         if (this.helper.isNullOrUndefined(properties)){
             throw new Error('The parameter properties was null or undefined!');
         }
         
         var ifCodes = [];
         for (let i = 0; i < properties.length; i++){
-            var ifCode = `if (msg.req.body.${properties[i].propertyName} === undefined){\n    throw new Error('The body parameter \\'${properties[i].propertyName}\\' was undefined!');\n}`;
+            var ifCode = `if (msg.req.body.${properties[i].propertyName} !== undefined){\n    msg.queryProperties.push({ \"propertyName\": \"${properties[i].propertyName}\", \"propertyValue\": \`\${msg.req.body.${properties[i].propertyName}}\` })\n}`;
             ifCodes.push(ifCode);
         }
 

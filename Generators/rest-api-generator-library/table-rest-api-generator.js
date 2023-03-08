@@ -48,12 +48,12 @@ const TableRestApiGenerator = class extends relGen.RelationRestApiGenerator{
         return super.generateJsonPropertiesCode(properties, prefix);
     }
 
-    generateRequestBodyChecks(properties){
+    generateRequestBodyPushes(properties){
         if (this.helper.isNullOrUndefined(properties)){
             throw new Error('The parameter properties was null or undefined!');
         }
         
-        return super.generateRequestBodyChecks(properties);
+        return super.generateRequestBodyPushes(properties);
     }
 }
 

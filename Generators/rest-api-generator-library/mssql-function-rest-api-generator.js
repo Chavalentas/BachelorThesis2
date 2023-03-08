@@ -102,7 +102,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         x += xOffset;
     
         // Step 2: Generate the function node (that checks the function parameters)
-        let functionCode = this.generateCheckFunctionParametersCode(entityData, 'msg.req.query');
+        let functionCode = `var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined){\n    throw new Error("The parameters were not defined!");\n}\n\n\nmsg.functionParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++){\n    msg.functionParameters.push(params[i]);\n}\n\nreturn msg;`;
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -112,7 +112,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         x += xOffset;
 
         // Step 3: Generate the function node (that sets the query parameters)
-        let queryFunctionCode = this.generateSetParametersCode(entityData);
+        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}(';\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0) {\n    for (let i = 0; i < msg.functionParameters.length; i++) {\n        if (msg.functionParameters[i] != 'default') {\n            functionArgs.push(\`\'\${msg.functionParameters[i]}'\`);\n        } else{\n            functionArgs.push(\`\${msg.functionParameters[i]}\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -125,7 +125,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generateMssqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], "queryMode", "query", "", "editor", "queryParams", "none", 0);
+        let queryNode = this.nodeConfGen.generateMssqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], "queryMode", "query", "query", "msg", "queryParams", "none", 0);
 
         x += xOffset;
 
