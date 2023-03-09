@@ -21,48 +21,26 @@ var tableDataMssql = {
 
 var tabledFunctionDataMssql = {
     "name" : "tvf_test",
-    "schema" : "dbo",
-    "parameters" : [
-        {"parameterName" : "@p1"},
-        {"parameterName" : "@p2"},
-        {"parameterName" : "@p3"}
-    ]
+    "schema" : "dbo"
 }
 
 var tabledFunctionDataMssql2 = {
-    "name" : "tvf_houses",
-    "schema" : "dbo",
-    "parameters" : [
-    ]
+    "name" : "tvf_houses"
 }
 
 var tabledFunctionDataPostgres = {
     "name" : "tvf_test",
-    "schema" : "public",
-    "parameters" : [
-        {"parameterName" : "p1"},
-        {"parameterName" : "p2"},
-        {"parameterName" : "p3"}
-    ]
+    "schema" : "public"
 }
 
 var storedProcedureDataMssql = {
     "name" : "pr_test",
-    "schema" : "dbo",
-    "parameters" : [
-        {"parameterName" : "@p1"},
-        {"parameterName" : "@p2"},
-        {"parameterName" : "@p3"}
-    ]
+    "schema" : "dbo"
 }
 
 var storedProcedureDataPostgres = {
     "name" : "count_procedure3",
-    "schema" : "public",
-    "parameters" : [
-        {"parameterName" : "param"},
-        {"parameterName" : "param2"}
-    ]
+    "schema" : "public"
 }
 
 var viewDataPostgres = {

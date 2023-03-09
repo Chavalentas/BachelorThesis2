@@ -121,7 +121,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = this.generateQueryCode(entityData);
+        let queryCode = ``; // the query was built dynamically
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
@@ -132,7 +132,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionCode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"resultSet\" : response  \n};\nreturn msg;', [nextNodeId]);
+        let responseFunctionCode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;', [nextNodeId]);
 
         x += xOffset;
 
@@ -143,36 +143,6 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
 
        let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionCode, responseNode];
        return resultingNodes;
-    }
-
-    generateSetParametersCode(entityData){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
-        }
-
-        var keyValuePairCodes = [];
-        for (let i = 0; i < entityData.parameters.length; i++){
-            var keyValuePairCode = `\n\"${entityData.parameters[i].parameterName}\" : queryParameters[${i}]`;
-            keyValuePairCodes.push(keyValuePairCode);
-        }
-
-        var code = `var queryParameters = [];\n\nfor (let i = 0; i < msg.functionParameters.length; i++){\n    if (msg.functionParameters[i].parameterValue == 'default'){\n        queryParameters.push('default');\n    } else{\n        queryParameters.push(\`\\'\${msg.functionParameters[i].parameterValue}\\'\`);\n    }\n}\n\nmsg.queryParameters = {${keyValuePairCodes.join(",")}\n};\n\nreturn msg;`;
-        return code;
-    }
-
-    generateQueryCode(entityData){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
-        }
-        
-        var inputValueCodes = [];
-        for (let i = 0; i < entityData.parameters.length; i++){
-            var inputValueCode = `{{{queryParameters.${entityData.parameters[i].parameterName}}}}`;
-            inputValueCodes.push(inputValueCode);
-        }
-
-        var code = `select * from ${entityData.schema}.${entityData.name}(${inputValueCodes.join(",")});`;
-        return code;
     }
 }
 

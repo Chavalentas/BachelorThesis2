@@ -36,18 +36,6 @@ const TableRestApiGenerator = class extends relGen.RelationRestApiGenerator{
         return super.generateQueryProperties(entityData, prefix);
     }
 
-    generateJsonPropertiesCode(properties, prefix){
-        if (this.helper.isNullOrUndefined(properties)){
-            throw new Error('The parameter properties was null or undefined!');
-        }
-
-        if (this.helper.isNullOrUndefined(prefix)){
-            throw new Error('The parameter prefix was null or undefined!');
-        }
-
-        return super.generateJsonPropertiesCode(properties, prefix);
-    }
-
     generateRequestBodyPushes(properties){
         if (this.helper.isNullOrUndefined(properties)){
             throw new Error('The parameter properties was null or undefined!');

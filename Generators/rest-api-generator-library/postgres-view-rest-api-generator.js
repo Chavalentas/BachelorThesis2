@@ -159,7 +159,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"resultSet\" : response  \n};\nreturn msg;', [nextNodeId]);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;', [nextNodeId]);
 
         x += xOffset;
 
@@ -494,29 +494,6 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
 
        let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionNode, responseNode];
        return resultingNodes;
-    }
-
-    generateInsertQueryCode(entityData){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
-        }
-
-        var propertyNames = entityData.properties.map(p => p.propertyName);
-        var propertyValues = entityData.properties.map(p => `$${p.propertyName}`);
-
-        var query = `INSERT INTO ${entityData.schema}.${entityData.name} (${propertyNames.join(",")}) VALUES (${propertyValues.join(",")});`;
-        return query;
-    }
-
-    generateUpdateQueryCode(entityData){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
-        }
-
-        var propertyNameValuePairs = entityData.properties.map(p => `${p.propertyName} = $${p.propertyName}`);
-
-        var query = `UPDATE ${entityData.schema}.${entityData.name} SET ${propertyNameValuePairs.join(",")} WHERE ${entityData.pk}=$pkvalue;`;
-        return query;
     }
 }
 
