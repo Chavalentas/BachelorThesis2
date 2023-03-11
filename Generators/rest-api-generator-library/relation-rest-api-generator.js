@@ -8,9 +8,9 @@ const RelationRestApiGenerator = class extends gen.Generator{
         }
     }
 
-    generate(entityData, databaseConfiguration, restApiName){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generate(objectData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
 
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
@@ -21,12 +21,12 @@ const RelationRestApiGenerator = class extends gen.Generator{
             throw new Error('The parameter restApiName was null or undefined!');
         }
 
-        throw new Error("generate(entityData, databaseConfiguration, restApiName) must be implemented!");
+        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
     }
 
-    generateQueryProperties(entityData, prefix){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generateQueryProperties(objectData, prefix){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
 
         if (this.helper.isNullOrUndefined(prefix)){
@@ -34,12 +34,12 @@ const RelationRestApiGenerator = class extends gen.Generator{
         }
 
         var ifCodes = [];
-        for (let i = 0; i < entityData.properties.length; i++){
-            var ifCode = `\nif (${prefix}.${entityData.properties[i].propertyName} !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"${entityData.properties[i].propertyName}\", \"propertyValue\" : \`\${${prefix}.${entityData.properties[i].propertyName}}\`});\n}\n`;
+        for (let i = 0; i < objectData.properties.length; i++){
+            var ifCode = `\nif (${prefix}.${objectData.properties[i].propertyName} !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"${objectData.properties[i].propertyName}\", \"propertyValue\" : \`\${${prefix}.${objectData.properties[i].propertyName}}\`});\n}\n`;
             ifCodes.push(ifCode);
         }
 
-        var propertiesInString = entityData.properties.map(p => `\"${p.propertyName}\"`);
+        var propertiesInString = objectData.properties.map(p => `\"${p.propertyName}\"`);
         var code = `msg.queryProperties = [];\nvar properties = [${propertiesInString.join(",")}];\nvar queryProperties = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n${ifCodes.join("\n\n")}\n\nreturn msg;`;
         return code;
     }

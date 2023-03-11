@@ -1,9 +1,9 @@
 const gen = require('./function-rest-api-generator.js');
 
 const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator{
-    generate(entityData, databaseConfiguration, restApiName){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generate(objectData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
@@ -53,7 +53,7 @@ const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenera
         let getComment = this.nodeConfGen.generateCommentNode(getCommentId, "GetEndPoint (function parameters are query parameters)", x + 300, y, flowTabId, []);
         config.push(getComment);
         y += 50;
-        let getEndPoint = this.generateGetEndPoint(entityData, dbConfigNodeId, x, 300, y, flowTabId);
+        let getEndPoint = this.generateGetEndPoint(objectData, dbConfigNodeId, x, 300, y, flowTabId);
 
         // Concat the generated subflows into the configuration
         config = config.concat(catchSublow);
@@ -62,9 +62,9 @@ const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenera
         return config;
     }
 
-    generateGetEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generateGetEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
@@ -92,7 +92,7 @@ const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenera
      
         // Step 1: Generate the http in endpoint (GET request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
-        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}`;
+        let httpInNodeUrl = `/${objectData.schema}.${objectData.name}`;
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -112,7 +112,7 @@ const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenera
         x += xOffset;
 
         // Step 3: Generate the function node (that sets the query parameters)
-        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}(';\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0){\n    for (let i = 0; i < msg.functionParameters.length; i++){\n        if (msg.functionParameters[i] !='default'){\n          functionArgs.push(\`\'\${msg.functionParameters[i]}\'\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
+        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${objectData.schema}.${objectData.name}(';\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0){\n    for (let i = 0; i < msg.functionParameters.length; i++){\n        if (msg.functionParameters[i] !='default'){\n          functionArgs.push(\`\'\${msg.functionParameters[i]}\'\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

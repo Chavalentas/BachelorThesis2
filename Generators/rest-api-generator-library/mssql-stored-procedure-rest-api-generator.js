@@ -1,9 +1,9 @@
 const gen = require('./stored-procedure-rest-api-generator.js');
 
 const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRestApiGenerator{
-    generate(entityData, databaseConfiguration, restApiName){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generate(objectData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
@@ -53,7 +53,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         let getComment = this.nodeConfGen.generateCommentNode(getCommentId, "GetEndPoint (procedure parameters are query parameters)", x + 300, y, flowTabId, []);
         config.push(getComment);
         y += 50;
-        let getEndPoint = this.generateGetEndPoint(entityData, dbConfigNodeId, x, 300, y, flowTabId);
+        let getEndPoint = this.generateGetEndPoint(objectData, dbConfigNodeId, x, 300, y, flowTabId);
 
         // Concat the generated subflows into the configuration
         config = config.concat(catchSublow);
@@ -62,9 +62,9 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         return config;
     }
 
-    generateGetEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generateGetEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
@@ -92,7 +92,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
      
         // Step 1: Generate the http in endpoint (GET request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
-        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}`;
+        let httpInNodeUrl = `/${objectData.schema}.${objectData.name}`;
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -112,7 +112,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         x += xOffset;
 
         // Step 3: Generate the function node (that sets the query parameters to retrieve the parameter names of the stored procedure)
-        let paramFunctionCode = `msg.queryParameters = {\n    \"schema\" : '${entityData.schema}',\n    \"procName\" : '${entityData.name}'\n};\nreturn msg;`;
+        let paramFunctionCode = `msg.queryParameters = {\n    \"schema\" : '${objectData.schema}',\n    \"procName\" : '${objectData.name}'\n};\nreturn msg;`;
         let paramFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -148,7 +148,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         x += xOffset;
 
         // Step 7: Generate the database node (that executes the query)
-        let queryCode = `${entityData.schema}.${entityData.name}`;
+        let queryCode = `${objectData.schema}.${objectData.name}`;
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);

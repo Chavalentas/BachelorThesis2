@@ -1,9 +1,9 @@
 const gen = require('./view-rest-api-generator.js');
 
 const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
-    generate(entityData, databaseConfiguration, restApiName){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generate(objectData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
@@ -53,31 +53,31 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         let getComment = this.nodeConfGen.generateCommentNode(getCommentId, "GetEndPoint (view attributes are query parameters)", x + 300, y, flowTabId, []);
         config.push(getComment);
         y += 50;
-        let getEndPoint = this.generateGetEndPoint(entityData, dbConfigNodeId, x, 300, y, flowTabId);
+        let getEndPoint = this.generateGetEndPoint(objectData, dbConfigNodeId, x, 300, y, flowTabId);
         y += 100;
         let postCommentId = this.helper.generateId(16, this.usedids);
         let postComment = this.nodeConfGen.generateCommentNode(postCommentId, "PostEndPoint (request body contains the attributes of the view, no request parameters)", x + 300, y, flowTabId, []);
         config.push(postComment);
         y += 50;
-        let postEndPoint = this.generatePostEndPoint(entityData, dbConfigNodeId, x, 300, y, flowTabId);
+        let postEndPoint = this.generatePostEndPoint(objectData, dbConfigNodeId, x, 300, y, flowTabId);
         y += 100;
         let putCommentId = this.helper.generateId(16, this.usedids);
         let putComment = this.nodeConfGen.generateCommentNode(putCommentId, "PutEndPoint (request body contains the attributes of the view, request parameters the primary key)", x + 300, y, flowTabId, []);
         config.push(putComment);
         y += 50;
-        let putEndPoint = this.generatePutEndPoint(entityData, dbConfigNodeId, x, 300, y, flowTabId);
+        let putEndPoint = this.generatePutEndPoint(objectData, dbConfigNodeId, x, 300, y, flowTabId);
         y += 100;
         let deleteCommentId = this.helper.generateId(16, this.usedids);
         let deleteComment = this.nodeConfGen.generateCommentNode(deleteCommentId, "DeleteEndPoint (no request body, request parameters contain the primary key)", x + 300, y, flowTabId, []);
         config.push(deleteComment);
         y += 50;
-        let deleteEndPoint = this.generateDeleteEndPoint(entityData, dbConfigNodeId, x, 300, y, flowTabId);
+        let deleteEndPoint = this.generateDeleteEndPoint(objectData, dbConfigNodeId, x, 300, y, flowTabId);
         y += 100;
         let deleteWithQueryCommentId = this.helper.generateId(16, this.usedids);
         let deleteWithQuery = this.nodeConfGen.generateCommentNode(deleteWithQueryCommentId, "DeleteEndPoint (view attributes are query parameters)", x + 300, y, flowTabId, []);
         config.push(deleteWithQuery);
         y += 50;
-        let deleteWithQueryEndPoint = this.generateDeleteEndPointWithQueryParams(entityData, dbConfigNodeId, x, 300, y, flowTabId);
+        let deleteWithQueryEndPoint = this.generateDeleteEndPointWithQueryParams(objectData, dbConfigNodeId, x, 300, y, flowTabId);
 
 
         // Concat the generated subflows into the configuration
@@ -91,9 +91,9 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         return config;
     }
 
-    generateGetEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generateGetEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
@@ -121,7 +121,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
      
         // Step 1: Generate the http in endpoint (GET request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
-        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}`;
+        let httpInNodeUrl = `/${objectData.schema}.${objectData.name}`;
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -130,7 +130,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
     
         // Step 2: Generate the function node (that sets the query parameters)
-        let functionCode = this.generateQueryProperties(entityData, 'msg.req.query');
+        let functionCode = this.generateQueryProperties(objectData, 'msg.req.query');
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -139,7 +139,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the select query)
-        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
+        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${objectData.schema}.${objectData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -171,9 +171,9 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         return resultingNodes;
     }
 
-    generatePostEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generatePostEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
@@ -201,7 +201,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
      
         // Step 1: Generate the http in endpoint (POST request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
-        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}`;
+        let httpInNodeUrl = `/${objectData.schema}.${objectData.name}`;
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -210,9 +210,9 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 2: Generate the function node (that sets the query parameters)
-        let propertyNames = entityData.properties.map(p => `\"${p.propertyName}\"`);
+        let propertyNames = objectData.properties.map(p => `\"${p.propertyName}\"`);
         let propertyNamesJoined = propertyNames.join(",");
-        let propertiesCheck = this.generateRequestBodyPushes(entityData.properties);
+        let propertiesCheck = this.generateRequestBodyPushes(objectData.properties);
         let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\n${propertiesCheck}\n\nreturn msg;`;
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
@@ -222,7 +222,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the query)
-        let createQueryFunctionCode = `var insertQuery = 'INSERT INTO ${entityData.schema}.${entityData.name}';\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => \`\'\${p.propertyValue}\'\`);\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += ' VALUES ';\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ';';\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
+        let createQueryFunctionCode = `var insertQuery = 'INSERT INTO ${objectData.schema}.${objectData.name}';\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => \`\'\${p.propertyValue}\'\`);\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += ' VALUES ';\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ';';\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
         let createQuerynFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -254,9 +254,9 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         return resultingNodes;
     }
     
-    generatePutEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generatePutEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
@@ -279,7 +279,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
             throw new Error('The parameter flowId was null or undefined!');
         }
 
-        if (!entityData.properties.some(p => p.propertyName == entityData.pk)){
+        if (!objectData.properties.some(p => p.propertyName == objectData.pk)){
             throw new Error("Wrong primary key was specified!");
         }
 
@@ -288,7 +288,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
 
         // Step 1: Generate the http in endpoint (PUT request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
-        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}/:${entityData.pk}`;
+        let httpInNodeUrl = `/${objectData.schema}.${objectData.name}/:${objectData.pk}`;
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -297,10 +297,10 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
        // Step 2: Generate the function node (that sets the query parameters)
-       let propertyNames = entityData.properties.map(p => `\"${p.propertyName}\"`);
+       let propertyNames = objectData.properties.map(p => `\"${p.propertyName}\"`);
        let propertyNamesJoined = propertyNames.join(",");
-       let propertiesCheck = this.generateRequestBodyPushes(entityData.properties);
-       let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${entityData.pk} === undefined){\n    throw new Error('The query parameter \\'${entityData.pk}\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"${entityData.pk}\", \"propertyValue\" : msg.req.params.${entityData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
+       let propertiesCheck = this.generateRequestBodyPushes(objectData.properties);
+       let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"${objectData.pk}\", \"propertyValue\" : msg.req.params.${objectData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
        let functionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16, this.usedids);
        this.usedids.push(nextNodeId);
@@ -309,7 +309,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
        x += xOffset;
 
        // Step 3: Generate the function node (that creates the query)
-       let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => \`\'\${p.propertyValue}\'\`);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var equation = \`\${propertyNames[i]} = \${propertyValues[i]}\`;\n    equations.push(equation);\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${entityData.schema}.${entityData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${msg.pk.propertyValue};\`;\nmsg.query = updateQuery;\nreturn msg;`;
+       let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => \`\'\${p.propertyValue}\'\`);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var equation = \`\${propertyNames[i]} = \${propertyValues[i]}\`;\n    equations.push(equation);\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${objectData.schema}.${objectData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${msg.pk.propertyValue};\`;\nmsg.query = updateQuery;\nreturn msg;`;
        let createQuerynFunctionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16, this.usedids);
        this.usedids.push(nextNodeId);
@@ -341,9 +341,9 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
        return resultingNodes;
     }
     
-    generateDeleteEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generateDeleteEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
@@ -366,7 +366,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
             throw new Error('The parameter flowId was null or undefined!');
         }
 
-        if (!entityData.properties.some(p => p.propertyName == entityData.pk)){
+        if (!objectData.properties.some(p => p.propertyName == objectData.pk)){
             throw new Error("Wrong primary key was specified!");
         }
 
@@ -375,7 +375,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
      
         // Step 1: Generate the http in endpoint (DELETE request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
-        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}/:${entityData.pk}`;
+        let httpInNodeUrl = `/${objectData.schema}.${objectData.name}/:${objectData.pk}`;
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -384,7 +384,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
        // Step 2: Generate the function node (that sets the query parameters)
-       let functionCode = `if (msg.req.params.${entityData.pk} === undefined){\n    throw new Error('The query parameter \\'${entityData.pk}\\' was undefined!');\n}\n\nvar data = {\n    pkvalue : msg.req.params.${entityData.pk}\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
+       let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nvar data = {\n    pkvalue : msg.req.params.${objectData.pk}\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
        let functionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16, this.usedids);
        this.usedids.push(nextNodeId);
@@ -393,7 +393,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
        x += xOffset;
 
         // Step 3: Generate the database node (that executes the query)
-        let queryCode = `DELETE FROM ${entityData.schema}.${entityData.name} WHERE ${entityData.pk} = $pkvalue;`;
+        let queryCode = `DELETE FROM ${objectData.schema}.${objectData.name} WHERE ${objectData.pk} = $pkvalue;`;
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
@@ -416,9 +416,9 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
        return resultingNodes;
     }
 
-    generateDeleteEndPointWithQueryParams(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generateDeleteEndPointWithQueryParams(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
@@ -446,7 +446,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
      
         // Step 1: Generate the http in endpoint (DELETE request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
-        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}`;
+        let httpInNodeUrl = `/${objectData.schema}.${objectData.name}`;
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -455,7 +455,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
     
         // Step 2: Generate the function node (that sets the query parameters)
-        let functionCode = this.generateQueryProperties(entityData, 'msg.req.query');
+        let functionCode = this.generateQueryProperties(objectData, 'msg.req.query');
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -464,7 +464,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the delete query)
-        let queryFunctionCode = `var deleteQuery = 'DELETE FROM ${entityData.schema}.${entityData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\ndeleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
+        let queryFunctionCode = `var deleteQuery = 'DELETE FROM ${objectData.schema}.${objectData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\ndeleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

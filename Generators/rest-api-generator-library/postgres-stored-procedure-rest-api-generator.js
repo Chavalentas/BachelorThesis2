@@ -1,9 +1,9 @@
 const gen = require('./stored-procedure-rest-api-generator.js');
 
 const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRestApiGenerator{
-    generate(entityData, databaseConfiguration, restApiName){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generate(objectData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
@@ -53,7 +53,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         let getComment = this.nodeConfGen.generateCommentNode(getCommentId, "GetEndPoint (procedure parameters are query parameters)", x + 300, y, flowTabId, []);
         config.push(getComment);
         y += 50;
-        let getEndPoint = this.generateGetEndPoint(entityData, dbConfigNodeId, x, 300, y, flowTabId);
+        let getEndPoint = this.generateGetEndPoint(objectData, dbConfigNodeId, x, 300, y, flowTabId);
 
         // Concat the generated subflows into the configuration
         config = config.concat(catchSublow);
@@ -62,9 +62,9 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         return config;
     }
 
-    generateGetEndPoint(entityData, dbConfigNodeId, startX, xOffset, startY, flowId){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generateGetEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
@@ -92,7 +92,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
      
         // Step 1: Generate the http in endpoint (GET request)
         let httpInNodeId = this.helper.generateId(16, this.usedids);
-        let httpInNodeUrl = `/${entityData.schema}.${entityData.name}`;
+        let httpInNodeUrl = `/${objectData.schema}.${objectData.name}`;
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -112,7 +112,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the procedure query)
-        let queryFunctionCode = `var callProcedureQuery = 'CALL ${entityData.schema}.${entityData.name}(';\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n if (msg.procedureParameters[i] == 'default'){\n        continue;\n    }\n    \n    \n   queryParams.push(msg.procedureParameters[i]);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += ');';\nmsg.query = callProcedureQuery;\nreturn msg;`;
+        let queryFunctionCode = `var callProcedureQuery = 'CALL ${objectData.schema}.${objectData.name}(';\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n if (msg.procedureParameters[i] == 'default'){\n        continue;\n    }\n    \n    \n   queryParams.push(msg.procedureParameters[i]);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += ');';\nmsg.query = callProcedureQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

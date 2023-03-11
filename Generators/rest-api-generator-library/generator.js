@@ -14,9 +14,9 @@ const Generator = class{
         this.startY = 140;
     }
 
-    generate(entityData, databaseConfiguration, restApiName){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generate(objectData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
 
         if (this.helper.isNullOrUndefined(databaseConfiguration)){

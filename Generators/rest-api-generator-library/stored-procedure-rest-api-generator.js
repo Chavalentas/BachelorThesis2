@@ -8,9 +8,9 @@ const StoredProcedureRestApiGenerator = class extends routineGen.RoutineRestApiG
         }
     }
 
-    generate(entityData, databaseConfiguration, restApiName){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generate(objectData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
 
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
@@ -21,7 +21,7 @@ const StoredProcedureRestApiGenerator = class extends routineGen.RoutineRestApiG
             throw new Error('The parameter restApiName was null or undefined!');
         }
 
-        throw new Error("generate(entityData, databaseConfiguration, restApiName) must be implemented!");
+        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
     }
 }
 

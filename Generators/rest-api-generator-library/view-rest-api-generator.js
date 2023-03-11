@@ -8,9 +8,9 @@ const ViewRestApiGenerator = class extends relGen.RelationRestApiGenerator{
         }
     }
 
-    generate(entityData, databaseConfiguration, restApiName){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generate(objectData, databaseConfiguration, restApiName){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
 
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
@@ -21,19 +21,19 @@ const ViewRestApiGenerator = class extends relGen.RelationRestApiGenerator{
             throw new Error('The parameter restApiName was null or undefined!');
         }
 
-        throw new Error("generate(entityData, databaseConfiguration, restApiName) must be implemented!");
+        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
     }
 
-    generateQueryProperties(entityData, prefix){
-        if (this.helper.isNullOrUndefined(entityData)){
-            throw new Error('The parameter entityData was null or undefined!');
+    generateQueryProperties(objectData, prefix){
+        if (this.helper.isNullOrUndefined(objectData)){
+            throw new Error('The parameter objectData was null or undefined!');
         }
 
         if (this.helper.isNullOrUndefined(prefix)){
             throw new Error('The parameter prefix was null or undefined!');
         }
 
-        return super.generateQueryProperties(entityData, prefix);
+        return super.generateQueryProperties(objectData, prefix);
     }
 
     generateRequestBodyChecks(properties){

@@ -127,15 +127,15 @@ const postgresProcGen = require('./postgres-stored-procedure-rest-api-generator.
 const mssqlProcGen = require('./mssql-stored-procedure-rest-api-generator.js');
 const helperLib = require('./helper-functions.js');
 
-function generate(entityData, entityType, databaseConfiguration, restApiName, provider) {
+function generate(objectData, dbObjectType, databaseConfiguration, restApiName, provider) {
     const helper = new helperLib.Helper();
 
-    if (helper.isNullOrUndefined(entityData)){
-        throw new Error('The parameter entityData was null or undefined!');
+    if (helper.isNullOrUndefined(objectData)){
+        throw new Error('The parameter objectData was null or undefined!');
     }
 
-    if (helper.isNullOrUndefined(entityType)){
-        throw new Error('The parameter entityType was null or undefined!');
+    if (helper.isNullOrUndefined(dbObjectType)){
+        throw new Error('The parameter dbObjectType was null or undefined!');
     }
 
     if (helper.isNullOrUndefined(databaseConfiguration)){
@@ -152,77 +152,77 @@ function generate(entityData, entityType, databaseConfiguration, restApiName, pr
 
     switch(provider){
         case 'postgres':
-            return generateForPostgres(entityData, databaseConfiguration, entityType, restApiName);
+            return generateForPostgres(objectData, databaseConfiguration, dbObjectType, restApiName);
         case 'mssql':
-            return generateForMssql(entityData, databaseConfiguration, entityType, restApiName);
+            return generateForMssql(objectData, databaseConfiguration, dbObjectType, restApiName);
         default:
             throw new Error(`The provider ${provider} is not supported!`);
     }
 }
 
-function generateForPostgres(entityData, databaseConfiguration, entityType, restApiName){
+function generateForPostgres(objectData, databaseConfiguration, dbObjectType, restApiName){
     const helper = new helperLib.Helper();
 
-    if (helper.isNullOrUndefined(entityData)){
-        throw new Error('The parameter entityData was null or undefined!');
+    if (helper.isNullOrUndefined(objectData)){
+        throw new Error('The parameter objectData was null or undefined!');
     }
 
     if (helper.isNullOrUndefined(databaseConfiguration)){
         throw new Error('The parameter databaseConfiguration was null or undefined!');
     }
 
-    if (helper.isNullOrUndefined(entityType)){
-        throw new Error('The parameter entityType was null or undefined!');
+    if (helper.isNullOrUndefined(dbObjectType)){
+        throw new Error('The parameter dbObjectType was null or undefined!');
     }
 
     if (helper.isNullOrUndefined(restApiName)){
         throw new Error('The parameter restApiName was null or undefined!');
     }
 
-    switch (entityType){
+    switch (dbObjectType){
         case 'table':
-            return new postgresTableGen.PostgresTableRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+            return new postgresTableGen.PostgresTableRestApiGenerator().generate(objectData, databaseConfiguration, restApiName);
         case 'view':
-            return new postgresViewGen.PostgresViewRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+            return new postgresViewGen.PostgresViewRestApiGenerator().generate(objectData, databaseConfiguration, restApiName);
         case 'function':
-            return new postgresFuncGen.PostgresFunctionRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+            return new postgresFuncGen.PostgresFunctionRestApiGenerator().generate(objectData, databaseConfiguration, restApiName);
         case 'strp':
-            return new postgresProcGen.PostgresStoredProcedureRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+            return new postgresProcGen.PostgresStoredProcedureRestApiGenerator().generate(objectData, databaseConfiguration, restApiName);
         default:
-            throw new Error('Unsupported entity type detected!');
+            throw new Error('Unsupported database object type detected!');
     }
 }
 
-function generateForMssql(entityData, databaseConfiguration, entityType, restApiName){
+function generateForMssql(objectData, databaseConfiguration, dbObjectType, restApiName){
     const helper = new helperLib.Helper();
 
-    if (helper.isNullOrUndefined(entityData)){
-        throw new Error('The parameter entityData was null or undefined!');
+    if (helper.isNullOrUndefined(objectData)){
+        throw new Error('The parameter objectData was null or undefined!');
     }
 
     if (helper.isNullOrUndefined(databaseConfiguration)){
         throw new Error('The parameter databaseConfiguration was null or undefined!');
     }
 
-    if (helper.isNullOrUndefined(entityType)){
-        throw new Error('The parameter entityType was null or undefined!');
+    if (helper.isNullOrUndefined(dbObjectType)){
+        throw new Error('The parameter dbObjectType was null or undefined!');
     }
 
     if (helper.isNullOrUndefined(restApiName)){
         throw new Error('The parameter restApiName was null or undefined!');
     }
 
-    switch (entityType){
+    switch (dbObjectType){
         case 'table':
-            return new mssqlTableGen.MssqlTableRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+            return new mssqlTableGen.MssqlTableRestApiGenerator().generate(objectData, databaseConfiguration, restApiName);
         case 'view':
-            return new mssqlViewGen.MssqlViewRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+            return new mssqlViewGen.MssqlViewRestApiGenerator().generate(objectData, databaseConfiguration, restApiName);
         case 'function':
-            return new mssqlFuncGen.MssqlFunctionRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+            return new mssqlFuncGen.MssqlFunctionRestApiGenerator().generate(objectData, databaseConfiguration, restApiName);
         case 'strp':
-            return new mssqlProcGen.MssqlStoredProcedureRestApiGenerator().generate(entityData, databaseConfiguration, restApiName);
+            return new mssqlProcGen.MssqlStoredProcedureRestApiGenerator().generate(objectData, databaseConfiguration, restApiName);
         default:
-            throw new Error('Unsupported entity type detected!');
+            throw new Error('Unsupported database object type detected!');
     }
 }
 
