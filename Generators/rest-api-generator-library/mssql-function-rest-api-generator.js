@@ -112,7 +112,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         x += xOffset;
 
         // Step 3: Generate the function node (that sets the query parameters)
-        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${objectData.schema}.${objectData.name}(';\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0) {\n    for (let i = 0; i < msg.functionParameters.length; i++) {\n        if (msg.functionParameters[i] != 'default') {\n            functionArgs.push(\`\'\${msg.functionParameters[i]}'\`);\n        } else{\n            functionArgs.push(\`\${msg.functionParameters[i]}\`);\n        }\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
+        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${objectData.schema}.${objectData.name}(';\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0) {\n    for (let i = 0; i < msg.functionParameters.length; i++) {\n      if (msg.functionParameters[i] === 'default') {\n          functionArgs.push(\`\${msg.functionParameters[i]}\`);\n          continue;\n       } \n\n       if (msg.functionParameters[i] === 'null'){\n           functionArgs.push(\`\${msg.functionParameters[i]}\`);\n           continue;\n       }\n\n       functionArgs.push(\`\'\${msg.functionParameters[i]}\'\`);\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

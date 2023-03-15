@@ -112,7 +112,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the procedure query)
-        let queryFunctionCode = `var callProcedureQuery = 'CALL ${objectData.schema}.${objectData.name}(';\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n if (msg.procedureParameters[i] == 'default'){\n        continue;\n    }\n    \n    \n   queryParams.push(msg.procedureParameters[i]);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += ');';\nmsg.query = callProcedureQuery;\nreturn msg;`;
+        let queryFunctionCode = `var callProcedureQuery = 'CALL ${objectData.schema}.${objectData.name}(';\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] === 'default'){\n        continue;\n    }\n\n    if (msg.procedureParameters[i] === 'null'){\n        queryParams.push(msg.procedureParameters[i]);\n        continue;\n    }\n  \n    queryParams.push(\`\'\${msg.procedureParameters[i]}\'\`);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += ');';\nmsg.query = callProcedureQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

@@ -222,7 +222,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the query)
-        let createQueryFunctionCode = `var insertQuery = 'INSERT INTO ${objectData.schema}.${objectData.name}';\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => \`\'\${p.propertyValue}\'\`);\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += ' VALUES ';\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ';';\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
+        let createQueryFunctionCode = `var insertQuery = 'INSERT INTO ${objectData.schema}.${objectData.name}';\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = [];\n\nfor (let i = 0; i < msg.queryProperties.length; i++){\n    if (msg.queryProperties[i].propertyValue === 'null'){\n        propertyValues.push(msg.queryProperties[i].propertyValue);\n    } else{\n        propertyValues.push(\`\'\${msg.queryProperties[i].propertyValue}\'\`);\n    }\n}\n\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += ' VALUES ';\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ';';\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
         let createQuerynFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -309,7 +309,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
        x += xOffset;
 
        // Step 3: Generate the function node (that creates the query)
-       let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => \`\'\${p.propertyValue}\'\`);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var equation = \`\${propertyNames[i]} = \${propertyValues[i]}\`;\n    equations.push(equation);\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${objectData.schema}.${objectData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${msg.pk.propertyValue};\`;\nmsg.query = updateQuery;\nreturn msg;`;
+       let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => p.propertyValue);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var propertyValue = '';\n\n    if (propertyValues[i] === 'null'){\n        propertyValue = propertyValues[i];\n    } else{\n        propertyValue = \`\'\${propertyValues[i]}\'\`;\n    }\n\n    var equation = \`\${propertyNames[i]} = \${propertyValue}\`;\n    equations.push(equation);\n}\n\nvar pk = '';\n\nif (msg.pk.propertyValue === 'null'){\n    pk = msg.pk.propertyValue;\n} else{\n    pk = \`\'\${msg.pk.propertyValue}\'\`;\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${objectData.schema}.${objectData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${pk};\`;\nmsg.query = updateQuery;\nreturn msg;`;
        let createQuerynFunctionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16, this.usedids);
        this.usedids.push(nextNodeId);
@@ -384,7 +384,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
        // Step 2: Generate the function node (that sets the query parameters)
-       let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nvar data = {\n    pkvalue : msg.req.params.${objectData.pk}\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
+       let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nvar pkValue = '';\n\nif (msg.req.params.${objectData.pk} === 'null'){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.${objectData.pk};\n}\n\nvar data = {\n    pk : pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
        let functionNodeId = nextNodeId;
        nextNodeId = this.helper.generateId(16, this.usedids);
        this.usedids.push(nextNodeId);
@@ -393,7 +393,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
        x += xOffset;
 
         // Step 3: Generate the database node (that executes the query)
-        let queryCode = `DELETE FROM ${objectData.schema}.${objectData.name} WHERE ${objectData.pk}='{{{queryParameters.pkvalue}}}';`;
+        let queryCode = `DELETE FROM ${objectData.schema}.${objectData.name} WHERE ${objectData.pk}='{{{queryParameters.pk}}}';`;
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);

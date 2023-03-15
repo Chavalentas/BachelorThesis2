@@ -139,7 +139,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         x += xOffset;
 
         // Step 6: Generate the function node (that sets the parameters for the final procedure execution)
-        let procParamsCode =  `msg.queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] == 'default'){\n        continue;\n    }\n    \n    \n    var param = {\n      \"output\" : false,\n      \"name\" : msg.paramNames[i],\n      \"type\" : null,\n      \"value\" : msg.procedureParameters[i],\n      \"options\" : {\n          \"nullable\" : true,\n          \"primary\" : false,\n          \"identity\" : false,\n          \"readOnly\" : false\n       }\n   };\n   \n   msg.queryParams.push(param);\n}\n\nreturn msg;`;
+        let procParamsCode =  `msg.queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] === 'default'){\n        continue;\n    }\n    \n    var value = msg.procedureParameters[i];\n\n    if (value === 'null'){\n        value = null;\n    }\n    \n    var param = {\n      \"output\" : false,\n      \"name\" : msg.paramNames[i],\n      \"type\" : null,\n      \"value\" : value,\n      \"options\" : {\n          \"nullable\" : true,\n          \"primary\" : false,\n          \"identity\" : false,\n          \"readOnly\" : false\n       }\n   };\n   \n   msg.queryParams.push(param);\n}\n\nreturn msg;`;
         let procParamsCodeNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -164,7 +164,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         this.usedids.push(caseFailId);
         let ids = [caseSuccessId, caseSuccessId, caseFailId];
         let rule1 = {"t": "eq", "v": "0", "vt": "num"};
-        let rule2 = {"t": "eq", "v": "null","vt": "str"};
+        let rule2 = {"t": "null"};
         let rule3 = {"t": "else"};
         let rules = [rule1, rule2, rule3]
         let switchNode = this.nodeConfGen.generateSwitchNode(nextNodeId, 'CheckResultValue', x, y, flowId, ids, 3, 'payload.returnValue', 'msg', rules);
