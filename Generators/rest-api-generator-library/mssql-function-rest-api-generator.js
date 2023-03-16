@@ -98,7 +98,6 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         this.usedids.push(nextNodeId);
         let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'get', x, y, flowId, [nextNodeId]);
 
-
         x += xOffset;
     
         // Step 2: Generate the function node (that checks the function parameters)
@@ -107,7 +106,6 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
         let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'CheckFunctionParameters', x, y, flowId, functionCode, [nextNodeId]);
-
 
         x += xOffset;
 
@@ -136,13 +134,12 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
 
         x += xOffset;
 
-       // Step 6: Create the response node (that returns the result)
-       let respondeNodeId = nextNodeId;
-       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
+        // Step 6: Create the response node (that returns the result)
+        let respondeNodeId = nextNodeId;
+        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
 
-
-       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionCode, responseNode];
-       return resultingNodes;
+        let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionCode, responseNode];
+        return resultingNodes;
     }
 }
 

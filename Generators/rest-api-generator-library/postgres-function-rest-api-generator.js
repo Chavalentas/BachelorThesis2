@@ -136,13 +136,13 @@ const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenera
 
         x += xOffset;
 
-       // Step 6: Create the response node (that returns the result)
-       let respondeNodeId = nextNodeId;
-       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
+        // Step 6: Create the response node (that returns the result)
+        let respondeNodeId = nextNodeId;
+        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
 
-
-       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionCode, responseNode];
-       return resultingNodes;
+ 
+        let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionCode, responseNode];
+        return resultingNodes;
     }
 }
 

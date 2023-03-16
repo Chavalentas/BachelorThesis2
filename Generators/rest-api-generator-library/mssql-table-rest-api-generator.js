@@ -157,18 +157,18 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
         // Step 5:  Create the function node (that sets the response payload)
-       let responseFunctionNodeId = nextNodeId;
-       nextNodeId = this.helper.generateId(16,  this.usedids);
-       let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;', [nextNodeId]);
+        let responseFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16,  this.usedids);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;', [nextNodeId]);
                 
-       x += xOffset;
+        x += xOffset;
 
-       // Step 6: Create the response node (that returns the result)
-       let respondeNodeId = nextNodeId;
-       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
+        // Step 6: Create the response node (that returns the result)
+        let respondeNodeId = nextNodeId;
+        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
 
-       let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionNode, responseNode];
-       return resultingNodes;
+        let resultingNodes = [httpInNode, functionNode, queryFunctionNode, queryNode, responseFunctionNode, responseNode];
+        return resultingNodes;
     }
 
     generatePostEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
@@ -296,49 +296,49 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
         x += xOffset;
 
-       // Step 2: Generate the function node (that sets the query parameters)
-       let propertyNames = objectData.properties.map(p => `\"${p.propertyName}\"`);
-       let propertyNamesJoined = propertyNames.join(",");
-       let propertiesCheck = this.generateRequestBodyPushes(objectData.properties);
-       let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"${objectData.pk}\", \"propertyValue\" : msg.req.params.${objectData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
-       let functionNodeId = nextNodeId;
-       nextNodeId = this.helper.generateId(16, this.usedids);
-       this.usedids.push(nextNodeId);
-       let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+        // Step 2: Generate the function node (that sets the query parameters)
+        let propertyNames = objectData.properties.map(p => `\"${p.propertyName}\"`);
+        let propertyNamesJoined = propertyNames.join(",");
+        let propertiesCheck = this.generateRequestBodyPushes(objectData.properties);
+        let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"${objectData.pk}\", \"propertyValue\" : msg.req.params.${objectData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
+        let functionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
 
-       x += xOffset;
+        x += xOffset;
 
-       // Step 3: Generate the function node (that creates the query)
-       let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => p.propertyValue);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var propertyValue = '';\n\n    if (propertyValues[i] === 'null'){\n        propertyValue = propertyValues[i];\n    } else{\n        propertyValue = \`\'\${propertyValues[i]}\'\`;\n    }\n\n    var equation = \`\${propertyNames[i]} = \${propertyValue}\`;\n    equations.push(equation);\n}\n\nvar pk = '';\n\nif (msg.pk.propertyValue === 'null'){\n    pk = msg.pk.propertyValue;\n} else{\n    pk = \`\'\${msg.pk.propertyValue}\'\`;\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${objectData.schema}.${objectData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${pk};\`;\nmsg.query = updateQuery;\nreturn msg;`;
-       let createQuerynFunctionNodeId = nextNodeId;
-       nextNodeId = this.helper.generateId(16, this.usedids);
-       this.usedids.push(nextNodeId);
-       let createQueryFunctionNode = this.nodeConfGen.generateFunctionNode(createQuerynFunctionNodeId, 'CreateUpdateQuery', x, y, flowId, createQueryFunctionCode, [nextNodeId]);
+        // Step 3: Generate the function node (that creates the query)
+        let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => p.propertyValue);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var propertyValue = '';\n\n    if (propertyValues[i] === 'null'){\n        propertyValue = propertyValues[i];\n    } else{\n        propertyValue = \`\'\${propertyValues[i]}\'\`;\n    }\n\n    var equation = \`\${propertyNames[i]} = \${propertyValue}\`;\n    equations.push(equation);\n}\n\nvar pk = '';\n\nif (msg.pk.propertyValue === 'null'){\n    pk = msg.pk.propertyValue;\n} else{\n    pk = \`\'\${msg.pk.propertyValue}\'\`;\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${objectData.schema}.${objectData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${pk};\`;\nmsg.query = updateQuery;\nreturn msg;`;
+        let createQuerynFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let createQueryFunctionNode = this.nodeConfGen.generateFunctionNode(createQuerynFunctionNodeId, 'CreateUpdateQuery', x, y, flowId, createQueryFunctionCode, [nextNodeId]);
 
-       x += xOffset;
+        x += xOffset;
 
-       // Step 4: Generate the database node (that executes the query)
-       let queryCode = ``; // The query is built dynamically
-       let queryNodeId = nextNodeId;
-       nextNodeId = this.helper.generateId(16,  this.usedids);
-       this.usedids.push(nextNodeId);
-       let queryNode = this.nodeConfGen.generateMssqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], "queryMode", "query", "query", "msg", "queryParams", "none", 0);
+        // Step 4: Generate the database node (that executes the query)
+        let queryCode = ``; // The query is built dynamically
+        let queryNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16,  this.usedids);
+        this.usedids.push(nextNodeId);
+        let queryNode = this.nodeConfGen.generateMssqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], "queryMode", "query", "query", "msg", "queryParams", "none", 0);
        
         x += xOffset;
 
-       // Step 4:  Create the function node (that sets the response payload)
-       let responseFunctionNodeId = nextNodeId;
-       nextNodeId = this.helper.generateId(16,  this.usedids);
-       let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+        // Step 4:  Create the function node (that sets the response payload)
+        let responseFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16,  this.usedids);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
                 
-       x += xOffset;
+        x += xOffset;
 
-       // Step 5: Create the response node (that returns the result)
-       let respondeNodeId = nextNodeId;
-       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
+        // Step 5: Create the response node (that returns the result)
+        let respondeNodeId = nextNodeId;
+        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
     
-       let resultingNodes = [httpInNode, functionNode, createQueryFunctionNode, queryNode, responseFunctionNode, responseNode];
-       return resultingNodes;
+        let resultingNodes = [httpInNode, functionNode, createQueryFunctionNode, queryNode, responseFunctionNode, responseNode];
+        return resultingNodes;
     }
     
     generateDeleteEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
@@ -383,14 +383,14 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
         x += xOffset;
 
-       // Step 2: Generate the function node (that sets the query parameters)
-       let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nvar pkValue = '';\n\nif (msg.req.params.${objectData.pk} === 'null'){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.${objectData.pk};\n}\n\nvar data = {\n    pk : pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
-       let functionNodeId = nextNodeId;
-       nextNodeId = this.helper.generateId(16, this.usedids);
-       this.usedids.push(nextNodeId);
-       let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+        // Step 2: Generate the function node (that sets the query parameters)
+        let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nvar pkValue = '';\n\nif (msg.req.params.${objectData.pk} === 'null'){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.${objectData.pk};\n}\n\nvar data = {\n    pk : pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
+        let functionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
 
-       x += xOffset;
+        x += xOffset;
 
         // Step 3: Generate the database node (that executes the query)
         let queryCode = `DELETE FROM ${objectData.schema}.${objectData.name} WHERE ${objectData.pk}='{{{queryParameters.pk}}}';`;
@@ -401,19 +401,19 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
 
         x += xOffset;
 
-       // Step 4:  Create the function node (that sets the response payload)
-       let responseFunctionNodeId = nextNodeId;
-       nextNodeId = this.helper.generateId(16,  this.usedids);
-       let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+        // Step 4:  Create the function node (that sets the response payload)
+        let responseFunctionNodeId = nextNodeId;
+        nextNodeId = this.helper.generateId(16,  this.usedids);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
                 
-       x += xOffset;
+        x += xOffset;
 
-       // Step 5: Create the response node (that returns the result)
-       let respondeNodeId = nextNodeId;
-       let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
+        // Step 5: Create the response node (that returns the result)
+        let respondeNodeId = nextNodeId;
+        let responseNode = this.nodeConfGen.generateHttpResponseNode(respondeNodeId, 200, x, y, flowId);
 
-       let resultingNodes = [httpInNode, functionNode, queryNode, responseFunctionNode, responseNode];
-       return resultingNodes;
+        let resultingNodes = [httpInNode, functionNode, queryNode, responseFunctionNode, responseNode];
+        return resultingNodes;
     }
 
     generateDeleteEndPointWithQueryParams(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){

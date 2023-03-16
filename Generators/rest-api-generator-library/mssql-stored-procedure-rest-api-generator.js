@@ -98,7 +98,6 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         this.usedids.push(nextNodeId);
         let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'get', x, y, flowId, [nextNodeId]);
 
-
         x += xOffset;
     
         // Step 2: Generate the function node (that checks the procedure parameters)
@@ -107,7 +106,6 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
         let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'CheckProcedureParameters', x, y, flowId, functionCode, [nextNodeId]);
-
 
         x += xOffset;
 
@@ -153,7 +151,6 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
         let queryNode = this.nodeConfGen.generateMssqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId], "", "execute", "payload", "editor", "queryParams", "msg", 1);
-    
 
         x += xOffset;
 
@@ -171,19 +168,19 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
    
         x += xOffset;
 
-       // Step 9: Generate the function node (that sets the response in case of success)
-       let setSuccessResponseFunctionCode = `var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;`;
-       let successResponseId = this.helper.generateId(16, this.usedids);
-       this.usedids.push(successResponseId);
-       let setSuccessResponseFunctionNode = this.nodeConfGen.generateFunctionNode(caseSuccessId, 'SetResponse', x, y - 100, flowId, setSuccessResponseFunctionCode, [successResponseId]);
+        // Step 9: Generate the function node (that sets the response in case of success)
+        let setSuccessResponseFunctionCode = `var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;`;
+        let successResponseId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(successResponseId);
+        let setSuccessResponseFunctionNode = this.nodeConfGen.generateFunctionNode(caseSuccessId, 'SetResponse', x, y - 100, flowId, setSuccessResponseFunctionCode, [successResponseId]);
 
         // Step 10: Generate the function node (that sets the response in case of unsuccess)
-       let setUnsuccessResponseFunctionCode = `var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;`;
-       let unsuccessResponseId = this.helper.generateId(16, this.usedids);
-       this.usedids.push(nextNodeId);
-       let setUnuccessResponseFunctionNode = this.nodeConfGen.generateFunctionNode(caseFailId, 'SetResponse', x, y + 100, flowId, setUnsuccessResponseFunctionCode, [unsuccessResponseId]);
+        let setUnsuccessResponseFunctionCode = `var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;`;
+        let unsuccessResponseId = this.helper.generateId(16, this.usedids);
+        this.usedids.push(nextNodeId);
+        let setUnuccessResponseFunctionNode = this.nodeConfGen.generateFunctionNode(caseFailId, 'SetResponse', x, y + 100, flowId, setUnsuccessResponseFunctionCode, [unsuccessResponseId]);
 
-       x += xOffset;
+        x += xOffset;
 
         // Step 11: Create the response node (that returns the result in case of success)
         let responseNodeUnsuccess = this.nodeConfGen.generateHttpResponseNode(unsuccessResponseId, 400, x, y + 100, flowId);
@@ -191,9 +188,8 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         // Step 12: Create the response node (that returns the result in case of success)
         let responseNodeSuccess = this.nodeConfGen.generateHttpResponseNode(successResponseId, 200, x, y - 100, flowId);
 
-
-       let resultingNodes = [httpInNode, functionNode, paramFunctionNode, parametersQueryNode, paramNamesFunctionNode, procParamsCodeNode, queryNode, switchNode, setSuccessResponseFunctionNode, responseNodeSuccess, setUnuccessResponseFunctionNode, responseNodeUnsuccess];
-       return resultingNodes;
+        let resultingNodes = [httpInNode, functionNode, paramFunctionNode, parametersQueryNode, paramNamesFunctionNode, procParamsCodeNode, queryNode, switchNode, setSuccessResponseFunctionNode, responseNodeSuccess, setUnuccessResponseFunctionNode, responseNodeUnsuccess];
+        return resultingNodes;
     }
 }
 

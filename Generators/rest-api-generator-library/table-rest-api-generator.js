@@ -19,7 +19,7 @@ const TableRestApiGenerator = class extends relGen.RelationRestApiGenerator{
 
         if (this.helper.isNullOrUndefined(restApiName)){
             throw new Error('The parameter restApiName was null or undefined!');
-        }
+        } 
 
         throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
     }
