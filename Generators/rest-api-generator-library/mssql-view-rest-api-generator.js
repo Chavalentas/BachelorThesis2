@@ -350,10 +350,10 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
 
         // Step 3: Generate the function node (that creates the query)
         let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => p.propertyValue);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var propertyValue = '';\n\n    if (propertyValues[i] === 'null'){\n        propertyValue = propertyValues[i];\n    } else{\n        propertyValue = \`\'\${propertyValues[i]}\'\`;\n    }\n\n    var equation = \`\${propertyNames[i]} = \${propertyValue}\`;\n    equations.push(equation);\n}\n\nvar pk = '';\n\nif (msg.pk.propertyValue === 'null'){\n    pk = msg.pk.propertyValue;\n} else{\n    pk = \`\'\${msg.pk.propertyValue}\'\`;\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${objectData.schema}.${objectData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${pk};\`;\nmsg.query = updateQuery;\nreturn msg;`;
-        let createQuerynFunctionNodeId = nextNodeId;
+        let createQueryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let createQueryFunctionNode = this.nodeConfGen.generateFunctionNode(createQuerynFunctionNodeId, 'CreateUpdateQuery', x, y, flowId, createQueryFunctionCode, [nextNodeId]);
+        let createQueryFunctionNode = this.nodeConfGen.generateFunctionNode(createQueryFunctionNodeId, 'CreateUpdateQuery', x, y, flowId, createQueryFunctionCode, [nextNodeId]);
 
         x += xOffset;
 
