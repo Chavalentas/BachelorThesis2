@@ -21,7 +21,7 @@ const NodeConfigGenerator = class {
      * @returns The JSON configuration of the node.
      */
     generateHttpResponseNode(id, statusCode, x, y, flowTabId){
-        var responseNodeConfig = {
+        let responseNodeConfig = {
             "id": id,
             "type": "http response",
             "z": flowTabId,
@@ -48,7 +48,7 @@ const NodeConfigGenerator = class {
      * @returns The JSON configuration of the node.
      */
     generateHttpInNode(id, url, method, x, y, flowTabId, wireIds){
-        var httpInNodeConfig = {
+        let httpInNodeConfig = {
             "id": id,
             "type": "http in",
             "z": flowTabId,
@@ -76,7 +76,7 @@ const NodeConfigGenerator = class {
      * @returns The JSON configuration of the node.
      */
     generateCatchErrorNode(id, scope, x, y, flowTabId, wireIds){
-        var catchErrorNode = {
+        let catchErrorNode = {
             "id": id,
             "type": "catch",
             "z": flowTabId,
@@ -111,7 +111,7 @@ const NodeConfigGenerator = class {
      * @returns The JSON configuration of the node.
      */
     generateMssqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds, modeOpt, modeOptType, queryOpt, queryOptType, paramsOpt, paramsOptType, returnType){
-        var msSqlNodeConfig = {
+        let msSqlNodeConfig = {
             "id": id,
             "type": "MSSQL",
             "z": flowTabId,
@@ -153,7 +153,7 @@ const NodeConfigGenerator = class {
      * @returns The JSON configuration of the node.
      */
     generatePostgresqlNode(id, nodeName, x, y, flowTabId, statementCode, dbConfigId, wireIds){
-        var postgresqlNodeConfig = {
+        let postgresqlNodeConfig = {
             "id": id,
             "type": "postgresql",
             "z": flowTabId,
@@ -183,7 +183,7 @@ const NodeConfigGenerator = class {
      * @returns The JSON configuration of the node.
      */
     generateFunctionNode(id, functionName, x, y, flowTabId, functionCode, wireIds){
-        var functionNodeConfig =  {
+        let functionNodeConfig =  {
             "id": id,
             "type": "function",
             "z": flowTabId,
@@ -209,7 +209,7 @@ const NodeConfigGenerator = class {
      * @returns The JSON configuration of the flow tab.
      */
     generateFlowTabNode(flowTabName, id){
-        var tabConfig = {
+        let tabConfig = {
             "id": id,
             "type": "tab",
             "label": flowTabName,
