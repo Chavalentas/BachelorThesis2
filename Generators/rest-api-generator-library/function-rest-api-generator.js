@@ -1,6 +1,12 @@
 const routineGen = require('./routine-rest-api-generator.js');
 
+/**
+ * Represents the REST-API generator for functions.
+ */
 const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerator{
+    /**
+     * Represents the constructor.
+     */
     constructor(){
         super();
         if (this.constructor == FunctionRestApiGenerator) {
@@ -8,6 +14,12 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
         }
     }
 
+    /**
+     * Generates the REST-API for a function based on the following parameters.
+     * @param {*} objectData  Contains the meta information about the database object.
+     * @param {*} databaseConfiguration Contains the information that is necessary for the establishment of database connection.
+     * @param {*} restApiName Contains the name of the REST-API.
+     */
     generate(objectData, databaseConfiguration, restApiName){
         if (this.helper.isNullOrUndefined(objectData)){
             throw new Error('The parameter objectData was null or undefined!');

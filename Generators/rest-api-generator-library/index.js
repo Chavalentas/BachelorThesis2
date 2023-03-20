@@ -8,6 +8,15 @@ const postgresProcGen = require('./postgres-stored-procedure-rest-api-generator.
 const mssqlProcGen = require('./mssql-stored-procedure-rest-api-generator.js');
 const helperLib = require('./helper-functions.js');
 
+/**
+ * Generates a JSON configuration of a REST-API flow based on the following data.
+ * @param {*} objectData Contains the meta information about the database object.
+ * @param {*} dbObjectType Contains the database object type (table, view, function or strp).
+ * @param {*} databaseConfiguration Contains the information that is necessary for the establishment of database connection.
+ * @param {*} restApiName Contains the name of the REST-API.
+ * @param {*} provider Contains the database provider (postgres or mssql).
+ * @returns The JSON configuration of the generated flow.
+ */
 function generate(objectData, dbObjectType, databaseConfiguration, restApiName, provider) {
     const helper = new helperLib.Helper();
 
@@ -41,6 +50,14 @@ function generate(objectData, dbObjectType, databaseConfiguration, restApiName, 
     }
 }
 
+/**
+ * Generates a JSON configuration of a REST-API flow for PostgreSQL based on the following data.
+ * @param {*} objectData Contains the meta information about the database object.
+ * @param {*} databaseConfiguration Contains the information that is necessary for the establishment of database connection.
+ * @param {*} dbObjectType Contains the database object type (table, view, function or strp).
+ * @param {*} restApiName Contains the name of the REST-API.
+ * @returns The JSON configuration of the generated flow.
+ */
 function generateForPostgres(objectData, databaseConfiguration, dbObjectType, restApiName){
     const helper = new helperLib.Helper();
 
@@ -74,6 +91,14 @@ function generateForPostgres(objectData, databaseConfiguration, dbObjectType, re
     }
 }
 
+/**
+ * Generates a JSON configuration of a REST-API flow for MSSQL based on the following data.
+ * @param {*} objectData Contains the meta information about the database object.
+ * @param {*} databaseConfiguration Contains the information that is necessary for the establishment of database connection.
+ * @param {*} dbObjectType Contains the database object type (table, view, function or strp).
+ * @param {*} restApiName Contains the name of the REST-API.
+ * @returns The JSON configuration of the generated flow.
+ */
 function generateForMssql(objectData, databaseConfiguration, dbObjectType, restApiName){
     const helper = new helperLib.Helper();
 

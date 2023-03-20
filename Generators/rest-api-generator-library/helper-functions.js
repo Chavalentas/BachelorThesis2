@@ -1,4 +1,13 @@
+/**
+ * Represents the class with helper functions.
+ */
 const Helper = class{
+    /**
+     * Generates a unique ID based on the following parameters.
+     * @param {*} length The length of the ID.
+     * @param {*} except The IDs that should not be generated.
+     * @returns The generated ID.
+     */
     generateId(length, except){
         if (this.isNullOrUndefined(length)){
             throw new Error('The parameter length was null or undefined!');
@@ -26,6 +35,12 @@ const Helper = class{
         return id;
     }
     
+    /**
+     * Generates a random integer.
+     * @param {*} min The minimal value (inclusive).
+     * @param {*} max The maximal value (exclusive).
+     * @returns The random number.
+     */
     getRandomInt(min, max) {
         if (this.isNullOrUndefined(min)){
             throw new Error('The parameter min was null or undefined!');
@@ -40,6 +55,11 @@ const Helper = class{
         return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
     }
 
+    /**
+     * Determines whether the given value is null or undefined.
+     * @param {*} value The value to evaluate.
+     * @returns Boolean indicating whether the value is null or undefined.
+     */
     isNullOrUndefined(value){
         return value === null || value === undefined;
     }

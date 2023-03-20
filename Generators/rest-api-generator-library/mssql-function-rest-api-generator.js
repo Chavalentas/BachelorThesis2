@@ -1,6 +1,16 @@
 const gen = require('./function-rest-api-generator.js');
 
+/**
+ * Represents the REST-API generator for functions in MSSQL.
+ */
 const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator{
+    /**
+     * Generates the REST-API for a MSSQL function based on the following parameters.
+     * @param {*} objectData Contains the meta information about the database object.
+     * @param {*} databaseConfiguration Contains the information that is necessary for the establishment of database connection.
+     * @param {*} restApiName Contains the name of the REST-API.
+     * @returns The JSON configuration of the generated flow.
+     */
     generate(objectData, databaseConfiguration, restApiName){
         if (this.helper.isNullOrUndefined(objectData)){
             throw new Error('The parameter objectData was null or undefined!');
@@ -62,6 +72,16 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         return config;
     }
 
+    /**
+     * Generates the GET endpoint of the REST-API based on the following parameters.
+     * @param {*} objectData Contains the meta information about the database object.
+     * @param {*} dbConfigNodeId Contains the ID of the database configuration node.
+     * @param {*} startX The start x coordinate of the first node.
+     * @param {*} xOffset The x distance between the nodes.
+     * @param {*} startY The start y coordinate of the first node.
+     * @param {*} flowId The ID of the flow.
+     * @returns Array of the nodes of the endpoint.
+     */
     generateGetEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
         if (this.helper.isNullOrUndefined(objectData)){
             throw new Error('The parameter objectData was null or undefined!');

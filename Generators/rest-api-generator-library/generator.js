@@ -1,7 +1,13 @@
 const help = require('./helper-functions.js');
 const nodeConfigGen = require('./node-config-generator.js');
 
+/**
+ * Represents the REST-API generator.
+ */
 const Generator = class{
+    /**
+     * Represents the constructor.
+     */
     constructor(){
         if (this.constructor == Generator) {
             throw new Error("The abstract generator cannot be instantiated.");
@@ -14,6 +20,12 @@ const Generator = class{
         this.startY = 140;
     }
 
+    /**
+     * Generates the REST-API based on the following parameters.
+     * @param {*} objectData Contains the meta information about the database object.
+     * @param {*} databaseConfiguration Contains the information that is necessary for the establishment of database connection.
+     * @param {*} restApiName Contains the name of the REST-API.
+     */
     generate(objectData, databaseConfiguration, restApiName){
         if (this.helper.isNullOrUndefined(objectData)){
             throw new Error('The parameter objectData was null or undefined!');
@@ -30,6 +42,14 @@ const Generator = class{
         throw new Error("Method 'generate(entityData, databaseConfiguration, restApiName' must be implemented.");
     }
 
+    /**
+     * Generates the catch subflow (subflow that catches errors).
+     * @param {*} startX The start x coordinate of the first node.
+     * @param {*} xOffset The x distance between the nodes.
+     * @param {*} startY The start y coordinate of the first node.
+     * @param {*} flowId The ID of the flow.
+     * @returns Array of the nodes of the catch subflow.
+     */
     generateCatchSubFlow(startX, xOffset, startY, flowId){
         if (this.helper.isNullOrUndefined(startX)){
             throw new Error('The parameter startX was null or undefined!');
