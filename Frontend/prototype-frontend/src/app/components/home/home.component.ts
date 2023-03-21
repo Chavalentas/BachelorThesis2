@@ -234,6 +234,7 @@ export class HomeComponent implements OnInit {
              return;
           }
 
+          this.secondStepSuccessMessage = '';
           this.handleGetSchemasResponse(data);
 
           if (!this.schemas.some(s => s.schemaName == this.selectedSchema.schemaName)){
@@ -241,7 +242,6 @@ export class HomeComponent implements OnInit {
           }
 
           this.stepper.next();
-          this.secondStepSuccessMessage = '';
         },
         error: error => {
           if (error.error.error === undefined){
@@ -294,6 +294,7 @@ export class HomeComponent implements OnInit {
    this.selectedObjectType = this.thirdFormGroup?.get('dbObjectTypeControl')?.value;
    this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
     next : (response) => {
+      this.thirdStepSuccessMessage = '';
       this.handleGetDbObjectsResponse(response);
 
       if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
@@ -332,6 +333,7 @@ export class HomeComponent implements OnInit {
     var reqBody = {"conn" : this._connString, "schema" : this.selectedSchema.schemaName, "dbObjectType" : this.selectedObjectType, "dbObjectName" : this.selectedDbObject.dbObjectName};
     this._httpClient.post<GetObjectInformationResponse>(`${schemaParserBackendConfig.conn}/get-db-object-information`, reqBody).subscribe({
       next: data => {
+        this.fourthStepSuccessMessage = '';
         this._objectData = data.result[0];
         this.stepper.next();
       },
@@ -400,6 +402,7 @@ export class HomeComponent implements OnInit {
   public handleSchemasRefreshButtonClick() : void{
     this.loadSchemas().subscribe({
       next: data => {
+        this.secondStepSuccessMessage = '';
         if (data.result.length == 0){
            this.secondStepSuccessMessage = 'No schemas are included in this database!';
            return;
@@ -430,6 +433,7 @@ export class HomeComponent implements OnInit {
   public handleDbObjectsRefreshButtonClick() : void{
     this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
       next : (response) => {
+        this.fourthStepSuccessMessage = '';
         this.handleGetDbObjectsResponse(response);
 
         if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
@@ -454,6 +458,7 @@ export class HomeComponent implements OnInit {
    * Handles the import to Node-RED button click.
    */
   public handleImportToNodeRedButtonClick() : void{
+    this.sixthStepSuccessMessage = '';
     const dialogRef = this._dialog.open(NodeRedInstanceDataDialogComponent, {
       disableClose: true
     });
@@ -466,11 +471,12 @@ export class HomeComponent implements OnInit {
       var restApiName = this._restApiName;
       var nodeRedUrl = result.result;
       var nodesWithoutTab = this._jsonConfig.filter(o => o.type !== 'tab');
-      this.importFlow(restApiName, nodeRedUrl + '/flow', nodesWithoutTab).subscribe({
+      this.importFlow(restApiName, nodeRedUrl + 'flow', nodesWithoutTab).subscribe({
         next: data => {
           this.sixthStepSuccessMessage = `The flow was imported! Please check your Node-RED instance at ${nodeRedUrl}!`;
         },
         error: error => {
+          console.log(error);
           if (error.error.error === undefined){
             this.sixthStepSuccessMessage = 'Some error occurred during the import of the flow!';
             return;

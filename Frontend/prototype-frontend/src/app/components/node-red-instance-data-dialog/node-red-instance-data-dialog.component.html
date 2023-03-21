@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Enter the Node-RED instance data</h1>
-<div [formGroup]="nodeRedInstanceDataFormGroup" class="content-container form-group" mat-dialog-content>
+<div [formGroup]="nodeRedInstanceDataFormGroup" id="node-red-instance-data-formgroup" class="content-container form-group" mat-dialog-content>
   <mat-form-field id="node-red-instance-url-formfield" class="example-full-width" appearance="fill">
     <mat-label>Node-RED instance URL</mat-label>
     <input id="entity-url-input" matInput type="text"  formControlName="entityURL" placeholder="Enter the URL of the Node-RED instance..." required>
