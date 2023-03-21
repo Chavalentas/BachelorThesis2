@@ -125,7 +125,7 @@
           <form [formGroup]="fifthFormGroup">
             <div>
             <p>
-            <mat-form-field class="rest-api-name-entry-field" appearance="fill">
+            <mat-form-field id="rest-api-name-formfield" class="rest-api-name-entry-field" appearance="fill">
               <mat-label>REST-API name</mat-label>
               <input id="rest-api-input" matInput type="text"  formControlName="restApiNameControl" placeholder="Enter the name of the REST-API..." required>
               <mat-error *ngIf="fifthFormGroup?.get('restApiNameControl')?.errors?.['required']">The REST-API name cannot be empty!</mat-error>
@@ -144,12 +144,16 @@
         <mat-step [stepControl]="sixthFormGroup" label="Get the configuration">
           <form [formGroup]="sixthFormGroup">
             <div class="configuration-container">
-              <mat-form-field class="example-full-width" appearance="fill">
+              <mat-form-field id="config-area-formfield" class="example-full-width" appearance="fill">
                 <mat-label>JSON configuration</mat-label>
                 <textarea id="config-area" formControlName="configurationControl" matInput></textarea>
               </mat-form-field>
               <div class="configuration-buttons-container">
                 <button [cdkCopyToClipboard]="sixthFormGroup.get('configurationControl')?.value"  class="config-buttons" mat-raised-button color="black">Copy to clipboard</button>
+                <div id="offset-container">
+                   <label id="or-label">OR</label>
+                </div>
+                <button class="config-buttons" mat-raised-button color="black" (click)="handleImportToNodeRedButtonClick()">Import to Node-RED</button>
               </div>
             </div>
             <div>

@@ -46,6 +46,10 @@
   object-fit: cover;
 }
 
+#rest-api-name-formfield{
+  width: 25%;
+}
+
 .formcontainer{
   display: flex;
   justify-content: center;
@@ -82,8 +86,25 @@
 
 #config-area{
   max-height: 400px;
-   min-height: 50px;
-   resize: both;
+   min-height: 100px;
+}
+
+#config-area-formfield{
+  width: 50%;
+  height: 50%;
+}
+
+#offset-container{
+  position: relative;
+  width: 100%;
+  height: 50px;
+}
+
+#or-label{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 ::ng-deep .mat-horizontal-stepper-header{

@@ -18,6 +18,9 @@ import { createPasswordCorrectnessValidator } from 'src/app/validators/password.
 import { createHostnameCorrectnessValidator } from 'src/app/validators/hostname.validator';
 import { createUsernameCorrectnessValidator } from 'src/app/validators/user.validator';
 import { createDatabaseCorrectnessValidator } from 'src/app/validators/database.validator';
+import { MatDialog } from '@angular/material/dialog';
+import { NodeRedInstanceDataDialogComponent } from '../node-red-instance-data-dialog/node-red-instance-data-dialog.component';
+import { ImportFlowResponse } from 'src/app/models/import-flow-response.model';
 
 @Component({
   selector: 'app-home',
@@ -25,16 +28,17 @@ import { createDatabaseCorrectnessValidator } from 'src/app/validators/database.
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  private _jsonConfig : any;
+  private _jsonConfig : Array<any>;
   private _dbConfiguration : DbConfiguration;
   private _dbProvider : string = '';
   private _connString : string = '';
   private _restApiName : string = '';
   private _objectData : any;
 
-  constructor(private _formBuilder : FormBuilder, private _httpClient : HttpClient, private _helperService : HelperService) {
+  constructor(private _formBuilder : FormBuilder, private _httpClient : HttpClient, private _helperService : HelperService, private _dialog : MatDialog) {
   this.selectedObjectType = '';
   this._dbConfiguration = {} as DbConfiguration;
+  this._jsonConfig = [];
   this.selectedSchema = {schemaName : ''} as Schema;
   this.selectedDbObject = {dbObjectName : ''} as DbObject;
  }
@@ -251,6 +255,7 @@ export class HomeComponent implements OnInit {
       next : data => {
         this._jsonConfig = data;
         this.sixthFormGroup.get('configurationControl')?.setValue(JSON.stringify(this._jsonConfig));
+        this.sixthStepSuccessMessage = '';
         this.stepper.next();
       },
       error : error => {
@@ -312,6 +317,35 @@ export class HomeComponent implements OnInit {
       }
     }
     );
+  }
+
+  public handleImportToNodeRedButtonClick() : void{
+    const dialogRef = this._dialog.open(NodeRedInstanceDataDialogComponent, {
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.result === undefined) {
+        return;
+      }
+
+      var restApiName = this._restApiName;
+      var nodeRedUrl = result.result;
+      var nodesWithoutTab = this._jsonConfig.filter(o => o.type !== 'tab');
+      this.importFlow(restApiName, nodeRedUrl + '/flow', nodesWithoutTab).subscribe({
+        next: data => {
+          this.sixthStepSuccessMessage = `The flow was imported! Please check your Node-RED instance at ${nodeRedUrl}!`;
+        },
+        error: error => {
+          if (error.error.error === undefined){
+            this.sixthStepSuccessMessage = 'Some error occurred during the import of the flow!';
+            return;
+          }
+
+          this.sixthStepSuccessMessage = error.error.error;
+        }
+      });
+    });
   }
 
   private loadSchemas() : Observable<GetSchemasResponse>{
@@ -377,5 +411,14 @@ export class HomeComponent implements OnInit {
         return response;
       })
     );
+  }
+
+  private importFlow(restApiName : string, nodeRedUrl : string, nodesToImport : any) : Observable<ImportFlowResponse>{
+    var reqBody = {"label" : restApiName, "nodes" : nodesToImport};
+    return this._httpClient.post<ImportFlowResponse>(nodeRedUrl, reqBody).pipe(
+      map(response => {
+        return response;
+      })
+    )
   }
 }

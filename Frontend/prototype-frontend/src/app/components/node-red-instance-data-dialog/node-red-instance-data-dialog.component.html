@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Enter the Node-RED instance data</h1>
+<div [formGroup]="nodeRedInstanceDataFormGroup" class="content-container form-group" mat-dialog-content>
+  <mat-form-field id="node-red-instance-url-formfield" class="example-full-width" appearance="fill">
+    <mat-label>Node-RED instance URL</mat-label>
+    <input id="entity-url-input" matInput type="text"  formControlName="entityURL" placeholder="Enter the URL of the Node-RED instance..." required>
+    <mat-error *ngIf="nodeRedInstanceDataFormGroup?.get('entityURL')?.errors?.['required']">The URL cannot be empty!</mat-error>
+  </mat-form-field>
+</div>
+<div class="mat-dialog-actions-container" mat-dialog-actions>
+  <div style="text-align: center;">
+    {{successMessage}}
+  </div>
+  <div>
+    <button mat-button (click)="handleOkButtonClick()" cdkFocusInitial>Ok</button>
+    <button mat-button (click)="handleCancelButtonClick()">Cancel</button>
+  </div>
+</div>
+

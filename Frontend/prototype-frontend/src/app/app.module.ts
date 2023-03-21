@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MatListModule} from '@angular/material/list';
 import {MatStepperModule} from '@angular/material/stepper';
 import { FormsModule } from '@angular/forms';
@@ -18,11 +19,13 @@ import {MatInputModule} from '@angular/material/input';
 import {MatRadioModule} from '@angular/material/radio';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import { ServiceModule } from './services/service.module';
+import { NodeRedInstanceDataDialogComponent } from './components/node-red-instance-data-dialog/node-red-instance-data-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    NodeRedInstanceDataDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -32,6 +35,7 @@ import { ServiceModule } from './services/service.module';
     HttpClientModule,
     MatButtonModule,
     MatCardModule,
+    MatDialogModule,
     MatInputModule,
     MatListModule,
     MatRadioModule,
