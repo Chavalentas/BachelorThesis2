@@ -27,14 +27,47 @@ import { ImportFlowResponse } from 'src/app/models/import-flow-response.model';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
+/**
+ * Represents the home component.
+ */
 export class HomeComponent implements OnInit {
+  /**
+   * Represents the json configuration (array of nodes).
+   */
   private _jsonConfig : Array<any>;
+
+  /**
+   * Represents the database configuration (data needed to establish connection).
+   */
   private _dbConfiguration : DbConfiguration;
+
+  /**
+   * Represents the database provider.
+   */
   private _dbProvider : string = '';
+
+  /**
+   * Represents the connection string.
+   */
   private _connString : string = '';
+
+  /**
+   * Represents the name of the REST-API.
+   */
   private _restApiName : string = '';
+
+  /**
+   * Represents the object data.
+   */
   private _objectData : any;
 
+  /**
+   * Represents the constructor.
+   * @param _formBuilder The form builder.
+   * @param _httpClient The HTTP client.
+   * @param _helperService The helper service.
+   * @param _dialog The dialog.
+   */
   constructor(private _formBuilder : FormBuilder, private _httpClient : HttpClient, private _helperService : HelperService, private _dialog : MatDialog) {
   this.selectedObjectType = '';
   this._dbConfiguration = {} as DbConfiguration;
@@ -43,32 +76,74 @@ export class HomeComponent implements OnInit {
   this.selectedDbObject = {dbObjectName : ''} as DbObject;
  }
 
+ /**
+  * Represents the stepper.
+  */
   @ViewChild(MatStepper) stepper!: MatStepper;
 
+  /**
+   * Represents a boolean indicating whether the stepper is linear.
+   */
   public isLinear = true;
 
+  /**
+   * Represents the first step (stepper) success message.
+   */
   public firstStepSuccessMessage: string = '';
 
+  /**
+   * Represents the second step (stepper) success message.
+   */
   public secondStepSuccessMessage: string = '';
 
+  /**
+   * Represents the third step (stepper) success message.
+   */
   public thirdStepSuccessMessage: string = '';
 
+  /**
+   * Represents the fourth step (stepper) success message.
+   */
   public fourthStepSuccessMessage: string = '';
 
+  /**
+   * Represents the fifth step (stepper) success message.
+   */
   public fifthStepSuccessMessage: string = '';
 
+  /**
+   * Represents the sixth step (stepper) success message.
+   */
   public sixthStepSuccessMessage: string = '';
 
+  /**
+   * Represents the schemas.
+   */
   public schemas : Schema[] = [];
 
+  /**
+   * Represents the database objects.
+   */
   public dbObjects : DbObject[] = [];
 
+  /**
+   * Represents the selected database object type.
+   */
   public selectedObjectType : string;
 
+  /**
+   * Represents the selected schema.
+   */
   public selectedSchema : Schema;
 
+  /**
+   * Represents the selected database object.
+   */
   public selectedDbObject : DbObject;
 
+  /**
+   * Represents the first form group.
+   */
   public firstFormGroup = this._formBuilder.group({
     hostNameControl: ['', [Validators.required, createHostnameCorrectnessValidator()]],
     portControl: ['', [Validators.required, createPortCorrectnessValidator()]],
@@ -77,29 +152,51 @@ export class HomeComponent implements OnInit {
     databaseControl : ['', [Validators.required, createDatabaseCorrectnessValidator()]],
   });
 
+  /**
+   * Represents the second form group.
+   */
   public secondFormGroup = this._formBuilder.group({
     schemaNameControl : ['', Validators.required]
   });
 
+  /**
+   * Represents the third form group.
+   */
   public thirdFormGroup = this._formBuilder.group({
     dbObjectTypeControl : ['', Validators.required]
   });
 
+  /**
+   * Represents the fourth form group.
+   */
   public fourthFormGroup = this._formBuilder.group({
     dbObjectControl : ['', Validators.required]
   });
 
+  /**
+   * Represents the fifth form group.
+   */
   public fifthFormGroup = this._formBuilder.group({
     restApiNameControl : ['', Validators.required]
   });
 
+  /**
+   * Represents the sixth form group.
+   */
   public sixthFormGroup = this._formBuilder.group({
     configurationControl: ['', Validators.required],
   });
 
+  /**
+   * Represents the ngOnInit.
+   */
   ngOnInit(): void {
   }
 
+  /**
+   * Handles the click on the 'Next' button in the database configuration step.
+   * @returns Leaves the method.
+   */
   public handleDatabaseConfigNextButtonClick() : void{
       this.firstStepSuccessMessage = '';
       if (this.firstFormGroup.invalid){
@@ -157,20 +254,36 @@ export class HomeComponent implements OnInit {
       });
   }
 
+  /**
+   * Handles the click on a schema.
+   * @param schema The schema of a database.
+   */
   public handleSchemaClick(schema : Schema) : void{
     this.secondFormGroup?.get('schemaNameControl')?.setValue(schema.schemaName);
     this.selectedSchema = schema;
   }
 
+  /**
+   * Handles the database object type selection change.
+   * @param event The radio button selection change event.
+   */
   public handleDbObjectTypeSelectionChange(event : any) : void{
     this.fourthFormGroup.get('dbObjectControl')?.setValue('');
   }
 
+  /**
+   * Handles the database object click.
+   * @param dbObject The database object.
+   */
   public handleDbObjectClick(dbObject : DbObject) : void{
     this.fourthFormGroup?.get('dbObjectControl')?.setValue(dbObject.dbObjectName);
     this.selectedDbObject = dbObject;
   }
 
+  /**
+   * Handles the click on the 'Next' button in the database object type selection step.
+   * @returns Leaves the method.
+   */
   public handleSelectDbObjectTypeNextButtonClick() : void{
     this.thirdStepSuccessMessage = '';
     if (this.thirdFormGroup.invalid){
@@ -201,6 +314,10 @@ export class HomeComponent implements OnInit {
   );
   }
 
+  /**
+   * Handles the click on the 'Next' button in the database object selection step.
+   * @returns Leaves the method.
+   */
   public handleSelectObjectNextButtonClick() : void{
     this.fourthStepSuccessMessage = '';
     if (this.fourthFormGroup.invalid){
@@ -229,6 +346,10 @@ export class HomeComponent implements OnInit {
   });
   }
 
+  /**
+   * Handles the click on the 'Next' button in the schema selection step.
+   * @returns Leaves the method.
+   */
   public handleSelectSchemaNextButtonClick() : void{
     this.secondStepSuccessMessage = '';
     if (this.secondFormGroup.invalid){
@@ -243,6 +364,10 @@ export class HomeComponent implements OnInit {
     this.stepper.next();
   }
 
+  /**
+   * Handles the click on the 'Next' button in the REST-API name input step.
+   * @returns Leaves the method.
+   */
   public handleEnterRestApiNameNextButtonClick() : void{
     this.fifthStepSuccessMessage = '';
     if (this.fifthFormGroup.invalid){
@@ -269,6 +394,9 @@ export class HomeComponent implements OnInit {
     })
   }
 
+  /**
+   * Handles the schemas refresh button click.
+   */
   public handleSchemasRefreshButtonClick() : void{
     this.loadSchemas().subscribe({
       next: data => {
@@ -296,6 +424,9 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  /**
+   * Handles the database objects refresh button click.
+   */
   public handleDbObjectsRefreshButtonClick() : void{
     this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
       next : (response) => {
@@ -319,6 +450,9 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  /**
+   * Handles the import to Node-RED button click.
+   */
   public handleImportToNodeRedButtonClick() : void{
     const dialogRef = this._dialog.open(NodeRedInstanceDataDialogComponent, {
       disableClose: true
@@ -348,6 +482,10 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  /**
+   * Loads the schemas.
+   * @returns The HTTP response observable.
+   */
   private loadSchemas() : Observable<GetSchemasResponse>{
     var reqBody = {"conn" : this._connString};
     return this._httpClient.post<GetSchemasResponse>(`${schemaParserBackendConfig.conn}/get-schemas`, reqBody).pipe(
@@ -356,6 +494,13 @@ export class HomeComponent implements OnInit {
       }));
   }
 
+  /**
+   * Loads the database objects.
+   * @param schema The schema.
+   * @param dbObjectType The database object type (table, view, function or strp).
+   * @param connString The connection string.
+   * @returns The HTTP response observable.
+   */
   private loadDbObjects(schema : Schema, dbObjectType : string, connString : string) : Observable<GetSchemaEnumsResponse>{
       var schemaName = schema.schemaName;
       var dbObjectType = dbObjectType;
@@ -367,6 +512,11 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  /**
+   * Gets the database provider.
+   * @param connString The connection string.
+   * @returns The HTTP response observable.
+   */
   private getDbProvider(connString : string) : Observable<Array<string>>{
     var reqBody = {"conn" : connString};
     return this._httpClient.post<GetDbProviderResponse>(`${schemaParserBackendConfig.conn}/get-db-provider`, reqBody).pipe(
@@ -376,6 +526,10 @@ export class HomeComponent implements OnInit {
     )
   }
 
+  /**
+   * Handles the reponse from the HTTP request the gets the database schemas.
+   * @param response The HTTP response.
+   */
   private handleGetSchemasResponse(response : GetSchemasResponse) : void{
     this.schemas.splice(0);
     response.result.forEach(s => this.schemas.push(s));
@@ -390,6 +544,10 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  /**
+   * Handles the reponse from the HTTP request the gets the schema enumerations.
+   * @param response The HTTP response.
+   */
   private handleGetDbObjectsResponse(response : GetSchemaEnumsResponse) : void{
     this.dbObjects.splice(0);
     response.result.forEach(t => this.dbObjects.push(t));
@@ -404,6 +562,13 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  /**
+   * Gets the configuration of the flow based on the parameters.
+   * @param objectData The database object data.
+   * @param connString The connection string.
+   * @param restApiName The name of the REST-API.
+   * @returns The JSON configuration of the flow.
+   */
   private getConfiguration(objectData : any, connString : string, restApiName : string) : Observable<any>{
     var reqBody = {"conn" : connString, "schema" : this.selectedSchema.schemaName, "dbObjectType" : this.selectedObjectType, "provider" : this._dbProvider, "apiName" : restApiName, "dbObjectInformation" : objectData};
     return this._httpClient.post<any>(`${configGeneratorBackendConfig.conn}/get-rest-config`, reqBody).pipe(
@@ -413,6 +578,13 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  /**
+   * Imports the flow to Node-RED.
+   * @param restApiName The name of the REST-API.
+   * @param nodeRedUrl The URL address of Node-RED.
+   * @param nodesToImport The nodes to import (JSON configuration).
+   * @returns The HTTP response observable.
+   */
   private importFlow(restApiName : string, nodeRedUrl : string, nodesToImport : any) : Observable<ImportFlowResponse>{
     var reqBody = {"label" : restApiName, "nodes" : nodesToImport};
     return this._httpClient.post<ImportFlowResponse>(nodeRedUrl, reqBody).pipe(

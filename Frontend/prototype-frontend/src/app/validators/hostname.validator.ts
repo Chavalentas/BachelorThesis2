@@ -1,5 +1,8 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
-
+/**
+ * Represents the hostname correctness validator.
+ * @returns The result of the validation.
+ */
 export function createHostnameCorrectnessValidator(): ValidatorFn {
     return (control:AbstractControl) : ValidationErrors | null => {
 

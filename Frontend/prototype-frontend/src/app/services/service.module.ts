@@ -6,5 +6,7 @@ import { HelperService } from './helper.service';
   declarations: [],
   providers: [HelperService]
 })
-
+/**
+ * Represents the service module.
+ */
 export class ServiceModule {}

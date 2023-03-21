@@ -1,5 +1,8 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
-
+/**
+ * Represents the port correctness validator.
+ * @returns The result of the validation.
+ */
 export function createPortCorrectnessValidator(): ValidatorFn {
     return (control:AbstractControl) : ValidationErrors | null => {
 

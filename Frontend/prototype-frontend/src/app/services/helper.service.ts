@@ -1,6 +1,14 @@
 import { DbConfiguration } from "../models/db-configuration.model";
 
+/**
+ * Represents the helper service.
+ */
 export class HelperService {
+  /**
+   * Gets a connection string based on the database configuration.
+   * @param dbConfig The database configuration (data needed to establish connection to the database).
+   * @returns The connection string.
+   */
   public buildConnectionString(dbConfig : DbConfiguration) : string{
       if (dbConfig === undefined || dbConfig == null){
         throw new Error("The database configuration was undefined!");

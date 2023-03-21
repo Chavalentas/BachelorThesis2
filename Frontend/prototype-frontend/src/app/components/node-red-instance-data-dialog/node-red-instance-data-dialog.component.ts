@@ -7,20 +7,39 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   templateUrl: './node-red-instance-data-dialog.component.html',
   styleUrls: ['./node-red-instance-data-dialog.component.scss']
 })
+/**
+ * Represents the Node-RED instance data Dialog component.
+ */
 export class NodeRedInstanceDataDialogComponent implements OnInit {
-
+  /**
+   * Represents the constructor.
+   * @param dialogRef Represents the dialog reference.
+   */
   constructor(public dialogRef: MatDialogRef<NodeRedInstanceDataDialogComponent>) {
   }
 
+  /**
+   * Represents the success message.
+   */
   public successMessage : string = '';
 
+  /**
+   * Represents the Node-RED instance data form group.
+   */
   public nodeRedInstanceDataFormGroup = new FormGroup({
     entityURL: new FormControl('', [Validators.required])
   });
 
+  /**
+   * Represents the ngOnInit.
+   */
   ngOnInit(): void {
   }
 
+  /**
+   * Handles the OK button click.
+   * @returns Leaves the method.
+   */
   public handleOkButtonClick() : void{
     if (this.nodeRedInstanceDataFormGroup.invalid){
       this.successMessage = 'The URL of the Node-RED instance was empty!';
@@ -45,6 +64,9 @@ export class NodeRedInstanceDataDialogComponent implements OnInit {
     this.dialogRef.close(result);
   }
 
+  /**
+   * Handles the cancel button click.
+   */
   public handleCancelButtonClick() : void{
     this.dialogRef.close();
   }

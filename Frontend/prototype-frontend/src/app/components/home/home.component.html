@@ -63,7 +63,7 @@
               <mat-action-list class="selection-list">
                 <button *ngFor="let schema of schemas"  mat-list-item (click)="handleSchemaClick(schema)">{{schema.schemaName}}</button>
               </mat-action-list>
-              <mat-error *ngIf="secondFormGroup.get('schemaNameControl')?.errors?.['required']">No schema name was selected!</mat-error>
+              <label *ngIf="secondFormGroup.get('schemaNameControl')?.errors?.['required']">No schema name was selected!</label>
               <label *ngIf="secondFormGroup.valid">Selected schema: {{selectedSchema.schemaName}}</label>
             </div>
             <div *ngIf="schemas.length == 0">
@@ -88,7 +88,7 @@
               <p><mat-radio-button value="function">Function</mat-radio-button></p>
               <p><mat-radio-button value="strp">Stored Procedure</mat-radio-button></p>
             </mat-radio-group>
-            <mat-error *ngIf="thirdFormGroup.get('dbObjectTypeControl')?.errors?.['required']">No database object type was selected!</mat-error>
+            <label *ngIf="thirdFormGroup.get('dbObjectTypeControl')?.errors?.['required']">No database object type was selected!</label>
           </div>
             <div>
               <div style="text-align: center;">
@@ -105,7 +105,7 @@
               <mat-action-list class="selection-list">
                 <button *ngFor="let object of dbObjects"  mat-list-item (click)="handleDbObjectClick(object)">{{object.dbObjectName}}</button>
               </mat-action-list>
-              <mat-error *ngIf="fourthFormGroup.get('dbObjectControl')?.errors?.['required']">No database object was selected!</mat-error>
+              <label *ngIf="fourthFormGroup.get('dbObjectControl')?.errors?.['required']">No database object was selected!</label>
               <label *ngIf="fourthFormGroup.valid">Selected database object: {{selectedDbObject.dbObjectName}}</label>
             </div>
             <div *ngIf="dbObjects.length == 0">
