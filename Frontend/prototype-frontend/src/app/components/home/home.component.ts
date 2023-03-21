@@ -1,0 +1,381 @@
+import schemaParserBackendConfig from '../../configuration/schema-parser-backend.config.json';
+import configGeneratorBackendConfig from '../../configuration/config-generator-backend.config.json'
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
+import { DbConfiguration } from 'src/app/models/db-configuration.model';
+import { Schema } from 'src/app/models/schema.model';
+import { createPortCorrectnessValidator } from 'src/app/validators/database-port.validator';
+import { HelperService } from 'src/app/services/helper.service';
+import { GetSchemasResponse } from 'src/app/models/get-schemas-response.model';
+import { GetSchemaEnumsResponse } from 'src/app/models/get-schema-enums-response.model';
+import { DbObject } from 'src/app/models/db-object.model';
+import { map, Observable } from 'rxjs';
+import { GetObjectInformationResponse } from 'src/app/models/get-object-information-response.model';
+import { GetDbProviderResponse } from 'src/app/models/get-db-provider-response.model';
+import { createPasswordCorrectnessValidator } from 'src/app/validators/password.validator';
+import { createHostnameCorrectnessValidator } from 'src/app/validators/hostname.validator';
+import { createUsernameCorrectnessValidator } from 'src/app/validators/user.validator';
+import { createDatabaseCorrectnessValidator } from 'src/app/validators/database.validator';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss']
+})
+export class HomeComponent implements OnInit {
+  private _jsonConfig : any;
+  private _dbConfiguration : DbConfiguration;
+  private _dbProvider : string = '';
+  private _connString : string = '';
+  private _restApiName : string = '';
+  private _objectData : any;
+
+  constructor(private _formBuilder : FormBuilder, private _httpClient : HttpClient, private _helperService : HelperService) {
+  this.selectedObjectType = '';
+  this._dbConfiguration = {} as DbConfiguration;
+  this.selectedSchema = {schemaName : ''} as Schema;
+  this.selectedDbObject = {dbObjectName : ''} as DbObject;
+ }
+
+  @ViewChild(MatStepper) stepper!: MatStepper;
+
+  public isLinear = true;
+
+  public firstStepSuccessMessage: string = '';
+
+  public secondStepSuccessMessage: string = '';
+
+  public thirdStepSuccessMessage: string = '';
+
+  public fourthStepSuccessMessage: string = '';
+
+  public fifthStepSuccessMessage: string = '';
+
+  public sixthStepSuccessMessage: string = '';
+
+  public schemas : Schema[] = [];
+
+  public dbObjects : DbObject[] = [];
+
+  public selectedObjectType : string;
+
+  public selectedSchema : Schema;
+
+  public selectedDbObject : DbObject;
+
+  public firstFormGroup = this._formBuilder.group({
+    hostNameControl: ['', [Validators.required, createHostnameCorrectnessValidator()]],
+    portControl: ['', [Validators.required, createPortCorrectnessValidator()]],
+    userControl: ['', [Validators.required, createUsernameCorrectnessValidator()]],
+    passwordControl : ['', [Validators.required, createPasswordCorrectnessValidator()]],
+    databaseControl : ['', [Validators.required, createDatabaseCorrectnessValidator()]],
+  });
+
+  public secondFormGroup = this._formBuilder.group({
+    schemaNameControl : ['', Validators.required]
+  });
+
+  public thirdFormGroup = this._formBuilder.group({
+    dbObjectTypeControl : ['', Validators.required]
+  });
+
+  public fourthFormGroup = this._formBuilder.group({
+    dbObjectControl : ['', Validators.required]
+  });
+
+  public fifthFormGroup = this._formBuilder.group({
+    restApiNameControl : ['', Validators.required]
+  });
+
+  public sixthFormGroup = this._formBuilder.group({
+    configurationControl: ['', Validators.required],
+  });
+
+  ngOnInit(): void {
+  }
+
+  public handleDatabaseConfigNextButtonClick() : void{
+      this.firstStepSuccessMessage = '';
+      if (this.firstFormGroup.invalid){
+        this.firstStepSuccessMessage = 'Some of the input fields have wrong value!';
+        return;
+      }
+
+      this._dbConfiguration.host = this.firstFormGroup?.get('hostNameControl')?.value;
+      this._dbConfiguration.port = this.firstFormGroup?.get('portControl')?.value;
+      this._dbConfiguration.user = this.firstFormGroup?.get('userControl')?.value;
+      this._dbConfiguration.password = this.firstFormGroup?.get('passwordControl')?.value;
+      this._dbConfiguration.database = this.firstFormGroup?.get('databaseControl')?.value;
+      this._connString = this._helperService.buildConnectionString(this._dbConfiguration);
+
+      this.getDbProvider(this._connString).subscribe({
+        next : data => {
+          this._dbProvider = data[0];
+        },
+
+        error : error => {
+          if (error.error.error === undefined){
+            this.firstStepSuccessMessage = 'Some error occurred during the connection establishing!';
+            return;
+          }
+
+          this.firstStepSuccessMessage = error.error.error;
+          return;
+        }
+      })
+
+      this.loadSchemas().subscribe({
+        next: data => {
+          if (data.result.length == 0){
+             this.secondStepSuccessMessage = 'No schemas are included in this database!';
+             return;
+          }
+
+          this.handleGetSchemasResponse(data);
+
+          if (!this.schemas.some(s => s.schemaName == this.selectedSchema.schemaName)){
+            this.secondFormGroup?.get('schemaNameControl')?.setValue('');
+          }
+
+          this.stepper.next();
+          this.secondStepSuccessMessage = '';
+        },
+        error: error => {
+          if (error.error.error === undefined){
+            this.secondStepSuccessMessage = 'Some error occurred during the loading of schemas!';
+            return;
+          }
+
+          this.secondStepSuccessMessage = error.error.error;
+        }
+      });
+  }
+
+  public handleSchemaClick(schema : Schema) : void{
+    this.secondFormGroup?.get('schemaNameControl')?.setValue(schema.schemaName);
+    this.selectedSchema = schema;
+  }
+
+  public handleDbObjectTypeSelectionChange(event : any) : void{
+    this.fourthFormGroup.get('dbObjectControl')?.setValue('');
+  }
+
+  public handleDbObjectClick(dbObject : DbObject) : void{
+    this.fourthFormGroup?.get('dbObjectControl')?.setValue(dbObject.dbObjectName);
+    this.selectedDbObject = dbObject;
+  }
+
+  public handleSelectDbObjectTypeNextButtonClick() : void{
+    this.thirdStepSuccessMessage = '';
+    if (this.thirdFormGroup.invalid){
+      this.thirdStepSuccessMessage = 'No database object type was selected!';
+      return;
+    }
+
+   this.selectedObjectType = this.thirdFormGroup?.get('dbObjectTypeControl')?.value;
+   this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
+    next : (response) => {
+      this.handleGetDbObjectsResponse(response);
+
+      if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
+        this.fourthFormGroup?.get('dbObjectControl')?.setValue('');
+      }
+
+      this.stepper.next();
+    },
+    error : (error) => {
+      if (error.error.error === undefined){
+        this.thirdStepSuccessMessage = 'Some error occurred during the loading of the database objects!';
+        return;
+      }
+
+      this.thirdStepSuccessMessage = error.error.error;
+    }
+  }
+  );
+  }
+
+  public handleSelectObjectNextButtonClick() : void{
+    this.fourthStepSuccessMessage = '';
+    if (this.fourthFormGroup.invalid){
+      this.fourthStepSuccessMessage = 'No database object was selected!';
+      return;
+    }
+
+    if (!(this.dbObjects.length > 0)){
+      return;
+    }
+
+    var reqBody = {"conn" : this._connString, "schema" : this.selectedSchema.schemaName, "dbObjectType" : this.selectedObjectType, "dbObjectName" : this.selectedDbObject.dbObjectName};
+    this._httpClient.post<GetObjectInformationResponse>(`${schemaParserBackendConfig.conn}/get-db-object-information`, reqBody).subscribe({
+      next: data => {
+        this._objectData = data.result[0];
+        this.stepper.next();
+      },
+      error: error => {
+        if (error.error.error === undefined){
+          this.fourthStepSuccessMessage = 'Some error occurred during the fetching of database object information!';
+          return;
+        }
+
+        this.fourthStepSuccessMessage = error.error.error;
+      }
+  });
+  }
+
+  public handleSelectSchemaNextButtonClick() : void{
+    this.secondStepSuccessMessage = '';
+    if (this.secondFormGroup.invalid){
+      this.secondStepSuccessMessage = 'No schema was selected!';
+      return;
+    }
+
+    if (!(this.schemas.length > 0)){
+      return;
+    }
+
+    this.stepper.next();
+  }
+
+  public handleEnterRestApiNameNextButtonClick() : void{
+    this.fifthStepSuccessMessage = '';
+    if (this.fifthFormGroup.invalid){
+      this.fifthStepSuccessMessage = 'No REST-API name was entered!';
+      return;
+    }
+
+    this._restApiName = this.fifthFormGroup?.get('restApiNameControl')?.value;
+    this.getConfiguration(this._objectData, this._connString, this._restApiName).subscribe({
+      next : data => {
+        this._jsonConfig = data;
+        this.sixthFormGroup.get('configurationControl')?.setValue(JSON.stringify(this._jsonConfig));
+        this.stepper.next();
+      },
+      error : error => {
+        if (error.error.error === undefined){
+          this.fifthStepSuccessMessage = 'Some error occurred during the fetching of the JSON configuration!';
+          return;
+        }
+
+        this.fifthStepSuccessMessage = error.error.error;
+      }
+    })
+  }
+
+  public handleSchemasRefreshButtonClick() : void{
+    this.loadSchemas().subscribe({
+      next: data => {
+        if (data.result.length == 0){
+           this.secondStepSuccessMessage = 'No schemas are included in this database!';
+           return;
+        }
+
+        this.handleGetSchemasResponse(data);
+
+        if (!this.schemas.some(s => s.schemaName == this.selectedSchema.schemaName)){
+          this.secondFormGroup?.get('schemaNameControl')?.setValue('');
+        }
+
+        this.secondStepSuccessMessage = '';
+      },
+      error: error => {
+        if (error.error.error === undefined){
+          this.secondStepSuccessMessage = 'Some error occurred during the loading of schemas!';
+          return;
+        }
+
+        this.secondStepSuccessMessage = error.error.error;
+      }
+    });
+  }
+
+  public handleDbObjectsRefreshButtonClick() : void{
+    this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
+      next : (response) => {
+        this.handleGetDbObjectsResponse(response);
+
+        if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
+          this.fourthFormGroup?.get('dbObjectControl')?.setValue('');
+        }
+
+        this.fourthStepSuccessMessage = '';
+      },
+      error : (error) => {
+        if (error.error.error === undefined){
+          this.fourthStepSuccessMessage = 'Some error occurred during the loading of the database objects!';
+          return;
+        }
+
+        this.fourthStepSuccessMessage = error.error.error;
+      }
+    }
+    );
+  }
+
+  private loadSchemas() : Observable<GetSchemasResponse>{
+    var reqBody = {"conn" : this._connString};
+    return this._httpClient.post<GetSchemasResponse>(`${schemaParserBackendConfig.conn}/get-schemas`, reqBody).pipe(
+      map(response => {
+        return response;
+      }));
+  }
+
+  private loadDbObjects(schema : Schema, dbObjectType : string, connString : string) : Observable<GetSchemaEnumsResponse>{
+      var schemaName = schema.schemaName;
+      var dbObjectType = dbObjectType;
+      var reqBody = {"conn" : connString, "schema" : schemaName, "dbObjectType" : dbObjectType};
+      return this._httpClient.post<GetSchemaEnumsResponse>(`${schemaParserBackendConfig.conn}/get-schema-enums`, reqBody).pipe(
+      map(response => {
+        return response;
+      }),
+    );
+  }
+
+  private getDbProvider(connString : string) : Observable<Array<string>>{
+    var reqBody = {"conn" : connString};
+    return this._httpClient.post<GetDbProviderResponse>(`${schemaParserBackendConfig.conn}/get-db-provider`, reqBody).pipe(
+      map(response => {
+        return response.result;
+      })
+    )
+  }
+
+  private handleGetSchemasResponse(response : GetSchemasResponse) : void{
+    this.schemas.splice(0);
+    response.result.forEach(s => this.schemas.push(s));
+    this.schemas = this.schemas.sort((a, b) => {
+      if (a.schemaName < b.schemaName) {
+        return -1;
+      }
+      if (a.schemaName >= b.schemaName) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  private handleGetDbObjectsResponse(response : GetSchemaEnumsResponse) : void{
+    this.dbObjects.splice(0);
+    response.result.forEach(t => this.dbObjects.push(t));
+    this.dbObjects = this.dbObjects.sort((a, b) => {
+      if (a.dbObjectName < b.dbObjectName) {
+        return -1;
+      }
+      if (a.dbObjectName >= b.dbObjectName) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  private getConfiguration(objectData : any, connString : string, restApiName : string) : Observable<any>{
+    var reqBody = {"conn" : connString, "schema" : this.selectedSchema.schemaName, "dbObjectType" : this.selectedObjectType, "provider" : this._dbProvider, "apiName" : restApiName, "dbObjectInformation" : objectData};
+    return this._httpClient.post<any>(`${configGeneratorBackendConfig.conn}/get-rest-config`, reqBody).pipe(
+      map(response => {
+        return response;
+      })
+    );
+  }
+}

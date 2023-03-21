@@ -1,0 +1,91 @@
+.mat-black {
+  background-color: black;
+  color: #fff;
+}
+
+.property-entry{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.entry-field{
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.example-button-row {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  flex-direction: row;
+}
+
+.buttons{
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#relation-name-form{
+  margin-bottom: 20px;
+}
+
+#generator-card {
+  position: absolute;
+  width: max-content;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#logo-id{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
+}
+
+.formcontainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: black;
+}
+
+#database-entries-container{
+  display: flex;
+}
+
+.selection-list {
+  max-height: 200px;
+    overflow: auto;
+}
+
+.configuration-container{
+  display: flex;
+  flex-direction: row;
+}
+
+.configuration-buttons-container{
+  display: flex;
+  flex-direction: column;
+}
+
+.config-buttons{
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#config-area{
+  max-height: 400px;
+   min-height: 50px;
+   resize: both;
+}
+
+::ng-deep .mat-horizontal-stepper-header{
+  pointer-events: none !important;
+}
