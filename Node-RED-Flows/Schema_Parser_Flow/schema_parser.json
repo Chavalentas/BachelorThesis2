@@ -2635,7 +2635,7 @@
         "name": "Gets a list of database objects stored in a database schema",
         "info": "",
         "x": 220,
-        "y": 1020,
+        "y": 980,
         "wires": []
     },
     {
@@ -2662,7 +2662,7 @@
         "name": "Gets the information about the database object based on the connection information and object name",
         "info": "",
         "x": 340,
-        "y": 1480,
+        "y": 1440,
         "wires": []
     },
     {
@@ -2963,7 +2963,7 @@
         "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db\", \"schema\" : \"schemaname\", \"dbObjectType\":\"dbobjecttype\"}",
         "info": "",
         "x": 390,
-        "y": 1060,
+        "y": 1020,
         "wires": []
     },
     {
@@ -3252,7 +3252,7 @@
         "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db\", \"schema\" : \"schemaname\", \"dbObjectType\":\"dbobjecttype\", \"dbObjectName\":\"dbobjectname\"}",
         "info": "",
         "x": 500,
-        "y": 1520,
+        "y": 1480,
         "wires": []
     },
     {
@@ -4636,6 +4636,26 @@
         "headers": {},
         "x": 1420,
         "y": 800,
+        "wires": []
+    },
+    {
+        "id": "05c3720a1d94fa8f",
+        "type": "comment",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "\"dbObjectType\" : \"table\" | \"view\" | \"function\" | \"strp\"",
+        "info": "",
+        "x": 190,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "4c7b8fe59067f77f",
+        "type": "comment",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "\"dbObjectType\" : \"table\" | \"view\" | \"function\" | \"strp\"",
+        "info": "",
+        "x": 190,
+        "y": 1520,
         "wires": []
     }
 ]
