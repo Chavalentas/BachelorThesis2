@@ -6,9 +6,8 @@ The body has the following structure:
 ### For views and tables
 ```javascript
 {
-    "conn" : "Host=localhost;Port=1433;User=sa;Pw=strongPassword123!;Db=master",
+    "conn" : "Host=localhost;Port=1433;User=sa;Pw=strongPassword123!;Db=master;Provider=[mssql | postgres]",
     "dbObjectType" : "table",
-    "provider" : "mssql",
     "apiName" : "TestApi",
     "dbObjectInformation" : {
         "name" : "housesview",
@@ -21,9 +20,8 @@ The body has the following structure:
     }
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database"
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
 **dbObjectType**: table or view
-**provider**: postgres or mssql
 **apiName**: the name of the REST-API
 **dbObjectInformation.name**: name of the table/view
 **dbObjectInformation.schema**: the schema of the database object
@@ -33,9 +31,8 @@ The body has the following structure:
 ### For functions and stored procedures
 ```javascript
 {
-    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres",
+    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres;Provider=[mssql | postgres]",
     "dbObjectType" : "strp",
-    "provider" : "postgres",
     "apiName" : "TestApi",
     "dbObjectInformation" : {
         "name" : "count_procedure3",
@@ -43,9 +40,8 @@ The body has the following structure:
      }
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database"
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
 **dbObjectType**: function or strp
-**provider**: postgres or mssql
 **apiName**: the name of the REST-API
 **dbObjectInformation.name**: name of the function/stored procedure
 **dbObjectInformation.schema**: the schema of the database object

@@ -5,10 +5,10 @@ Gets database schemas based on connection data.
 The body has the following structure:
 ```javascript
 {
-    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres"
+    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres;Provider=[mssql | postgres]"
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database"
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
 ### The response type
 ```javascript
 {
@@ -37,12 +37,12 @@ Gets a list of entities stored in a database schema.
 The body has the following structure:
 ```javascript
 {
-    "conn" : "Host=localhost;Port=1433;User=sa;Pw=strongPassword123!;Db=master",
+    "conn" : "Host=localhost;Port=1433;User=sa;Pw=strongPassword123!;Db=master;Provider=[mssql | postgres]",
     "schema" : "dbo",
     "dbObjectType" : "view"
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database"
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
 **schema**: the schema of the database object
 **dbObjectType**: table, view, function or strp
 
@@ -58,13 +58,13 @@ Gets the information about the database object based on the connection informati
 The body has the following structure:
 ```javascript
 {
-    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres",
+    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres;Provider=[mssql | postgres]",
     "schema" : "public",
     "dbObjectType" : "strp",
     "dbObjectName" : "count_procedure3"
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database"
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
 **schema**: the schema of the database object
 **dbObjectType**: table, view, function or strp
 **dbObjectName** : name of the database object

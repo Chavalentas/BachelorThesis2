@@ -289,7 +289,7 @@
         "type": "function",
         "z": "8366aaf082e3436f",
         "name": "ParseConnectionString",
-        "func": "var connectionString = msg.payload.conn;\n\n// Get the array of pairs [\"Host=host\", ...]\nvar equations = connectionString.split(\";\");\n\nvar connectionKeys = [];\nvar connectionValues = [];\nvar expectedKeys = ['Host', 'Port', 'User', 'Pw', 'Db'];\n\nfor (let i = 0; i < equations.length; i++){\n    var keyValueArray = equations[i].split(\"=\");\n    connectionKeys.push(keyValueArray[0]);\n    connectionValues.push(keyValueArray[1]);\n}\n\nvar correctKeys = Array.isArray(expectedKeys) &&\n        Array.isArray(connectionKeys) &&\n        expectedKeys.length === connectionKeys.length &&\n        expectedKeys.every((val, index) => val === connectionKeys[index]);\n        \nif (correctKeys){\n    msg.connKeysCorrect = true;\n    msg.connectionValues = connectionValues;\n} else {\n    msg.connKeysCorrect = false;\n}\n\nreturn msg;",
+        "func": "var connectionString = msg.payload.conn;\n\n// Get the array of pairs [\"Host=host\", ...]\nvar equations = connectionString.split(\";\");\n\nvar connectionKeys = [];\nvar connectionValues = [];\nvar expectedKeys = ['Host', 'Port', 'User', 'Pw', 'Db', 'Provider'];\n\nfor (let i = 0; i < equations.length; i++){\n    var keyValueArray = equations[i].split(\"=\");\n    connectionKeys.push(keyValueArray[0]);\n    connectionValues.push(keyValueArray[1]);\n}\n\nvar correctKeys = Array.isArray(expectedKeys) &&\n        Array.isArray(connectionKeys) &&\n        expectedKeys.length === connectionKeys.length &&\n        expectedKeys.every((val, index) => val === connectionKeys[index]);\n        \nif (correctKeys){\n    msg.connKeysCorrect = true;\n    msg.connectionValues = connectionValues;\n} else {\n    msg.connKeysCorrect = false;\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -335,7 +335,7 @@
         "type": "function",
         "z": "8366aaf082e3436f",
         "name": "ParseConnectionValues",
-        "func": "if (msg.connectionValues.some(v => v == '' || v === undefined)){\n    msg.connValuesCorrect = false;\n} else{\n    msg.connValuesCorrect = true;\n}\n\nmsg.host = msg.connectionValues[0];\nmsg.port = msg.connectionValues[1];\nmsg.user = msg.connectionValues[2];\nmsg.pw = msg.connectionValues[3];\nmsg.database = msg.connectionValues[4];\n\nreturn msg;",
+        "func": "if (msg.connectionValues.some(v => v == '' || v === undefined)){\n    msg.connValuesCorrect = false;\n} else{\n    msg.connValuesCorrect = true;\n}\n\nmsg.host = msg.connectionValues[0];\nmsg.port = msg.connectionValues[1];\nmsg.user = msg.connectionValues[2];\nmsg.pw = msg.connectionValues[3];\nmsg.database = msg.connectionValues[4];\nmsg.dbProvider = msg.connectionValues[5];\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -401,7 +401,7 @@
         "y": 920,
         "wires": [
             [
-                "31a349c89d1f1e8d"
+                "75c3b94719638629"
             ]
         ]
     },
@@ -409,9 +409,9 @@
         "id": "3322420c05a5b2aa",
         "type": "comment",
         "z": "e1279361232147cb",
-        "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db\", \"dbObjectType\":\"dbobjecttype\", \"provider\": \"dbprovider\", \"apiName\": \"nameoftheapi\", \"dbObjectInformation\":{...}}",
+        "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db;Provider=[mssql | postgres]\", \"dbObjectType\":\"dbobjecttype\",\"apiName\": \"nameoftheapi\", \"dbObjectInformation\":{...}}",
         "info": "",
-        "x": 610,
+        "x": 620,
         "y": 680,
         "wires": []
     },
@@ -460,7 +460,7 @@
         "type": "subflow:8366aaf082e3436f",
         "z": "e1279361232147cb",
         "name": "",
-        "x": 1330,
+        "x": 1210,
         "y": 920,
         "wires": [
             [
@@ -593,30 +593,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 590,
+        "x": 370,
         "y": 920,
         "wires": [
             [
                 "0371bab3169d349e"
-            ]
-        ]
-    },
-    {
-        "id": "31a349c89d1f1e8d",
-        "type": "function",
-        "z": "e1279361232147cb",
-        "name": "StoreDbProviderToMsg",
-        "func": "msg.dbProvider = msg.req.body.provider;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 350,
-        "y": 920,
-        "wires": [
-            [
-                "75c3b94719638629"
             ]
         ]
     },
@@ -980,7 +961,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1070,
+        "x": 890,
         "y": 920,
         "wires": [
             [
@@ -999,7 +980,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 820,
+        "x": 620,
         "y": 920,
         "wires": [
             [

@@ -1,5 +1,429 @@
 [
     {
+        "id": "3a440fbe92149fc9",
+        "type": "subflow",
+        "name": "DatabaseConnectionChecker",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 220,
+                "y": 220,
+                "wires": [
+                    {
+                        "id": "84b6aaadbd6b0a9a"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1320,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "8788ab13af03556c",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1320,
+                "y": 220,
+                "wires": [
+                    {
+                        "id": "8788ab13af03556c",
+                        "port": 1
+                    }
+                ]
+            },
+            {
+                "x": 580,
+                "y": 300,
+                "wires": [
+                    {
+                        "id": "84b6aaadbd6b0a9a",
+                        "port": 2
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "84b6aaadbd6b0a9a",
+        "type": "switch",
+        "z": "3a440fbe92149fc9",
+        "name": "SwitchDbProvider",
+        "property": "dbProvider",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "postgres",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "mssql",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 410,
+        "y": 220,
+        "wires": [
+            [
+                "8ba8969569e20318"
+            ],
+            [
+                "9b5e22a529b03912"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "8ba8969569e20318",
+        "type": "function",
+        "z": "3a440fbe92149fc9",
+        "name": "ConnectToPostgres",
+        "func": "const pg = global.get('pg');\n\nconst testPgConnection = async () => {\n    const client = new pg.Client(msg.pgConfig);\n    try {\n        await client.connect();\n        console.log('Successfully connected to PostgreSQL database');\n    } catch (err) {\n        console.error('Error connecting to PostgreSQL database');\n        throw err;\n    } finally {\n        await client.end();\n    }\n};\n\ntestPgConnection()\n    .then(() => {\n        msg.connected = true;\n        node.send(msg)\n    }, (error) => {\n        msg.connected = false;\n        node.send(msg);\n    });",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 160,
+        "wires": [
+            [
+                "8788ab13af03556c"
+            ]
+        ]
+    },
+    {
+        "id": "9b5e22a529b03912",
+        "type": "function",
+        "z": "3a440fbe92149fc9",
+        "name": "ConnectToMssql",
+        "func": "const mssql = global.get('mssql');\n\nconst testMssqlConnection = async () => {\n    try {\n        await mssql.connect(msg.mssqlConfig);\n        console.log('Successfully connected to MSSQL database');\n    } catch (err) {\n        console.error('Error connecting to MSSQL database');\n        await mssql.close();\n        throw err;\n    } finally {\n        await mssql.close();\n    }\n};\n\ntestMssqlConnection()\n    .then(() => {\n        msg.connected = true;\n        node.send(msg)\n    }, (error) => {\n        msg.connected = false;\n        node.send(msg);\n    });",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 220,
+        "wires": [
+            [
+                "8788ab13af03556c"
+            ]
+        ]
+    },
+    {
+        "id": "8788ab13af03556c",
+        "type": "switch",
+        "z": "3a440fbe92149fc9",
+        "name": "SwitchConnectionBoolean",
+        "property": "connected",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1050,
+        "y": 180,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "6ab50c85ca606a95",
+        "type": "subflow",
+        "name": "DbProviderConnectionStringParser",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 80,
+                "y": 340,
+                "wires": [
+                    {
+                        "id": "0b3622e260ca74cd"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1460,
+                "y": 280,
+                "wires": [
+                    {
+                        "id": "7441a81e33e3b0a9",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1200,
+                "y": 400,
+                "wires": [
+                    {
+                        "id": "f159e6eb4ade31c3",
+                        "port": 1
+                    }
+                ]
+            },
+            {
+                "x": 580,
+                "y": 440,
+                "wires": [
+                    {
+                        "id": "0b3622e260ca74cd",
+                        "port": 2
+                    },
+                    {
+                        "id": "0b3622e260ca74cd",
+                        "port": 1
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "0b3622e260ca74cd",
+        "type": "switch",
+        "z": "6ab50c85ca606a95",
+        "name": "CheckForConnectionString",
+        "property": "payload.conn",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "else"
+            },
+            {
+                "t": "empty"
+            },
+            {
+                "t": "istype",
+                "v": "undefined",
+                "vt": "undefined"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 300,
+        "y": 340,
+        "wires": [
+            [
+                "f9a7eb3554cd81aa"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "f9a7eb3554cd81aa",
+        "type": "function",
+        "z": "6ab50c85ca606a95",
+        "name": "ParseConnectionString",
+        "func": "var connectionString = msg.payload.conn;\n\n// Get the array of pairs [\"Host=host\", ...]\nvar equations = connectionString.split(\";\");\n\nvar connectionKeys = [];\nvar connectionValues = [];\nvar expectedKeys = ['Host', 'Port', 'User', 'Pw', 'Db'];\n\nfor (let i = 0; i < equations.length; i++){\n    var keyValueArray = equations[i].split(\"=\");\n    connectionKeys.push(keyValueArray[0]);\n    connectionValues.push(keyValueArray[1]);\n}\n\nvar correctKeys = Array.isArray(expectedKeys) &&\n        Array.isArray(connectionKeys) &&\n        expectedKeys.length === connectionKeys.length &&\n        expectedKeys.every((val, index) => val === connectionKeys[index]);\n        \nif (correctKeys){\n    msg.connKeysCorrect = true;\n    msg.connectionValues = connectionValues;\n} else {\n    msg.connKeysCorrect = false;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 340,
+        "wires": [
+            [
+                "f159e6eb4ade31c3"
+            ]
+        ]
+    },
+    {
+        "id": "f159e6eb4ade31c3",
+        "type": "switch",
+        "z": "6ab50c85ca606a95",
+        "name": "CheckForConnectionKeysCorrectness",
+        "property": "connKeysCorrect",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 910,
+        "y": 340,
+        "wires": [
+            [
+                "7441a81e33e3b0a9"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "7441a81e33e3b0a9",
+        "type": "function",
+        "z": "6ab50c85ca606a95",
+        "name": "ParseConnectionValues",
+        "func": "if (msg.connectionValues.some(v => v == '' || v === undefined)){\n    msg.connValuesCorrect = false;\n} else{\n    msg.connValuesCorrect = true;\n}\n\nmsg.host = msg.connectionValues[0];\nmsg.port = msg.connectionValues[1];\nmsg.user = msg.connectionValues[2];\nmsg.pw = msg.connectionValues[3];\nmsg.database = msg.connectionValues[4];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1270,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "02aa7986ab49c73f",
+        "type": "subflow",
+        "name": "DatabaseConnectionSetter",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 160,
+                "y": 280,
+                "wires": [
+                    {
+                        "id": "9685c01aab3d30fe"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 960,
+                "y": 240,
+                "wires": [
+                    {
+                        "id": "66fa9ec58d31788b",
+                        "port": 0
+                    },
+                    {
+                        "id": "c5b80d16f265ee3b",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 960,
+                "y": 360,
+                "wires": [
+                    {
+                        "id": "9685c01aab3d30fe",
+                        "port": "2"
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "9685c01aab3d30fe",
+        "type": "switch",
+        "z": "02aa7986ab49c73f",
+        "name": "SwitchDbProvider",
+        "property": "dbProvider",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "postgres",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "mssql",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 390,
+        "y": 280,
+        "wires": [
+            [
+                "66fa9ec58d31788b"
+            ],
+            [
+                "c5b80d16f265ee3b"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "c5b80d16f265ee3b",
+        "type": "function",
+        "z": "02aa7986ab49c73f",
+        "name": "SetMssqlConnectionDynamically",
+        "func": "const mssql = global.get('mssql');\n\nvar host = msg.host;\nvar port = msg.port;\nvar database = msg.database;\nvar user = msg.user;\nvar password = msg.pw;\n\nconst mssqlConfig = {\n  user: user,\n  password: password,\n  server: host,\n  port: parseInt(port),\n  database: database,\n  options: {\n    trustedConnection: true,\n    encrypt: false,\n    enableArithAbort: true,\n    trustServerCertificate: true,\n\n  }\n};\n\nmsg.mssqlConfig = mssqlConfig;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "66fa9ec58d31788b",
+        "type": "function",
+        "z": "02aa7986ab49c73f",
+        "name": "SetPostgresConnectionDynamically",
+        "func": "msg.pgConfig = {\n  user: msg.user, \n  password: msg.pw, \n  host: msg.host, \n  database: msg.database, \n  port: msg.port\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
         "id": "e75ce79db26486a2",
         "type": "subflow",
         "name": "DbObjectNameChecker",
@@ -2089,341 +2513,6 @@
         ]
     },
     {
-        "id": "800045bc10832234",
-        "type": "subflow",
-        "name": "GetFunctionData",
-        "info": "",
-        "category": "",
-        "in": [
-            {
-                "x": 80,
-                "y": 260,
-                "wires": [
-                    {
-                        "id": "b7daea959f48eb81"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 1380,
-                "y": 260,
-                "wires": [
-                    {
-                        "id": "d051bc315a2334b1",
-                        "port": 0
-                    },
-                    {
-                        "id": "a5e4cf1d24324218",
-                        "port": 0
-                    }
-                ]
-            }
-        ],
-        "env": [],
-        "meta": {},
-        "color": "#DDAA99"
-    },
-    {
-        "id": "d051bc315a2334b1",
-        "type": "function",
-        "z": "800045bc10832234",
-        "name": "StandardizeResponse",
-        "func": "var data = {\n    \"name\": msg.funcName,\n    \"schema\" : msg.schema,\n    \"parameters\" : msg.parameters\n}\n\nmsg.payload = data;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1080,
-        "y": 180,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "9b3eab01b22eb476",
-        "type": "function",
-        "z": "800045bc10832234",
-        "name": "SetFunctionParameters",
-        "func": "msg.parameters = [];\n\nfor (let i = 0; i < msg.payload.length; i++){\n    msg.parameters.push({\"parameterName\" : msg.payload[i].parameter_name});\n}\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 790,
-        "y": 180,
-        "wires": [
-            [
-                "d051bc315a2334b1"
-            ]
-        ]
-    },
-    {
-        "id": "3b61c1d6fbada282",
-        "type": "function",
-        "z": "800045bc10832234",
-        "name": "GetFunctionParameters (MSSQL)",
-        "func": "const mssql = global.get('mssql');\n\nasync function query() {\n  try {\n    var conn = new mssql.ConnectionPool(msg.mssqlConfig);\n    conn.connect().then(function (pool) {\n      var request = new mssql.Request(pool);\n      var query = `SELECT parameter_name\nFROM information_schema.routines r\nINNER JOIN information_schema.parameters p\nON p.specific_name = r.routine_name\nWHERE r.routine_schema = '${msg.schema}'\nAND r.routine_type = 'FUNCTION'\nAND p.parameter_mode <> 'OUT'\nAND r.specific_name = '${msg.funcName}'`;\n      request.query(query, function (error, records) {\n        msg.payload = records.recordset;\n        node.send(msg);\n        conn.close();\n      });\n    });\n  } catch (err) {\n    throw err;\n  } finally {\n    await mssql.close();\n  }\n}\n\nawait query();",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 540,
-        "y": 340,
-        "wires": [
-            [
-                "1c71694b52a76d21"
-            ]
-        ]
-    },
-    {
-        "id": "1c71694b52a76d21",
-        "type": "function",
-        "z": "800045bc10832234",
-        "name": "SetFunctionParameters",
-        "func": "msg.parameters = [];\n\nfor (let i = 0; i < msg.payload.length; i++){\n    msg.parameters.push({\"parameterName\" : msg.payload[i].parameter_name});\n}\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 870,
-        "y": 340,
-        "wires": [
-            [
-                "a5e4cf1d24324218"
-            ]
-        ]
-    },
-    {
-        "id": "a5e4cf1d24324218",
-        "type": "function",
-        "z": "800045bc10832234",
-        "name": "StandardizeResponse",
-        "func": "var data = {\n    \"name\": msg.funcName,\n    \"schema\" : msg.schema,\n    \"parameters\" : msg.parameters\n}\n\nmsg.payload = data;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1160,
-        "y": 340,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "b7daea959f48eb81",
-        "type": "switch",
-        "z": "800045bc10832234",
-        "name": "SwitchDbProvider",
-        "property": "dbProvider",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "postgres",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "mssql",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 230,
-        "y": 260,
-        "wires": [
-            [
-                "d2a2a17d4faeed8e"
-            ],
-            [
-                "3b61c1d6fbada282"
-            ]
-        ]
-    },
-    {
-        "id": "d2a2a17d4faeed8e",
-        "type": "postgresql",
-        "z": "800045bc10832234",
-        "name": "GetFunctionParameters",
-        "query": "SELECT p.parameter_name\nFROM information_schema.parameters p\nINNER JOIN information_schema.routines r\nON p.specific_catalog = r.specific_catalog\nAND p.specific_schema = r.specific_schema\nAND p.specific_name = r.specific_name\nWHERE r.routine_schema = '{{{msg.schema}}}'\nAND p.parameter_mode = 'IN'\nAND r.routine_type = 'FUNCTION'\nAND r.routine_name = '{{{msg.funcName}}}';",
-        "postgreSQLConfig": "",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 510,
-        "y": 180,
-        "wires": [
-            [
-                "9b3eab01b22eb476"
-            ]
-        ]
-    },
-    {
-        "id": "9e6765c76da66a1b",
-        "type": "subflow",
-        "name": "DatabaseConnector",
-        "info": "",
-        "category": "",
-        "in": [
-            {
-                "x": 20,
-                "y": 200,
-                "wires": [
-                    {
-                        "id": "f85e53f57577970a"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 940,
-                "y": 140,
-                "wires": [
-                    {
-                        "id": "4bab41b31b3ad4ed",
-                        "port": 0
-                    }
-                ]
-            },
-            {
-                "x": 940,
-                "y": 200,
-                "wires": [
-                    {
-                        "id": "1096204376f32bc2",
-                        "port": 0
-                    }
-                ]
-            },
-            {
-                "x": 940,
-                "y": 280,
-                "wires": [
-                    {
-                        "id": "1e9ac276212cea2b",
-                        "port": 2
-                    }
-                ]
-            }
-        ],
-        "env": [],
-        "meta": {},
-        "color": "#DDAA99"
-    },
-    {
-        "id": "f85e53f57577970a",
-        "type": "function",
-        "z": "9e6765c76da66a1b",
-        "name": "GetDbProvider",
-        "func": "const pg = global.get('pg');\nconst mssql = global.get('mssql');\n\nvar host = msg.host;\nvar port = msg.port;\nvar database = msg.database;\nvar user = msg.user;\nvar password = msg.pw;\n\n\nconst pgConfig = {\n  user: user,\n  database: database,\n  password: password,\n  host: host,\n  port: port,  \n};\n\nmsg.pgConfig = pgConfig;\n\nconst mssqlConfig = {\n  user: user,\n  password: password,\n  server: host,\n  port: parseInt(port),\n  database: database,\n  options: {\n    trustedConnection: true,\n    encrypt: false,\n    enableArithAbort: true,\n    trustServerCertificate: true,\n\n  }\n};\n\nmsg.mssqlConfig = mssqlConfig;\n\nconst testPgConnection = async () => {\n    const client = new pg.Client(pgConfig);\n    try {\n      await client.connect();\n      console.log('Successfully connected to PostgreSQL database');\n    } catch (err) {\n      console.error('Error connecting to PostgreSQL database');\n      throw err;\n    } finally {\n      await client.end();\n    }\n  };\n  \n  const testMssqlConnection = async () => {\n    try {\n      await mssql.connect(mssqlConfig);\n      console.log('Successfully connected to MSSQL database');\n    } catch (err) {\n      console.error('Error connecting to MSSQL database');\n      await mssql.close();\n      throw err;\n    } finally {\n      await mssql.close();\n    }\n  };\n\n  testPgConnection()\n    .then(() => {\n      msg.dbProvider = 'postgres';\n      node.send(msg)\n    }, (error) => {\n      return new Promise((resolve, reject) => {\n        testMssqlConnection().then(() => {\n          msg.dbProvider = 'mssql';\n          resolve();\n          node.send(msg);\n        }, (error) => {\n          msg.dbProvider = 'noconnection';\n          node.send(msg);\n        })\n      });\n    });",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 160,
-        "y": 200,
-        "wires": [
-            [
-                "1e9ac276212cea2b"
-            ]
-        ]
-    },
-    {
-        "id": "1e9ac276212cea2b",
-        "type": "switch",
-        "z": "9e6765c76da66a1b",
-        "name": "SwitchDbProvider",
-        "property": "dbProvider",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "postgres",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "mssql",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "noconnection",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 3,
-        "x": 370,
-        "y": 200,
-        "wires": [
-            [
-                "4bab41b31b3ad4ed"
-            ],
-            [
-                "1096204376f32bc2"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "1096204376f32bc2",
-        "type": "function",
-        "z": "9e6765c76da66a1b",
-        "name": "SetMssqlConnectionDynamically",
-        "func": "const mssql = global.get('mssql');\n\nvar host = msg.host;\nvar port = msg.port;\nvar database = msg.database;\nvar user = msg.user;\nvar password = msg.pw;\n\nconst mssqlConfig = {\n  user: user,\n  password: password,\n  server: host,\n  port: parseInt(port),\n  database: database,\n  options: {\n    trustedConnection: true,\n    encrypt: false,\n    enableArithAbort: true,\n    trustServerCertificate: true,\n\n  }\n};\n\nmsg.mssqlConfig = mssqlConfig;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 720,
-        "y": 200,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "4bab41b31b3ad4ed",
-        "type": "function",
-        "z": "9e6765c76da66a1b",
-        "name": "SetPostgresConnectionDynamically",
-        "func": "msg.pgConfig = {\n  user: msg.user, \n  password: msg.pw, \n  host: msg.host, \n  database: msg.database, \n  port: msg.port\n};\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 720,
-        "y": 140,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "32ded5c50fac0a7c",
-        "type": "subflow:800045bc10832234",
-        "z": "9e6765c76da66a1b",
-        "name": "",
-        "x": 310,
-        "y": 480,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "8366aaf082e3436f",
         "type": "subflow",
         "name": "ConnectionStringParser",
@@ -2485,7 +2574,7 @@
         "type": "function",
         "z": "8366aaf082e3436f",
         "name": "ParseConnectionString",
-        "func": "var connectionString = msg.payload.conn;\n\n// Get the array of pairs [\"Host=host\", ...]\nvar equations = connectionString.split(\";\");\n\nvar connectionKeys = [];\nvar connectionValues = [];\nvar expectedKeys = ['Host', 'Port', 'User', 'Pw', 'Db'];\n\nfor (let i = 0; i < equations.length; i++){\n    var keyValueArray = equations[i].split(\"=\");\n    connectionKeys.push(keyValueArray[0]);\n    connectionValues.push(keyValueArray[1]);\n}\n\nvar correctKeys = Array.isArray(expectedKeys) &&\n        Array.isArray(connectionKeys) &&\n        expectedKeys.length === connectionKeys.length &&\n        expectedKeys.every((val, index) => val === connectionKeys[index]);\n        \nif (correctKeys){\n    msg.connKeysCorrect = true;\n    msg.connectionValues = connectionValues;\n} else {\n    msg.connKeysCorrect = false;\n}\n\nreturn msg;",
+        "func": "var connectionString = msg.payload.conn;\n\n// Get the array of pairs [\"Host=host\", ...]\nvar equations = connectionString.split(\";\");\n\nvar connectionKeys = [];\nvar connectionValues = [];\nvar expectedKeys = ['Host', 'Port', 'User', 'Pw', 'Db', 'Provider'];\n\nfor (let i = 0; i < equations.length; i++){\n    var keyValueArray = equations[i].split(\"=\");\n    connectionKeys.push(keyValueArray[0]);\n    connectionValues.push(keyValueArray[1]);\n}\n\nvar correctKeys = Array.isArray(expectedKeys) &&\n        Array.isArray(connectionKeys) &&\n        expectedKeys.length === connectionKeys.length &&\n        expectedKeys.every((val, index) => val === connectionKeys[index]);\n        \nif (correctKeys){\n    msg.connKeysCorrect = true;\n    msg.connectionValues = connectionValues;\n} else {\n    msg.connKeysCorrect = false;\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2531,7 +2620,7 @@
         "type": "function",
         "z": "8366aaf082e3436f",
         "name": "ParseConnectionValues",
-        "func": "if (msg.connectionValues.some(v => v == '' || v === undefined)){\n    msg.connValuesCorrect = false;\n} else{\n    msg.connValuesCorrect = true;\n}\n\nmsg.host = msg.connectionValues[0];\nmsg.port = msg.connectionValues[1];\nmsg.user = msg.connectionValues[2];\nmsg.pw = msg.connectionValues[3];\nmsg.database = msg.connectionValues[4];\n\nreturn msg;",
+        "func": "if (msg.connectionValues.some(v => v == '' || v === undefined)){\n    msg.connValuesCorrect = false;\n} else{\n    msg.connValuesCorrect = true;\n}\n\nmsg.host = msg.connectionValues[0];\nmsg.port = msg.connectionValues[1];\nmsg.user = msg.connectionValues[2];\nmsg.pw = msg.connectionValues[3];\nmsg.database = msg.connectionValues[4];\nmsg.dbProvider = msg.connectionValues[5];\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2607,8 +2696,8 @@
         "z": "ddd4d9eb36b5b0f8",
         "name": "Gets schemas based on the connection data",
         "info": "",
-        "x": 210,
-        "y": 340,
+        "x": 170,
+        "y": 300,
         "wires": []
     },
     {
@@ -2621,7 +2710,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 130,
-        "y": 1100,
+        "y": 1220,
         "wires": [
             [
                 "e9583983f2b0f709"
@@ -2635,7 +2724,7 @@
         "name": "Gets a list of database objects stored in a database schema",
         "info": "",
         "x": 220,
-        "y": 980,
+        "y": 1100,
         "wires": []
     },
     {
@@ -2648,7 +2737,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 150,
-        "y": 1560,
+        "y": 1940,
         "wires": [
             [
                 "205e174c4e8744ef"
@@ -2661,18 +2750,18 @@
         "z": "ddd4d9eb36b5b0f8",
         "name": "Gets the information about the database object based on the connection information and object name",
         "info": "",
-        "x": 340,
-        "y": 1440,
+        "x": 360,
+        "y": 1820,
         "wires": []
     },
     {
         "id": "b069b65f1096c1f7",
         "type": "comment",
         "z": "ddd4d9eb36b5b0f8",
-        "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db\"}",
+        "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db;Provider=[mssql | postgres]\"}",
         "info": "",
-        "x": 250,
-        "y": 380,
+        "x": 290,
+        "y": 340,
         "wires": []
     },
     {
@@ -2727,7 +2816,7 @@
         "y": 360,
         "wires": [
             [
-                "62e3fac569ebc586"
+                "84cb9ee1dca1badd"
             ],
             [
                 "85ffbeb1e6fb4ae9"
@@ -2771,8 +2860,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 1630,
-        "y": 380,
+        "x": 1680,
+        "y": 400,
         "wires": []
     },
     {
@@ -2780,14 +2869,14 @@
         "type": "function",
         "z": "ddd4d9eb36b5b0f8",
         "name": "CreateUnknownProviderError",
-        "func": "msg.payload = {\n    \"error\" : \"No connection to a supported provider could be detected!\"\n};\n\nreturn msg;",
+        "func": "msg.payload = {\n    \"error\" : \"An unknown database provider was detected!\"\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1400,
-        "y": 380,
+        "x": 1470,
+        "y": 400,
         "wires": [
             [
                 "01411e7116ffc243"
@@ -2801,7 +2890,7 @@
         "name": "This subflow catches the errors",
         "info": "",
         "x": 410,
-        "y": 180,
+        "y": 60,
         "wires": []
     },
     {
@@ -2812,7 +2901,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 240,
+        "y": 120,
         "wires": [
             [
                 "1a1c78a79b72175e"
@@ -2831,7 +2920,7 @@
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 240,
+        "y": 120,
         "wires": [
             [
                 "0bb96587fd655e29"
@@ -2846,7 +2935,7 @@
         "statusCode": 400,
         "headers": {},
         "x": 600,
-        "y": 240,
+        "y": 120,
         "wires": []
     },
     {
@@ -2859,8 +2948,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1340,
-        "y": 220,
+        "x": 2070,
+        "y": 100,
         "wires": [
             [
                 "1cd774c8f6a9a448"
@@ -2874,8 +2963,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 1790,
-        "y": 220,
+        "x": 2520,
+        "y": 100,
         "wires": []
     },
     {
@@ -2885,8 +2974,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 1790,
-        "y": 320,
+        "x": 2520,
+        "y": 200,
         "wires": []
     },
     {
@@ -2900,8 +2989,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1370,
-        "y": 320,
+        "x": 2100,
+        "y": 200,
         "wires": [
             [
                 "5258b19992460cc9"
@@ -2914,8 +3003,8 @@
         "z": "ddd4d9eb36b5b0f8",
         "name": "It is not possible to set the connection dynamically for the MSSQL-PLUS node",
         "info": "",
-        "x": 1520,
-        "y": 280,
+        "x": 2250,
+        "y": 160,
         "wires": []
     },
     {
@@ -2929,8 +3018,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1570,
-        "y": 220,
+        "x": 2300,
+        "y": 100,
         "wires": [
             [
                 "c27b6e0418d53df6"
@@ -2948,8 +3037,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1590,
-        "y": 320,
+        "x": 2320,
+        "y": 200,
         "wires": [
             [
                 "c00c9e79184cbbaf"
@@ -2960,10 +3049,10 @@
         "id": "11cc8ca10dec5c18",
         "type": "comment",
         "z": "ddd4d9eb36b5b0f8",
-        "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db\", \"schema\" : \"schemaname\", \"dbObjectType\":\"dbobjecttype\"}",
+        "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db;Provider=[mssql | postgres]\", \"schema\" : \"schemaname\", \"dbObjectType\":\"dbobjecttype\"}",
         "info": "",
-        "x": 390,
-        "y": 1020,
+        "x": 480,
+        "y": 1140,
         "wires": []
     },
     {
@@ -2978,7 +3067,7 @@
         "finalize": "",
         "libs": [],
         "x": 1190,
-        "y": 1340,
+        "y": 1460,
         "wires": [
             [
                 "fd1db7451eeb4390"
@@ -2993,7 +3082,7 @@
         "statusCode": "400",
         "headers": {},
         "x": 1490,
-        "y": 1340,
+        "y": 1460,
         "wires": []
     },
     {
@@ -3008,7 +3097,7 @@
         "finalize": "",
         "libs": [],
         "x": 1200,
-        "y": 1260,
+        "y": 1380,
         "wires": [
             [
                 "60c04c24c4042020"
@@ -3034,10 +3123,10 @@
         "repair": false,
         "outputs": 2,
         "x": 1220,
-        "y": 1060,
+        "y": 1180,
         "wires": [
             [
-                "bf36fbbcf6396c49"
+                "66acf1bc9413d547"
             ],
             [
                 "c3927a305f7ccb39"
@@ -3052,7 +3141,7 @@
         "statusCode": "400",
         "headers": {},
         "x": 1410,
-        "y": 1260,
+        "y": 1380,
         "wires": []
     },
     {
@@ -3067,7 +3156,7 @@
         "finalize": "",
         "libs": [],
         "x": 1670,
-        "y": 1260,
+        "y": 1380,
         "wires": [
             [
                 "ec00e5408ccb705c"
@@ -3082,7 +3171,7 @@
         "statusCode": "400",
         "headers": {},
         "x": 1920,
-        "y": 1260,
+        "y": 1380,
         "wires": []
     },
     {
@@ -3090,7 +3179,7 @@
         "type": "function",
         "z": "ddd4d9eb36b5b0f8",
         "name": "CreateUnknownProviderError",
-        "func": "msg.payload = {\n    \"error\" : \"No connection to a supported provider could be detected!\"\n};\n\nreturn msg;",
+        "func": "msg.payload = {\n    \"error\": \"An unknown database provider was detected!\"\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3111,7 +3200,7 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 2160,
+        "x": 2140,
         "y": 1200,
         "wires": []
     },
@@ -3122,8 +3211,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 3580,
-        "y": 980,
+        "x": 3460,
+        "y": 900,
         "wires": []
     },
     {
@@ -3137,8 +3226,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1530,
-        "y": 1660,
+        "x": 1410,
+        "y": 2000,
         "wires": [
             [
                 "c15901f9f8ede26f"
@@ -3152,8 +3241,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 1760,
-        "y": 1660,
+        "x": 1620,
+        "y": 2000,
         "wires": []
     },
     {
@@ -3167,8 +3256,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1510,
-        "y": 1580,
+        "x": 1390,
+        "y": 1940,
         "wires": [
             [
                 "5b37f0f235934aa0"
@@ -3182,8 +3271,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 1720,
-        "y": 1580,
+        "x": 1600,
+        "y": 1940,
         "wires": []
     },
     {
@@ -3204,11 +3293,11 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 1560,
-        "y": 1480,
+        "x": 1460,
+        "y": 1860,
         "wires": [
             [
-                "fae2bbb1cb0327bf"
+                "6ca759dec44754ba"
             ],
             [
                 "bccfa14d697b26ea"
@@ -3226,8 +3315,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1890,
-        "y": 1540,
+        "x": 1790,
+        "y": 1920,
         "wires": [
             [
                 "e2669c961d7ca751"
@@ -3241,18 +3330,18 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 2100,
-        "y": 1540,
+        "x": 2000,
+        "y": 1920,
         "wires": []
     },
     {
         "id": "aeef63cb3824aa8a",
         "type": "comment",
         "z": "ddd4d9eb36b5b0f8",
-        "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db\", \"schema\" : \"schemaname\", \"dbObjectType\":\"dbobjecttype\", \"dbObjectName\":\"dbobjectname\"}",
+        "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db;Provider=[mssql | postgres]\", \"schema\" : \"schemaname\", \"dbObjectType\":\"dbobjecttype\", \"dbObjectName\":\"dbobjectname\"}",
         "info": "",
-        "x": 500,
-        "y": 1480,
+        "x": 600,
+        "y": 1860,
         "wires": []
     },
     {
@@ -3280,7 +3369,7 @@
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
         "x": 870,
-        "y": 1100,
+        "y": 1220,
         "wires": [
             [
                 "f39cb57b4dd0f295"
@@ -3294,50 +3383,12 @@
         ]
     },
     {
-        "id": "62e3fac569ebc586",
-        "type": "subflow:9e6765c76da66a1b",
-        "z": "ddd4d9eb36b5b0f8",
-        "name": "",
-        "x": 1100,
-        "y": 320,
-        "wires": [
-            [
-                "729c1a5723a1adc3"
-            ],
-            [
-                "a3680c27ba3591e5"
-            ],
-            [
-                "f5ad0fa9df159234"
-            ]
-        ]
-    },
-    {
-        "id": "bf36fbbcf6396c49",
-        "type": "subflow:9e6765c76da66a1b",
-        "z": "ddd4d9eb36b5b0f8",
-        "name": "",
-        "x": 1570,
-        "y": 980,
-        "wires": [
-            [
-                "7d4c8513f9e1db13"
-            ],
-            [
-                "7d4c8513f9e1db13"
-            ],
-            [
-                "cab005a332a006ce"
-            ]
-        ]
-    },
-    {
         "id": "2b7061926cc988a5",
         "type": "subflow:ac9dc272f4af2a33",
         "z": "ddd4d9eb36b5b0f8",
         "name": "GetDbObjects",
         "x": 3280,
-        "y": 980,
+        "y": 900,
         "wires": [
             [
                 "addaca5aa396a0bb"
@@ -3350,7 +3401,7 @@
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
         "x": 1130,
-        "y": 1560,
+        "y": 1940,
         "wires": [
             [
                 "e2b563afd1175283"
@@ -3364,37 +3415,18 @@
         ]
     },
     {
-        "id": "fae2bbb1cb0327bf",
-        "type": "subflow:9e6765c76da66a1b",
-        "z": "ddd4d9eb36b5b0f8",
-        "name": "",
-        "x": 1960,
-        "y": 1480,
-        "wires": [
-            [
-                "ce99a4ce27f8c258"
-            ],
-            [
-                "ce99a4ce27f8c258"
-            ],
-            [
-                "631772358e1d86c4"
-            ]
-        ]
-    },
-    {
         "id": "631772358e1d86c4",
         "type": "function",
         "z": "ddd4d9eb36b5b0f8",
         "name": "CreateUnknownProviderError",
-        "func": "msg.payload = {\n    \"error\" : \"No connection to a supported provider could be detected!\"\n};\n\nreturn msg;",
+        "func": "msg.payload = {\n    \"error\": \"An unknown database provider was detected!\"\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 2250,
-        "y": 1500,
+        "x": 2150,
+        "y": 1880,
         "wires": [
             [
                 "c364fc359d942cb5"
@@ -3408,8 +3440,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 2480,
-        "y": 1500,
+        "x": 2380,
+        "y": 1880,
         "wires": []
     },
     {
@@ -3444,8 +3476,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 4,
-        "x": 3600,
-        "y": 1340,
+        "x": 3720,
+        "y": 1420,
         "wires": [
             [
                 "af15c6d774650cd8"
@@ -3468,8 +3500,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 4760,
-        "y": 1240,
+        "x": 4940,
+        "y": 1320,
         "wires": []
     },
     {
@@ -3477,8 +3509,8 @@
         "type": "subflow:ce3537f37c72e32b",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 4320,
-        "y": 1240,
+        "x": 4500,
+        "y": 1320,
         "wires": [
             [
                 "fc982909b56ff18d"
@@ -3490,8 +3522,8 @@
         "type": "subflow:65ace00d8439925e",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 4310,
-        "y": 1340,
+        "x": 4490,
+        "y": 1420,
         "wires": [
             [
                 "d53128fff971fb89"
@@ -3505,8 +3537,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 4720,
-        "y": 1340,
+        "x": 4890,
+        "y": 1420,
         "wires": []
     },
     {
@@ -3516,8 +3548,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 4560,
-        "y": 1540,
+        "x": 4740,
+        "y": 1620,
         "wires": []
     },
     {
@@ -3527,8 +3559,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 4540,
-        "y": 1440,
+        "x": 4720,
+        "y": 1520,
         "wires": []
     },
     {
@@ -3542,8 +3574,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3170,
-        "y": 1200,
+        "x": 3310,
+        "y": 1020,
         "wires": [
             [
                 "e6671e73b8f1d557"
@@ -3557,8 +3589,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 3400,
-        "y": 1200,
+        "x": 3540,
+        "y": 1020,
         "wires": []
     },
     {
@@ -3566,8 +3598,8 @@
         "type": "subflow:700c49c23ddc27cc",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 2830,
-        "y": 980,
+        "x": 3020,
+        "y": 960,
         "wires": [
             [
                 "2b7061926cc988a5"
@@ -3592,7 +3624,7 @@
         "finalize": "",
         "libs": [],
         "x": 380,
-        "y": 1100,
+        "y": 1220,
         "wires": [
             [
                 "b24205e508d638ad"
@@ -3611,7 +3643,7 @@
         "finalize": "",
         "libs": [],
         "x": 610,
-        "y": 1100,
+        "y": 1220,
         "wires": [
             [
                 "f722ad2d35562a71"
@@ -3623,8 +3655,8 @@
         "type": "subflow:83359f6b9b1c7459",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 1970,
-        "y": 980,
+        "x": 2380,
+        "y": 960,
         "wires": [
             [
                 "2c26c23244bc3c3e"
@@ -3648,8 +3680,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 2450,
-        "y": 1120,
+        "x": 2810,
+        "y": 1060,
         "wires": [
             [
                 "ccbd91e27ff6b829"
@@ -3663,8 +3695,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 2720,
-        "y": 1120,
+        "x": 3080,
+        "y": 1060,
         "wires": []
     },
     {
@@ -3679,7 +3711,7 @@
         "finalize": "",
         "libs": [],
         "x": 400,
-        "y": 1560,
+        "y": 1940,
         "wires": [
             [
                 "cefe78d45f1199e8"
@@ -3698,7 +3730,7 @@
         "finalize": "",
         "libs": [],
         "x": 630,
-        "y": 1560,
+        "y": 1940,
         "wires": [
             [
                 "a1b9a9c238a5a680"
@@ -3717,7 +3749,7 @@
         "finalize": "",
         "libs": [],
         "x": 880,
-        "y": 1560,
+        "y": 1940,
         "wires": [
             [
                 "74857130aac6804f"
@@ -3729,8 +3761,8 @@
         "type": "subflow:700c49c23ddc27cc",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 2750,
-        "y": 1380,
+        "x": 2840,
+        "y": 1460,
         "wires": [
             [
                 "234570637d1fcc3e"
@@ -3754,8 +3786,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3150,
-        "y": 1520,
+        "x": 3240,
+        "y": 1600,
         "wires": [
             [
                 "d9c50686348c07bf"
@@ -3769,8 +3801,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 3360,
-        "y": 1520,
+        "x": 3450,
+        "y": 1600,
         "wires": []
     },
     {
@@ -3784,8 +3816,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 2830,
-        "y": 1600,
+        "x": 2870,
+        "y": 1640,
         "wires": [
             [
                 "899a65fa646c11ae"
@@ -3799,8 +3831,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 3060,
-        "y": 1600,
+        "x": 3100,
+        "y": 1640,
         "wires": []
     },
     {
@@ -3808,8 +3840,8 @@
         "type": "subflow:83359f6b9b1c7459",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 2340,
-        "y": 1400,
+        "x": 2460,
+        "y": 1560,
         "wires": [
             [
                 "c6d2b8689deba829"
@@ -3827,8 +3859,8 @@
         "type": "subflow:d135cb27637ed1f7",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 4120,
-        "y": 1240,
+        "x": 4300,
+        "y": 1320,
         "wires": [
             [
                 "ef71c76b4be3cddd"
@@ -3849,8 +3881,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 4340,
-        "y": 1300,
+        "x": 4520,
+        "y": 1380,
         "wires": [
             [
                 "f1fb2d72d2838bef"
@@ -3864,8 +3896,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 4600,
-        "y": 1300,
+        "x": 4780,
+        "y": 1380,
         "wires": []
     },
     {
@@ -3873,8 +3905,8 @@
         "type": "subflow:f03204506d037819",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 4120,
-        "y": 1340,
+        "x": 4300,
+        "y": 1420,
         "wires": [
             [
                 "cc7bea262ff22af8"
@@ -3895,8 +3927,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 4340,
-        "y": 1400,
+        "x": 4520,
+        "y": 1480,
         "wires": [
             [
                 "4b1c8b4ce3e896da"
@@ -3910,8 +3942,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 4600,
-        "y": 1400,
+        "x": 4780,
+        "y": 1480,
         "wires": []
     },
     {
@@ -3925,8 +3957,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 4370,
-        "y": 1500,
+        "x": 4550,
+        "y": 1580,
         "wires": [
             [
                 "a28191fcd101bf87"
@@ -3940,8 +3972,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 4600,
-        "y": 1500,
+        "x": 4780,
+        "y": 1580,
         "wires": []
     },
     {
@@ -3949,8 +3981,8 @@
         "type": "subflow:14f40821ce7b1a4f",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 4110,
-        "y": 1440,
+        "x": 4290,
+        "y": 1520,
         "wires": [
             [
                 "2e4fa42f969f687b"
@@ -3971,8 +4003,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 4370,
-        "y": 1600,
+        "x": 4550,
+        "y": 1680,
         "wires": [
             [
                 "f9edd56639bdc05b"
@@ -3986,8 +4018,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 4600,
-        "y": 1600,
+        "x": 4780,
+        "y": 1680,
         "wires": []
     },
     {
@@ -3995,8 +4027,8 @@
         "type": "subflow:6192a3e917c65f72",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 4110,
-        "y": 1540,
+        "x": 4290,
+        "y": 1620,
         "wires": [
             [
                 "ad96670f69a10889"
@@ -4015,11 +4047,11 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 140,
-        "y": 780,
+        "x": 120,
+        "y": 860,
         "wires": [
             [
-                "58eb5fa9f8e6a627"
+                "e1baf63dfcf81b0f"
             ]
         ]
     },
@@ -4029,8 +4061,8 @@
         "z": "ddd4d9eb36b5b0f8",
         "name": "Gets the database provider on the connection data",
         "info": "",
-        "x": 230,
-        "y": 700,
+        "x": 210,
+        "y": 780,
         "wires": []
     },
     {
@@ -4039,28 +4071,9 @@
         "z": "ddd4d9eb36b5b0f8",
         "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db\"}",
         "info": "",
-        "x": 250,
-        "y": 740,
+        "x": 230,
+        "y": 820,
         "wires": []
-    },
-    {
-        "id": "58eb5fa9f8e6a627",
-        "type": "subflow:8366aaf082e3436f",
-        "z": "ddd4d9eb36b5b0f8",
-        "name": "",
-        "x": 450,
-        "y": 780,
-        "wires": [
-            [
-                "d0847c135149306c"
-            ],
-            [
-                "714ad00d29d86ecc"
-            ],
-            [
-                "cce57a5bd3828ccb"
-            ]
-        ]
     },
     {
         "id": "cce57a5bd3828ccb",
@@ -4073,8 +4086,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 770,
-        "y": 880,
+        "x": 750,
+        "y": 960,
         "wires": [
             [
                 "ac203cde0ee6d376"
@@ -4088,8 +4101,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 1000,
-        "y": 880,
+        "x": 980,
+        "y": 960,
         "wires": []
     },
     {
@@ -4103,8 +4116,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 760,
-        "y": 800,
+        "x": 740,
+        "y": 880,
         "wires": [
             [
                 "c7485797427646d8"
@@ -4129,11 +4142,11 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 810,
-        "y": 720,
+        "x": 790,
+        "y": 800,
         "wires": [
             [
-                "b1306b82477918c0"
+                "9d021c9c710dc6b2"
             ],
             [
                 "fd15a3c5013b4d5b"
@@ -4147,8 +4160,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 970,
-        "y": 800,
+        "x": 950,
+        "y": 880,
         "wires": []
     },
     {
@@ -4162,30 +4175,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1200,
-        "y": 800,
+        "x": 1180,
+        "y": 880,
         "wires": [
             [
                 "b25d6e0ecc138909"
-            ]
-        ]
-    },
-    {
-        "id": "b1306b82477918c0",
-        "type": "subflow:9e6765c76da66a1b",
-        "z": "ddd4d9eb36b5b0f8",
-        "name": "",
-        "x": 1140,
-        "y": 680,
-        "wires": [
-            [
-                "5d17b14b20248354"
-            ],
-            [
-                "67175b0c021cc8f0"
-            ],
-            [
-                "fd58b43a3d941ef7"
             ]
         ]
     },
@@ -4194,14 +4188,14 @@
         "type": "function",
         "z": "ddd4d9eb36b5b0f8",
         "name": "CreateUnknownProviderError",
-        "func": "msg.payload = {\n    \"error\" : \"No connection to a supported provider could be detected!\"\n};\n\nreturn msg;",
+        "func": "msg.payload = {\n    \"error\": \"An unknown database provider was detected!\"\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1440,
-        "y": 740,
+        "x": 1590,
+        "y": 820,
         "wires": [
             [
                 "48d56cb4e40e5fd4"
@@ -4215,8 +4209,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 1670,
-        "y": 740,
+        "x": 1820,
+        "y": 820,
         "wires": []
     },
     {
@@ -4230,8 +4224,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1420,
-        "y": 580,
+        "x": 1570,
+        "y": 660,
         "wires": [
             [
                 "a159868c1b0ac319"
@@ -4249,8 +4243,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1420,
-        "y": 680,
+        "x": 1570,
+        "y": 760,
         "wires": [
             [
                 "60723c427534520e"
@@ -4264,8 +4258,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 1640,
-        "y": 680,
+        "x": 1790,
+        "y": 760,
         "wires": []
     },
     {
@@ -4275,8 +4269,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 1640,
-        "y": 580,
+        "x": 1790,
+        "y": 660,
         "wires": []
     },
     {
@@ -4290,8 +4284,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3880,
-        "y": 1240,
+        "x": 4080,
+        "y": 1340,
         "wires": [
             [
                 "6ad36ae221e2eee0"
@@ -4309,8 +4303,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3860,
-        "y": 1340,
+        "x": 4060,
+        "y": 1440,
         "wires": [
             [
                 "39e53683b877a9f3"
@@ -4328,8 +4322,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3870,
-        "y": 1400,
+        "x": 4070,
+        "y": 1500,
         "wires": [
             [
                 "f3c67e324511506e"
@@ -4347,8 +4341,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3870,
-        "y": 1520,
+        "x": 4070,
+        "y": 1620,
         "wires": [
             [
                 "2cda643c702b3008"
@@ -4366,8 +4360,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 4540,
-        "y": 1240,
+        "x": 4720,
+        "y": 1320,
         "wires": [
             [
                 "b4cb34a646ee1d55"
@@ -4385,8 +4379,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 4520,
-        "y": 1340,
+        "x": 4700,
+        "y": 1420,
         "wires": [
             [
                 "c58b2b8c5e0b6fdd"
@@ -4404,8 +4398,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 4340,
-        "y": 1440,
+        "x": 4520,
+        "y": 1520,
         "wires": [
             [
                 "7a44d66ab5431228"
@@ -4423,8 +4417,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 4360,
-        "y": 1540,
+        "x": 4540,
+        "y": 1620,
         "wires": [
             [
                 "447b5833bebdf3a3"
@@ -4472,8 +4466,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 2400,
-        "y": 1200,
+        "x": 2820,
+        "y": 1140,
         "wires": [
             [
                 "93f8cae726699a53"
@@ -4487,8 +4481,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 2640,
-        "y": 1200,
+        "x": 3060,
+        "y": 1140,
         "wires": []
     },
     {
@@ -4502,8 +4496,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3170,
-        "y": 1140,
+        "x": 3310,
+        "y": 960,
         "wires": [
             [
                 "0f64906557312f53"
@@ -4517,8 +4511,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 3400,
-        "y": 1140,
+        "x": 3540,
+        "y": 960,
         "wires": []
     },
     {
@@ -4532,8 +4526,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3150,
-        "y": 1460,
+        "x": 3240,
+        "y": 1540,
         "wires": [
             [
                 "77a6dc227ca87fb8"
@@ -4547,8 +4541,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 3360,
-        "y": 1460,
+        "x": 3460,
+        "y": 1540,
         "wires": []
     },
     {
@@ -4562,8 +4556,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 2840,
-        "y": 1680,
+        "x": 2880,
+        "y": 1720,
         "wires": [
             [
                 "d89b7de99971de5f"
@@ -4577,8 +4571,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 3060,
-        "y": 1680,
+        "x": 3100,
+        "y": 1720,
         "wires": []
     },
     {
@@ -4586,8 +4580,8 @@
         "type": "subflow:e75ce79db26486a2",
         "z": "ddd4d9eb36b5b0f8",
         "name": "",
-        "x": 3090,
-        "y": 1360,
+        "x": 3180,
+        "y": 1440,
         "wires": [
             [
                 "18a0ae8ee7d23cae"
@@ -4608,8 +4602,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 3400,
-        "y": 1420,
+        "x": 3490,
+        "y": 1500,
         "wires": [
             [
                 "4b251317355f9b02"
@@ -4623,8 +4617,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 3620,
-        "y": 1420,
+        "x": 3710,
+        "y": 1500,
         "wires": []
     },
     {
@@ -4634,8 +4628,8 @@
         "name": "",
         "statusCode": "400",
         "headers": {},
-        "x": 1420,
-        "y": 800,
+        "x": 1400,
+        "y": 880,
         "wires": []
     },
     {
@@ -4645,7 +4639,7 @@
         "name": "\"dbObjectType\" : \"table\" | \"view\" | \"function\" | \"strp\"",
         "info": "",
         "x": 190,
-        "y": 1060,
+        "y": 1180,
         "wires": []
     },
     {
@@ -4654,8 +4648,439 @@
         "z": "ddd4d9eb36b5b0f8",
         "name": "\"dbObjectType\" : \"table\" | \"view\" | \"function\" | \"strp\"",
         "info": "",
-        "x": 190,
-        "y": 1520,
+        "x": 210,
+        "y": 1900,
         "wires": []
+    },
+    {
+        "id": "84cb9ee1dca1badd",
+        "type": "subflow:02aa7986ab49c73f",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "x": 1160,
+        "y": 280,
+        "wires": [
+            [
+                "b4997b072a961c9e"
+            ],
+            [
+                "f5ad0fa9df159234"
+            ]
+        ]
+    },
+    {
+        "id": "e1baf63dfcf81b0f",
+        "type": "subflow:6ab50c85ca606a95",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "x": 400,
+        "y": 860,
+        "wires": [
+            [
+                "d0847c135149306c"
+            ],
+            [
+                "714ad00d29d86ecc"
+            ],
+            [
+                "cce57a5bd3828ccb"
+            ]
+        ]
+    },
+    {
+        "id": "6ca759dec44754ba",
+        "type": "subflow:02aa7986ab49c73f",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "x": 1820,
+        "y": 1800,
+        "wires": [
+            [
+                "5d4f8312a3022a34"
+            ],
+            [
+                "631772358e1d86c4"
+            ]
+        ]
+    },
+    {
+        "id": "9d021c9c710dc6b2",
+        "type": "function",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "GetDbProvider",
+        "func": "const pg = global.get('pg');\nconst mssql = global.get('mssql');\n\nvar host = msg.host;\nvar port = msg.port;\nvar database = msg.database;\nvar user = msg.user;\nvar password = msg.pw;\n\n\nconst pgConfig = {\n  user: user,\n  database: database,\n  password: password,\n  host: host,\n  port: port,  \n};\n\nmsg.pgConfig = pgConfig;\n\nconst mssqlConfig = {\n  user: user,\n  password: password,\n  server: host,\n  port: parseInt(port),\n  database: database,\n  options: {\n    trustedConnection: true,\n    encrypt: false,\n    enableArithAbort: true,\n    trustServerCertificate: true,\n\n  }\n};\n\nmsg.mssqlConfig = mssqlConfig;\n\nconst testPgConnection = async () => {\n    const client = new pg.Client(pgConfig);\n    try {\n      await client.connect();\n      console.log('Successfully connected to PostgreSQL database');\n    } catch (err) {\n      console.error('Error connecting to PostgreSQL database');\n      throw err;\n    } finally {\n      await client.end();\n    }\n  };\n  \n  const testMssqlConnection = async () => {\n    try {\n      await mssql.connect(mssqlConfig);\n      console.log('Successfully connected to MSSQL database');\n    } catch (err) {\n      console.error('Error connecting to MSSQL database');\n      await mssql.close();\n      throw err;\n    } finally {\n      await mssql.close();\n    }\n  };\n\n  testPgConnection()\n    .then(() => {\n      msg.dbProvider = 'postgres';\n      node.send(msg)\n    }, (error) => {\n      return new Promise((resolve, reject) => {\n        testMssqlConnection().then(() => {\n          msg.dbProvider = 'mssql';\n          resolve();\n          node.send(msg);\n        }, (error) => {\n          msg.dbProvider = 'noconnection';\n          node.send(msg);\n        })\n      });\n    });",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 760,
+        "wires": [
+            [
+                "d64a4303c81445a4"
+            ]
+        ]
+    },
+    {
+        "id": "b4997b072a961c9e",
+        "type": "subflow:3a440fbe92149fc9",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "x": 1560,
+        "y": 280,
+        "wires": [
+            [
+                "d1e7c8967fd50eb7"
+            ],
+            [
+                "7cc808eac8659cc2"
+            ],
+            [
+                "7e47d6bc8138dad7"
+            ]
+        ]
+    },
+    {
+        "id": "7e47d6bc8138dad7",
+        "type": "function",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "CreateUnknownProviderError",
+        "func": "msg.payload = {\n    \"error\": \"An unknown database provider was detected!\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1930,
+        "y": 420,
+        "wires": [
+            [
+                "8a479f5c98b4ac15"
+            ]
+        ]
+    },
+    {
+        "id": "8a479f5c98b4ac15",
+        "type": "http response",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 2160,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "7cc808eac8659cc2",
+        "type": "function",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "CreateConnectionError",
+        "func": "msg.payload = {\n    \"error\": \"No connection to the database could be detected!\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1910,
+        "y": 360,
+        "wires": [
+            [
+                "4faa341de0ef61e3"
+            ]
+        ]
+    },
+    {
+        "id": "4faa341de0ef61e3",
+        "type": "http response",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 2160,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "7025c9a66108635a",
+        "type": "subflow:3a440fbe92149fc9",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "x": 2040,
+        "y": 1080,
+        "wires": [
+            [
+                "7d4c8513f9e1db13"
+            ],
+            [
+                "33f4b4943e1c3859"
+            ],
+            [
+                "18305a3dd73ebc14"
+            ]
+        ]
+    },
+    {
+        "id": "33f4b4943e1c3859",
+        "type": "function",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "CreateConnectionError",
+        "func": "msg.payload = {\n    \"error\": \"No connection to the database could be detected!\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2390,
+        "y": 1180,
+        "wires": [
+            [
+                "08146db3b1865f12"
+            ]
+        ]
+    },
+    {
+        "id": "18305a3dd73ebc14",
+        "type": "function",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "CreateUnknownProviderError",
+        "func": "msg.payload = {\n    \"error\": \"An unknown database provider was detected!\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2410,
+        "y": 1240,
+        "wires": [
+            [
+                "3430ae50f00b1455"
+            ]
+        ]
+    },
+    {
+        "id": "08146db3b1865f12",
+        "type": "http response",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 2640,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "3430ae50f00b1455",
+        "type": "http response",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 2640,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "5d4f8312a3022a34",
+        "type": "subflow:3a440fbe92149fc9",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "x": 2120,
+        "y": 1780,
+        "wires": [
+            [
+                "ce99a4ce27f8c258"
+            ],
+            [
+                "dd8fd0a1665f8833"
+            ],
+            [
+                "f3086f520eb225f7"
+            ]
+        ]
+    },
+    {
+        "id": "dd8fd0a1665f8833",
+        "type": "function",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "CreateConnectionError",
+        "func": "msg.payload = {\n    \"error\": \"No connection to the database could be detected!\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2510,
+        "y": 1780,
+        "wires": [
+            [
+                "4aad95437c3c7227"
+            ]
+        ]
+    },
+    {
+        "id": "4aad95437c3c7227",
+        "type": "http response",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 2760,
+        "y": 1780,
+        "wires": []
+    },
+    {
+        "id": "f3086f520eb225f7",
+        "type": "function",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "CreateUnknownProviderError",
+        "func": "msg.payload = {\n    \"error\": \"An unknown database provider was detected!\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2530,
+        "y": 1840,
+        "wires": [
+            [
+                "2c01edfc890a533a"
+            ]
+        ]
+    },
+    {
+        "id": "2c01edfc890a533a",
+        "type": "http response",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 2760,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "d1e7c8967fd50eb7",
+        "type": "switch",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "SwitchDbProvider",
+        "property": "dbProvider",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "postgres",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "mssql",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 1830,
+        "y": 240,
+        "wires": [
+            [
+                "729c1a5723a1adc3"
+            ],
+            [
+                "a3680c27ba3591e5"
+            ],
+            [
+                "739306be098c7205"
+            ]
+        ]
+    },
+    {
+        "id": "739306be098c7205",
+        "type": "function",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "CreateUnknownProviderError",
+        "func": "msg.payload = {\n    \"error\": \"An unknown database provider was detected!\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2150,
+        "y": 300,
+        "wires": [
+            [
+                "b66726b3e97a1c25"
+            ]
+        ]
+    },
+    {
+        "id": "b66726b3e97a1c25",
+        "type": "http response",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "statusCode": "400",
+        "headers": {},
+        "x": 2380,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "d64a4303c81445a4",
+        "type": "switch",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "SwitchDbProvider",
+        "property": "dbProvider",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "postgres",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "mssql",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 1310,
+        "y": 760,
+        "wires": [
+            [
+                "5d17b14b20248354"
+            ],
+            [
+                "67175b0c021cc8f0"
+            ],
+            [
+                "fd58b43a3d941ef7"
+            ]
+        ]
+    },
+    {
+        "id": "66acf1bc9413d547",
+        "type": "subflow:02aa7986ab49c73f",
+        "z": "ddd4d9eb36b5b0f8",
+        "name": "",
+        "x": 1560,
+        "y": 1140,
+        "wires": [
+            [
+                "7025c9a66108635a"
+            ],
+            [
+                "cab005a332a006ce"
+            ]
+        ]
     }
 ]
