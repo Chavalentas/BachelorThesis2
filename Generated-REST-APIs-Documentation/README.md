@@ -78,3 +78,32 @@ The section contains the documentation of REST-APIs for functions and stored pro
 **[url]/[schema].[objectName]?param=value&param=value...**<br />
 The order of the parameters has to correspond with the order of the parameters in the database object.<br />
 The value **default** indicates that the default value of the parameter should be chosen.
+Returns 200 response code with a JSON object with the following structure:
+```javascript
+{
+    "result": [
+        {
+            [retName1]: value,
+            [retName2]: value,
+            ...
+        },
+        ...
+    ]
+}
+```
+Returns 200 response code with a JSON object with the following structure for stored procedures in Microsoft SQL server (multisets are allowed):
+```javascript
+{
+    "result": [
+      [
+        {
+            [retName1]: value,
+            [retName2]: value,
+            ...
+        },
+        ...
+      ],
+      ...
+    ]
+}
+```
