@@ -42,8 +42,8 @@ The body has the following structure:
     "dbObjectType" : "view"
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
-**schema**: the schema of the database object
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"<br />
+**schema**: the schema of the database object<br />
 **dbObjectType**: table, view, function or strp
 
 ### The response type
@@ -64,9 +64,9 @@ The body has the following structure:
     "dbObjectName" : "count_procedure3"
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
-**schema**: the schema of the database object
-**dbObjectType**: table, view, function or strp
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"<br />
+**schema**: the schema of the database object<br />
+**dbObjectType**: table, view, function or strp<br />
 **dbObjectName** : name of the database object
 
 ### The response type

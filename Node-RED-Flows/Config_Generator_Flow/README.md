@@ -20,12 +20,12 @@ The body has the following structure:
     }
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
-**dbObjectType**: table or view
-**apiName**: the name of the REST-API
-**dbObjectInformation.name**: name of the table/view
-**dbObjectInformation.schema**: the schema of the database object
-**dbObjectInformation.properties**: the properties have always this form -> [{"propertyName": "name"},...]
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"<br />
+**dbObjectType**: table or view<br />
+**apiName**: the name of the REST-API<br />
+**dbObjectInformation.name**: name of the table/view<br />
+**dbObjectInformation.schema**: the schema of the database object<br />
+**dbObjectInformation.properties**: the properties have always this form -> [{"propertyName": "name"},...]<br />
 **pk**: the primary keys (currently only one supported)
 
 ### For functions and stored procedures
@@ -40,10 +40,10 @@ The body has the following structure:
      }
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
-**dbObjectType**: function or strp
-**apiName**: the name of the REST-API
-**dbObjectInformation.name**: name of the function/stored procedure
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"<br />
+**dbObjectType**: function or strp<br />
+**apiName**: the name of the REST-API<br />
+**dbObjectInformation.name**: name of the function/stored procedure<br />
 **dbObjectInformation.schema**: the schema of the database object
 
 ## The response type
