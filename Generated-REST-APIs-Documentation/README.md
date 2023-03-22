@@ -1,5 +1,5 @@
 # Generated REST-APIs
-This document contains the documentation of the generated REST-APIs
+This document contains the documentation of the generated REST-APIs.
 
 ## For tables and views
 The section contains the documentation of REST-APIs for tables and views.
