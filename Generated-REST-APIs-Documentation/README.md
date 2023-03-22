@@ -50,7 +50,7 @@ Returns 201 response code.
 
 ### PUT
 **[url]/[schema].[objectName]/:[primaryKey]**<br />
-Updates an object to the database using the request body in the primary key.<br />
+Updates an object to the database using the request body and the primary key.<br />
 The body has to have the following structure:<br />
 ```javascript
 {
