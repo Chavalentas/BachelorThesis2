@@ -150,6 +150,7 @@ export class HomeComponent implements OnInit {
     userControl: ['', [Validators.required, createUsernameCorrectnessValidator()]],
     passwordControl : ['', [Validators.required, createPasswordCorrectnessValidator()]],
     databaseControl : ['', [Validators.required, createDatabaseCorrectnessValidator()]],
+    dbProviderControl : ['', [Validators.required]]
   });
 
   /**
@@ -209,23 +210,9 @@ export class HomeComponent implements OnInit {
       this._dbConfiguration.user = this.firstFormGroup?.get('userControl')?.value;
       this._dbConfiguration.password = this.firstFormGroup?.get('passwordControl')?.value;
       this._dbConfiguration.database = this.firstFormGroup?.get('databaseControl')?.value;
+      this._dbConfiguration.dbProvider = this.firstFormGroup?.get('dbProviderControl')?.value;
       this._connString = this._helperService.buildConnectionString(this._dbConfiguration);
-
-      this.getDbProvider(this._connString).subscribe({
-        next : data => {
-          this._dbProvider = data[0];
-        },
-
-        error : error => {
-          if (error.error.error === undefined){
-            this.firstStepSuccessMessage = 'Some error occurred during the connection establishing!';
-            return;
-          }
-
-          this.firstStepSuccessMessage = error.error.error;
-          return;
-        }
-      })
+      this._dbProvider = this.firstFormGroup?.get('dbProviderControl')?.value;
 
       this.loadSchemas().subscribe({
         next: data => {
@@ -245,11 +232,11 @@ export class HomeComponent implements OnInit {
         },
         error: error => {
           if (error.error.error === undefined){
-            this.secondStepSuccessMessage = 'Some error occurred during the loading of schemas!';
+            this.firstStepSuccessMessage = 'Some error occurred during the loading of schemas!';
             return;
           }
 
-          this.secondStepSuccessMessage = error.error.error;
+          this.firstStepSuccessMessage = error.error.error;
         }
       });
   }
@@ -494,6 +481,7 @@ export class HomeComponent implements OnInit {
    */
   private loadSchemas() : Observable<GetSchemasResponse>{
     var reqBody = {"conn" : this._connString};
+    console.log(reqBody);
     return this._httpClient.post<GetSchemasResponse>(`${schemaParserBackendConfig.conn}/get-schemas`, reqBody).pipe(
       map(response => {
         return response;
@@ -516,20 +504,6 @@ export class HomeComponent implements OnInit {
         return response;
       }),
     );
-  }
-
-  /**
-   * Gets the database provider.
-   * @param connString The connection string.
-   * @returns The HTTP response observable.
-   */
-  private getDbProvider(connString : string) : Observable<Array<string>>{
-    var reqBody = {"conn" : connString};
-    return this._httpClient.post<GetDbProviderResponse>(`${schemaParserBackendConfig.conn}/get-db-provider`, reqBody).pipe(
-      map(response => {
-        return response.result;
-      })
-    )
   }
 
   /**

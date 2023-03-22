@@ -26,4 +26,9 @@ export interface DbConfiguration{
    * Represents the database name.
    */
   database : string;
+
+  /**
+   * Represents the database provider.
+   */
+  dbProvider : string;
 }

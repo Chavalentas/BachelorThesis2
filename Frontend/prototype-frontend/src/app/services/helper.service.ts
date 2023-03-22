@@ -19,7 +19,8 @@ export class HelperService {
       var userEq = `User=${dbConfig.user}`;
       var pwEq = `Pw=${dbConfig.password}`;
       var dbEq = `Db=${dbConfig.database}`;
-      var eqs = [hostEq, portEq, userEq, pwEq, dbEq];
+      var providerEq = `Provider=${dbConfig.dbProvider}`;
+      var eqs = [hostEq, portEq, userEq, pwEq, dbEq, providerEq];
       var result = eqs.join(";");
       return result;
   }

@@ -9,7 +9,7 @@
           <form [formGroup]="firstFormGroup">
             <div>
             <p>
-            <mat-form-field class="host-name-entry-field" appearance="fill">
+            <mat-form-field class="entry-field" appearance="fill">
               <mat-label>Host name</mat-label>
               <input id="host-name-input" matInput type="text"  formControlName="hostNameControl" placeholder="Enter the host name..." required>
               <mat-error *ngIf="firstFormGroup?.get('hostNameControl')?.errors?.['required']">The host name cannot be empty!</mat-error>
@@ -17,7 +17,7 @@
             </mat-form-field>
           </p>
           <p>
-            <mat-form-field class="port-entry-field" appearance="fill">
+            <mat-form-field class="entry-field" appearance="fill">
               <mat-label>Port</mat-label>
               <input id="port-input" matInput type="text"  formControlName="portControl" placeholder="Enter the port..." required>
               <mat-error *ngIf="firstFormGroup?.get('portControl')?.errors?.['required']">The port cannot be empty!</mat-error>
@@ -25,7 +25,7 @@
             </mat-form-field>
           </p>
           <p>
-            <mat-form-field class="user-entry-field" appearance="fill">
+            <mat-form-field class="entry-field" appearance="fill">
               <mat-label>User</mat-label>
               <input id="user-input" matInput type="text"  formControlName="userControl" placeholder="Enter the user..." required>
               <mat-error *ngIf="firstFormGroup?.get('userControl')?.errors?.['required']">The user cannot be empty!</mat-error>
@@ -33,7 +33,7 @@
             </mat-form-field>
           </p>
           <p>
-            <mat-form-field class="password-entry-field" appearance="fill">
+            <mat-form-field class="entry-field" appearance="fill">
               <mat-label>Password</mat-label>
               <input  id="password-input" matInput type="password"  formControlName="passwordControl" placeholder="Enter the password..." required>
               <mat-error *ngIf="firstFormGroup?.get('passwordControl')?.errors?.['required']">The password cannot be empty!</mat-error>
@@ -41,11 +41,21 @@
             </mat-form-field>
           </p>
           <p>
-            <mat-form-field class="database-entry-field" appearance="fill">
+            <mat-form-field class="entry-field" appearance="fill">
               <mat-label>Database</mat-label>
               <input id="database-input" matInput type="text"  formControlName="databaseControl" placeholder="Enter the database..." required>
               <mat-error *ngIf="firstFormGroup?.get('databaseControl')?.errors?.['required']">The database cannot be empty!</mat-error>
               <mat-error *ngIf="firstFormGroup?.get('databaseControl')?.errors?.['correctDatabase']">The database cannot contain the following characters(;=&)!</mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="entry-field" appearance="fill">
+              <mat-label>Select the database provider</mat-label>
+              <mat-select disableRipple formControlName="dbProviderControl">
+                <mat-option value="mssql">Microsoft SQL Server</mat-option>
+                <mat-option value="postgres">PostgreSQL</mat-option>
+              </mat-select>
+              <mat-error *ngIf="firstFormGroup?.get('dbProviderControl')?.errors?.['required']">The database provider cannot be empty!</mat-error>
             </mat-form-field>
           </p>
         </div>
