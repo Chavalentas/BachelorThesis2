@@ -5,7 +5,7 @@ This document contains the documentation of the generated REST-APIs
 The section contains the documentation of REST-APIs for tables and views.
 
 ### GET 
-** [url]/[schema].[objectName]<br />
+**[url]/[schema].[objectName]**<br />
 Retrieves the objects from the database object.<br />
 Returns 200 response code with a JSON object with the following structure:
 ```javascript
@@ -21,7 +21,7 @@ Returns 200 response code with a JSON object with the following structure:
 }
 ```
 
-** [url]/[schema].[objectName]?[attrName]=value&[attrName]=value...<br />
+**[url]/[schema].[objectName]?[attrName]=value&[attrName]=value...**<br />
 Retrieves the objects from the database object using the query parameters.<br />
 Returns 200 response code with a JSON object with the following structure:
 ```javascript
@@ -37,7 +37,7 @@ Returns 200 response code with a JSON object with the following structure:
 }
 ```
 ### POST
-** [url]/[schema].[objectName]<br />
+**[url]/[schema].[objectName]**<br />
 Inserts an object to the database using the request body.<br />
 The body has to have the following structure:<br />
 ```javascript
@@ -49,7 +49,7 @@ The body has to have the following structure:<br />
 Returns 201 response code.
 
 ### PUT
-** [url]/[schema].[objectName]/:[primaryKey]<br />
+**[url]/[schema].[objectName]/:[primaryKey]**<br />
 Updates an object to the database using the request body in the primary key.<br />
 The body has to have the following structure:<br />
 ```javascript
@@ -61,13 +61,13 @@ The body has to have the following structure:<br />
 Returns 200 response code.
 
 ### DELETE
-** [url]/[schema].[objectName]/:[primaryKey]<br />
+**[url]/[schema].[objectName]/:[primaryKey]**<br />
 Deletes an object in the database using the primary key.<br />
 Returns 200 response code.<br />
-** [url]/[schema].[objectName]
+**[url]/[schema].[objectName]**
 Deletes all objects in the database. <br />
 Returns 200 reponse code.<br />
-** [url]/[schema].[objectName]?[attrName]=value&[attrName]=value...<br />
+**[url]/[schema].[objectName]?[attrName]=value&[attrName]=value...**<br />
 Deletes the objects from the database object using the query parameters.<br />
 Returns 200 response code.
 
@@ -75,6 +75,6 @@ Returns 200 response code.
 The section contains the documentation of REST-APIs for functions and stored procedures.
 
 ### GET 
-** [url]/[schema].[objectName]?param=value&param=value...<br />
+**[url]/[schema].[objectName]?param=value&param=value...**<br />
 The order of the parameters has to correspond with the order of the parameters in the database object.<br />
-The value **default indicates that the default value of the parameter should be chosen.
+The value **default** indicates that the default value of the parameter should be chosen.
