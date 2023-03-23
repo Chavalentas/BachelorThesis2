@@ -13,7 +13,6 @@ import { GetSchemaEnumsResponse } from 'src/app/models/get-schema-enums-response
 import { DbObject } from 'src/app/models/db-object.model';
 import { map, Observable } from 'rxjs';
 import { GetObjectInformationResponse } from 'src/app/models/get-object-information-response.model';
-import { GetDbProviderResponse } from 'src/app/models/get-db-provider-response.model';
 import { createPasswordCorrectnessValidator } from 'src/app/validators/password.validator';
 import { createHostnameCorrectnessValidator } from 'src/app/validators/hostname.validator';
 import { createUsernameCorrectnessValidator } from 'src/app/validators/user.validator';
@@ -32,7 +31,7 @@ import { ImportFlowResponse } from 'src/app/models/import-flow-response.model';
  */
 export class HomeComponent implements OnInit {
   /**
-   * Represents the json configuration (array of nodes).
+   * Represents the JSON configuration (array of nodes).
    */
   private _jsonConfig : Array<any>;
 
@@ -185,13 +184,20 @@ export class HomeComponent implements OnInit {
    * Represents the sixth form group.
    */
   public sixthFormGroup = this._formBuilder.group({
-    configurationControl: ['', Validators.required],
+    configurationControl: [''],
   });
 
   /**
    * Represents the ngOnInit.
    */
   ngOnInit(): void {
+  }
+
+  /**
+   * Represents the ngAfterViewInit.
+   */
+  ngAfterViewInit() {
+    this.stepper._getIndicatorType = () => 'number';
   }
 
   /**
@@ -547,7 +553,7 @@ export class HomeComponent implements OnInit {
    * @param objectData The database object data.
    * @param connString The connection string.
    * @param restApiName The name of the REST-API.
-   * @returns The JSON configuration of the flow.
+   * @returns The observable of the JSON configuration of the flow.
    */
   private getConfiguration(objectData : any, connString : string, restApiName : string) : Observable<any>{
     var reqBody = {"conn" : connString, "schema" : this.selectedSchema.schemaName, "dbObjectType" : this.selectedObjectType, "provider" : this._dbProvider, "apiName" : restApiName, "dbObjectInformation" : objectData};

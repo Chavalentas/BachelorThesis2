@@ -8,7 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./node-red-instance-data-dialog.component.scss']
 })
 /**
- * Represents the Node-RED instance data Dialog component.
+ * Represents the Node-RED instance data dialog component.
  */
 export class NodeRedInstanceDataDialogComponent implements OnInit {
   /**

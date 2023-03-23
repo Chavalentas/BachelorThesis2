@@ -15,6 +15,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
@@ -37,6 +38,7 @@ import { NodeRedInstanceDataDialogComponent } from './components/node-red-instan
     MatButtonModule,
     MatCardModule,
     MatDialogModule,
+    MatIconModule,
     MatInputModule,
     MatListModule,
     MatRadioModule,
@@ -51,4 +53,7 @@ import { NodeRedInstanceDataDialogComponent } from './components/node-red-instan
   providers: [],
   bootstrap: [AppComponent]
 })
+/**
+ * Represents the app module.
+ */
 export class AppModule { }

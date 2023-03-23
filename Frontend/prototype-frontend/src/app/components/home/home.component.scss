@@ -25,31 +25,6 @@
   margin-right: 10px;
 }
 
-#relation-name-form{
-  margin-bottom: 20px;
-}
-
-#generator-card {
-  position: absolute;
-  width: max-content;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-#logo-id{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 50%;
-  object-fit: cover;
-}
-
-#rest-api-name-formfield{
-  width: 25%;
-}
-
 .formcontainer{
   display: flex;
   justify-content: center;
@@ -58,10 +33,6 @@
   height: 100vh;
   width: 100vw;
   background: black;
-}
-
-#database-entries-container{
-  display: flex;
 }
 
 .selection-list {
@@ -84,6 +55,14 @@
   margin-left: 10px;
 }
 
+.entry-field{
+  width: 25%;
+}
+
+::ng-deep .mat-horizontal-stepper-header{
+  pointer-events: none !important;
+}
+
 #config-area{
   max-height: 400px;
    min-height: 100px;
@@ -92,6 +71,10 @@
 #config-area-formfield{
   width: 50%;
   height: 50%;
+}
+
+#database-entries-container{
+  display: flex;
 }
 
 #offset-container{
@@ -107,10 +90,27 @@
   transform: translate(-50%, -50%);
 }
 
-.entry-field{
-  width: 25%;
+#relation-name-form{
+  margin-bottom: 20px;
 }
 
-::ng-deep .mat-horizontal-stepper-header{
-  pointer-events: none !important;
+#generator-card {
+  position: absolute;
+  width: max-content;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#logo-picture{
+  position:absolute;
+  top: 20px;
+  right: 40px;
+  width: 10%;
+  height: 10%;
+  object-fit:cover;
+}
+
+#rest-api-name-formfield{
+  width: 25%;
 }

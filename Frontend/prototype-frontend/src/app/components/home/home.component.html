@@ -4,7 +4,10 @@
       Generate a REST-API
     </mat-card-title>
     <mat-card-content>
-      <mat-stepper [linear]="isLinear" #stepper>
+      <picture id="logo-picture">
+        <img mat-card-image src="../../../assets/images/msgis_logo.png" alt="company_logo">
+      </picture>
+      <mat-horizontal-stepper [linear]="isLinear" #stepper>
         <mat-step [stepControl]="firstFormGroup"  label="Fill out the database data">
           <form [formGroup]="firstFormGroup">
             <div>
@@ -141,7 +144,7 @@
               <mat-error *ngIf="fifthFormGroup?.get('restApiNameControl')?.errors?.['required']">The REST-API name cannot be empty!</mat-error>
             </mat-form-field>
           </p>
-        </div>
+           </div>
            <div>
               <div style="text-align: center;">
                   {{fifthStepSuccessMessage}}
@@ -156,7 +159,7 @@
             <div class="configuration-container">
               <mat-form-field id="config-area-formfield" class="example-full-width" appearance="fill">
                 <mat-label>JSON configuration</mat-label>
-                <textarea id="config-area" formControlName="configurationControl" matInput></textarea>
+                <textarea readonly id="config-area" formControlName="configurationControl" matInput></textarea>
               </mat-form-field>
               <div class="configuration-buttons-container">
                 <button [cdkCopyToClipboard]="sixthFormGroup.get('configurationControl')?.value"  class="config-buttons" mat-raised-button color="black">Copy to clipboard</button>
@@ -175,7 +178,7 @@
             </div>
           </form>
         </mat-step>
-      </mat-stepper>
+      </mat-horizontal-stepper>
     </mat-card-content>
   </mat-card>
 </div>
