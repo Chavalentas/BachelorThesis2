@@ -33,7 +33,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit {
   /**
    * Represents the ngOnInit.
    */
-  ngOnInit(): void {
+  ngOnInit(): void{
   }
 
   /**

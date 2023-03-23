@@ -190,13 +190,13 @@ export class HomeComponent implements OnInit {
   /**
    * Represents the ngOnInit.
    */
-  ngOnInit(): void {
+  ngOnInit(): void{
   }
 
   /**
    * Represents the ngAfterViewInit.
    */
-  ngAfterViewInit() {
+  ngAfterViewInit(){
     this.stepper._getIndicatorType = () => 'number';
   }
 
