@@ -37,7 +37,6 @@ const ViewRestApiGenerator = class extends relGen.RelationRestApiGenerator{
         throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
     }
 
-    
     /**
      * Generates the query properties.
      * @param {*} objectData Contains the meta information about the database object.
