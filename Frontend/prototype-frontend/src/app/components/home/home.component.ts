@@ -469,7 +469,6 @@ export class HomeComponent implements OnInit {
           this.sixthStepSuccessMessage = `The flow was imported! Please check your Node-RED instance at ${nodeRedUrl}!`;
         },
         error: error => {
-          console.log(error);
           if (error.error.error === undefined){
             this.sixthStepSuccessMessage = 'Some error occurred during the import of the flow!';
             return;
@@ -487,7 +486,6 @@ export class HomeComponent implements OnInit {
    */
   private loadSchemas() : Observable<GetSchemasResponse>{
     var reqBody = {"conn" : this._connString};
-    console.log(reqBody);
     return this._httpClient.post<GetSchemasResponse>(`${schemaParserBackendConfig.conn}/get-schemas`, reqBody).pipe(
       map(response => {
         return response;

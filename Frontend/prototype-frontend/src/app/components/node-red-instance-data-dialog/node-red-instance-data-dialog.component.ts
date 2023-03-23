@@ -15,7 +15,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit {
    * Represents the constructor.
    * @param dialogRef Represents the dialog reference.
    */
-  constructor(public dialogRef: MatDialogRef<NodeRedInstanceDataDialogComponent>) {
+  constructor(public dialogRef: MatDialogRef<NodeRedInstanceDataDialogComponent>){
   }
 
   /**
