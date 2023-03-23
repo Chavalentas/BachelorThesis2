@@ -100,7 +100,7 @@ const NodeConfigGenerator = class {
      * @param {*} flowTabId The ID of the flow.
      * @param {*} statementCode The SQL statement.
      * @param {*} dbConfigId The ID of the database configuration node.
-     * @param {*} wireIds The ID of the wires to the neighbouring nodes.
+     * @param {*} wireIds The IDs of the wires to the neighbouring nodes.
      * @param {*} modeOpt The mode option.
      * @param {*} modeOptType The mode option type.
      * @param {*} queryOpt The query option.
