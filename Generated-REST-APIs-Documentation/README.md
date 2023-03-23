@@ -44,6 +44,7 @@ The body has to have the following structure:<br />
 {
     [attrName1]: value,
     [attrName2]: value,
+    ...
 }
 ```
 Returns 201 response code.
@@ -56,6 +57,7 @@ The body has to have the following structure:<br />
 {
     [attrName1]: value,
     [attrName2]: value,
+    ...
 }
 ```
 Returns 200 response code.

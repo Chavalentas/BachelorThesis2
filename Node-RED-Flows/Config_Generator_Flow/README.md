@@ -20,7 +20,7 @@ The body has the following structure:
     }
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"<br />
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"<br />
 **dbObjectType**: table or view<br />
 **apiName**: the name of the REST-API<br />
 **dbObjectInformation.name**: name of the table/view<br />
@@ -40,7 +40,7 @@ The body has the following structure:
      }
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"<br />
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"<br />
 **dbObjectType**: function or strp<br />
 **apiName**: the name of the REST-API<br />
 **dbObjectInformation.name**: name of the function/stored procedure<br />

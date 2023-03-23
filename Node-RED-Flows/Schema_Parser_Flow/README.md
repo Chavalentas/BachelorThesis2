@@ -8,7 +8,7 @@ The body has the following structure:
     "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres;Provider=[mssql | postgres]"
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"
 ### The response type
 ```javascript
 {
@@ -42,7 +42,7 @@ The body has the following structure:
     "dbObjectType" : "view"
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"<br />
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"<br />
 **schema**: the schema of the database object<br />
 **dbObjectType**: table, view, function or strp
 
@@ -64,7 +64,7 @@ The body has the following structure:
     "dbObjectName" : "count_procedure3"
 }
 ```
-**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbProvider"<br />
+**conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"<br />
 **schema**: the schema of the database object<br />
 **dbObjectType**: table, view, function or strp<br />
 **dbObjectName** : name of the database object
