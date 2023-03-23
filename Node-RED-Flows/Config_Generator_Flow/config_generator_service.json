@@ -412,7 +412,7 @@
         "name": "{\"conn\":\"Host=host;Port=port;User=user;Pw=pw;Db=db;Provider=[mssql | postgres]\", \"dbObjectType\":\"dbobjecttype\",\"apiName\": \"nameoftheapi\", \"dbObjectInformation\":{...}}",
         "info": "",
         "x": 620,
-        "y": 680,
+        "y": 600,
         "wires": []
     },
     {
@@ -422,7 +422,7 @@
         "name": "(For tables) \"dbObjectInformation\" : {\"name\": \"objectname\",\"schema\" : \"schema\",\"properties\": properties,\"pk\" : pk}",
         "info": "",
         "x": 440,
-        "y": 720,
+        "y": 640,
         "wires": []
     },
     {
@@ -432,7 +432,7 @@
         "name": "(For views) \"dbObjectInformation\" : {\"name\": \"objectname\",\"schema\" : \"schema\",\"properties\": properties,\"pk\" : pk}",
         "info": "",
         "x": 440,
-        "y": 760,
+        "y": 680,
         "wires": []
     },
     {
@@ -442,7 +442,7 @@
         "name": "(For functions) \"dbObjectInformation\" : { \"name\": \"name\", \"schema\" : \"schema\"}",
         "info": "",
         "x": 330,
-        "y": 800,
+        "y": 720,
         "wires": []
     },
     {
@@ -452,7 +452,7 @@
         "name": "(For stored procedures) \"dbObjectInformation\" : { \"name\": \"name\", \"schema\" : \"schema\"}",
         "info": "",
         "x": 360,
-        "y": 840,
+        "y": 760,
         "wires": []
     },
     {
@@ -1415,9 +1415,29 @@
         "id": "da198c038d9e3669",
         "type": "comment",
         "z": "e1279361232147cb",
+        "name": "\"properties\" : [{\"propertyName\" : \"propertyname1\"}, {\"propertyName\" : \"propertyname2\"}, ...]",
+        "info": "",
+        "x": 370,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "adfd8f02c08ce3f1",
+        "type": "comment",
+        "z": "e1279361232147cb",
         "name": "\"dbObjectType\" : \"table\" | \"view\" | \"function\" | \"strp\"",
         "info": "",
         "x": 250,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "6a33034cb589ead9",
+        "type": "comment",
+        "z": "e1279361232147cb",
+        "name": "\"pk\" : [\"pk1\", \"pk2\", ...]",
+        "info": "",
+        "x": 160,
         "y": 880,
         "wires": []
     }
