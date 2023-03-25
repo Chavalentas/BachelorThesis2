@@ -184,7 +184,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         let rule2 = {"t": "null"};
         let rule3 = {"t": "else"};
         let rules = [rule1, rule2, rule3]
-        let switchNode = this.nodeConfGen.generateSwitchNode(nextNodeId, 'CheckResultValue', x, y, flowId, ids, 3, 'payload.returnValue', 'msg', rules);
+        let switchNode = this.nodeConfGen.generateSwitchNode(nextNodeId, 'CheckReturnValue', x, y, flowId, ids, 3, 'payload.returnValue', 'msg', rules);
    
         x += xOffset;
 
