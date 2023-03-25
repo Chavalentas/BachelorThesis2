@@ -1,13 +1,13 @@
 [
     {
-        "id": "b7a3651bf2bfa423",
+        "id": "35d0ad2b6f310c2e",
         "type": "tab",
         "label": "mssql-strp"
     },
     {
-        "id": "r9612j6i8x87f0wl",
+        "id": "a7321kj9g8095at6",
         "type": "comment",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "mssql-strp",
         "info": "",
         "x": 450,
@@ -15,9 +15,9 @@
         "wires": []
     },
     {
-        "id": "6qt017oiuv6qh9s4",
+        "id": "y92gbv104u4f4609",
         "type": "comment",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "This subflow catches the errors",
         "info": "",
         "x": 450,
@@ -25,9 +25,9 @@
         "wires": []
     },
     {
-        "id": "cb70dbfqg6sv5394",
+        "id": "74m4u09j6p214bqq",
         "type": "comment",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "GetEndPoint (procedure parameters are query parameters)",
         "info": "",
         "x": 450,
@@ -35,9 +35,9 @@
         "wires": []
     },
     {
-        "id": "844u9ej5fxq9x15r",
+        "id": "04on33786k8v3s9x",
         "type": "catch",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "",
         "scope": null,
         "uncaught": false,
@@ -45,14 +45,14 @@
         "y": 290,
         "wires": [
             [
-                "66i19z5j3bf1xi0q"
+                "538r678w6m562tny"
             ]
         ]
     },
     {
-        "id": "66i19z5j3bf1xi0q",
+        "id": "538r678w6m562tny",
         "type": "function",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "CreateError",
         "func": "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\" : msg.error.message\n}\nreturn msg;",
         "outputs": 1,
@@ -64,14 +64,14 @@
         "y": 290,
         "wires": [
             [
-                "693197g44ym9i3cj"
+                "79a6z8854kj3w88a"
             ]
         ]
     },
     {
-        "id": "693197g44ym9i3cj",
+        "id": "79a6z8854kj3w88a",
         "type": "http response",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "",
         "statusCode": 400,
         "headers": {},
@@ -80,9 +80,9 @@
         "wires": []
     },
     {
-        "id": "ylt8ykd96m9199zo",
+        "id": "s9y4q19668pugn68",
         "type": "http in",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "",
         "url": "/dbo.pr_test",
         "method": "get",
@@ -92,14 +92,14 @@
         "y": 440,
         "wires": [
             [
-                "j0yx19d76lh996oy"
+                "o0j7h323x9covf90"
             ]
         ]
     },
     {
-        "id": "j0yx19d76lh996oy",
+        "id": "o0j7h323x9covf90",
         "type": "function",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "CheckProcedureParameters",
         "func": "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;",
         "outputs": 1,
@@ -111,14 +111,14 @@
         "y": 440,
         "wires": [
             [
-                "28wg1v4w3gy9f5n8"
+                "cofs160sf37lv110"
             ]
         ]
     },
     {
-        "id": "28wg1v4w3gy9f5n8",
+        "id": "cofs160sf37lv110",
         "type": "function",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "SetQueryParametersForMetadata",
         "func": "msg.queryParameters = {\n    \"schema\" : 'dbo',\n    \"procName\" : 'pr_test'\n};\nreturn msg;",
         "outputs": 1,
@@ -130,15 +130,15 @@
         "y": 440,
         "wires": [
             [
-                "h27x4s2s71cpgkig"
+                "24gcv2191w305ejc"
             ]
         ]
     },
     {
-        "id": "h27x4s2s71cpgkig",
+        "id": "24gcv2191w305ejc",
         "type": "MSSQL",
-        "z": "b7a3651bf2bfa423",
-        "mssqlCN": "14dx110a8o58b5pk",
+        "z": "35d0ad2b6f310c2e",
+        "mssqlCN": "w61s4qq6e2cb07ou",
         "name": "ProcParametersQuery",
         "outField": "payload",
         "returnType": 0,
@@ -158,14 +158,14 @@
         "y": 440,
         "wires": [
             [
-                "dxea6l9wj21bzke4"
+                "sl3855r3m6aww981"
             ]
         ]
     },
     {
-        "id": "dxea6l9wj21bzke4",
+        "id": "sl3855r3m6aww981",
         "type": "function",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "SetProcParameterNames",
         "func": "msg.paramNames = [];\n\nfor (let i = 0; i < msg.payload.length; i++) {\n    var paramName = msg.payload[i].parameter_name;\n\n    if (paramName[0] == '@') {\n        paramName = paramName.slice(1);\n    }\n\n    msg.paramNames.push(paramName);\n}\n\nreturn msg;",
         "outputs": 1,
@@ -177,14 +177,14 @@
         "y": 440,
         "wires": [
             [
-                "mb9i81qvf8dg1mjr"
+                "i2ay1s6j3gsw49i3"
             ]
         ]
     },
     {
-        "id": "mb9i81qvf8dg1mjr",
+        "id": "i2ay1s6j3gsw49i3",
         "type": "function",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "SetParametersForProcedureQuery",
         "func": "msg.queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] === 'default'){\n        continue;\n    }\n    \n    var value = msg.procedureParameters[i];\n\n    if (value === 'null'){\n        value = null;\n    }\n    \n    var param = {\n      \"output\" : false,\n      \"name\" : msg.paramNames[i],\n      \"type\" : null,\n      \"value\" : value,\n      \"options\" : {\n          \"nullable\" : true,\n          \"primary\" : false,\n          \"identity\" : false,\n          \"readOnly\" : false\n       }\n   };\n   \n   msg.queryParams.push(param);\n}\n\nreturn msg;",
         "outputs": 1,
@@ -196,15 +196,15 @@
         "y": 440,
         "wires": [
             [
-                "4h68a6ix756x5eu5"
+                "0qqpu400f30isa9n"
             ]
         ]
     },
     {
-        "id": "4h68a6ix756x5eu5",
+        "id": "0qqpu400f30isa9n",
         "type": "MSSQL",
-        "z": "b7a3651bf2bfa423",
-        "mssqlCN": "14dx110a8o58b5pk",
+        "z": "35d0ad2b6f310c2e",
+        "mssqlCN": "w61s4qq6e2cb07ou",
         "name": "Query",
         "outField": "payload",
         "returnType": 1,
@@ -224,15 +224,15 @@
         "y": 440,
         "wires": [
             [
-                "z10u514srq5fsb3x"
+                "85p3lc16btlhb5n8"
             ]
         ]
     },
     {
-        "id": "z10u514srq5fsb3x",
+        "id": "85p3lc16btlhb5n8",
         "type": "switch",
-        "z": "b7a3651bf2bfa423",
-        "name": "CheckResultValue",
+        "z": "35d0ad2b6f310c2e",
+        "name": "CheckReturnValue",
         "property": "payload.returnValue",
         "propertyType": "msg",
         "rules": [
@@ -255,20 +255,20 @@
         "y": 440,
         "wires": [
             [
-                "25p321w33071zn7s"
+                "5533y71le695coc5"
             ],
             [
-                "25p321w33071zn7s"
+                "5533y71le695coc5"
             ],
             [
-                "hy02j799fa3px9u3"
+                "jjq83y18l2t5y7w2"
             ]
         ]
     },
     {
-        "id": "25p321w33071zn7s",
+        "id": "5533y71le695coc5",
         "type": "function",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "SetResponse",
         "func": "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;",
         "outputs": 1,
@@ -280,14 +280,14 @@
         "y": 340,
         "wires": [
             [
-                "l3jx5v3n7rf7q21m"
+                "xfe8bi5guq48w2fv"
             ]
         ]
     },
     {
-        "id": "l3jx5v3n7rf7q21m",
+        "id": "xfe8bi5guq48w2fv",
         "type": "http response",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "",
         "statusCode": 200,
         "headers": {},
@@ -296,9 +296,9 @@
         "wires": []
     },
     {
-        "id": "hy02j799fa3px9u3",
+        "id": "jjq83y18l2t5y7w2",
         "type": "function",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "SetResponse",
         "func": "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;",
         "outputs": 1,
@@ -310,14 +310,14 @@
         "y": 540,
         "wires": [
             [
-                "a7qlyno8e6357vu8"
+                "a34rd3y29xovw602"
             ]
         ]
     },
     {
-        "id": "a7qlyno8e6357vu8",
+        "id": "a34rd3y29xovw602",
         "type": "http response",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "",
         "statusCode": 400,
         "headers": {},
@@ -326,9 +326,9 @@
         "wires": []
     },
     {
-        "id": "14dx110a8o58b5pk",
+        "id": "w61s4qq6e2cb07ou",
         "type": "MSSQL-CN",
-        "z": "b7a3651bf2bfa423",
+        "z": "35d0ad2b6f310c2e",
         "name": "",
         "server": "localhost",
         "port": "79",
