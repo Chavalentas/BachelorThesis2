@@ -1,0 +1,211 @@
+[
+    {
+        "id": "7fae6e4d6b6c7551",
+        "type": "tab",
+        "label": "postgres-strp"
+    },
+    {
+        "id": "7fkun76368n9jpvi",
+        "type": "comment",
+        "z": "7fae6e4d6b6c7551",
+        "name": "postgres-strp",
+        "info": "",
+        "x": 450,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "8k48ne43j0yauwii",
+        "type": "comment",
+        "z": "7fae6e4d6b6c7551",
+        "name": "This subflow catches the errors",
+        "info": "",
+        "x": 450,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "33y7j49j450p85mr",
+        "type": "comment",
+        "z": "7fae6e4d6b6c7551",
+        "name": "GetEndPoint (procedure parameters are query parameters)",
+        "info": "",
+        "x": 450,
+        "y": 390,
+        "wires": []
+    },
+    {
+        "id": "7b527nj02ro5999a",
+        "type": "catch",
+        "z": "7fae6e4d6b6c7551",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 150,
+        "y": 290,
+        "wires": [
+            [
+                "q5w0797u41143njz"
+            ]
+        ]
+    },
+    {
+        "id": "q5w0797u41143njz",
+        "type": "function",
+        "z": "7fae6e4d6b6c7551",
+        "name": "CreateError",
+        "func": "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\" : msg.error.message\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 290,
+        "wires": [
+            [
+                "k33491bsfn7pbr3l"
+            ]
+        ]
+    },
+    {
+        "id": "k33491bsfn7pbr3l",
+        "type": "http response",
+        "z": "7fae6e4d6b6c7551",
+        "name": "",
+        "statusCode": 400,
+        "headers": {},
+        "x": 650,
+        "y": 290,
+        "wires": []
+    },
+    {
+        "id": "p9jxzcu7rdvr3lq4",
+        "type": "http in",
+        "z": "7fae6e4d6b6c7551",
+        "name": "",
+        "url": "/public.count_procedure3",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 440,
+        "wires": [
+            [
+                "0si75mpw9lpg5r14"
+            ]
+        ]
+    },
+    {
+        "id": "0si75mpw9lpg5r14",
+        "type": "function",
+        "z": "7fae6e4d6b6c7551",
+        "name": "CheckProcedureParameters",
+        "func": "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 440,
+        "wires": [
+            [
+                "23m3jh16pf7r89se"
+            ]
+        ]
+    },
+    {
+        "id": "23m3jh16pf7r89se",
+        "type": "function",
+        "z": "7fae6e4d6b6c7551",
+        "name": "CreateProcedureQuery",
+        "func": "var callProcedureQuery = 'CALL public.count_procedure3(';\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] === 'default'){\n        continue;\n    }\n\n    if (msg.procedureParameters[i] === 'null'){\n        queryParams.push(msg.procedureParameters[i]);\n        continue;\n    }\n  \n    queryParams.push(`'${msg.procedureParameters[i]}'`);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += ');';\nmsg.query = callProcedureQuery;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 440,
+        "wires": [
+            [
+                "r96j4t3m4s9ig7ir"
+            ]
+        ]
+    },
+    {
+        "id": "r96j4t3m4s9ig7ir",
+        "type": "postgresql",
+        "z": "7fae6e4d6b6c7551",
+        "name": "Query",
+        "query": "",
+        "postgreSQLConfig": "91103s1029x6094d",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1050,
+        "y": 440,
+        "wires": [
+            [
+                "xc66cz66x8380jbe"
+            ]
+        ]
+    },
+    {
+        "id": "xc66cz66x8380jbe",
+        "type": "function",
+        "z": "7fae6e4d6b6c7551",
+        "name": "SetResponse",
+        "func": "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1350,
+        "y": 440,
+        "wires": [
+            [
+                "7ne114382c2sysiv"
+            ]
+        ]
+    },
+    {
+        "id": "7ne114382c2sysiv",
+        "type": "http response",
+        "z": "7fae6e4d6b6c7551",
+        "name": "",
+        "statusCode": 200,
+        "headers": {},
+        "x": 1650,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "91103s1029x6094d",
+        "type": "postgreSQLConfig",
+        "z": "7fae6e4d6b6c7551",
+        "name": "",
+        "host": "localhost",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "admin",
+        "userFieldType": "str",
+        "password": "secret",
+        "passwordFieldType": "str"
+    }
+]

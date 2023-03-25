@@ -1,0 +1,213 @@
+[
+    {
+        "id": "9eb0dc1b6b1c42f2",
+        "type": "tab",
+        "label": "mssql-function"
+    },
+    {
+        "id": "8z5ku4cje332m7f7",
+        "type": "comment",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "mssql-function",
+        "info": "",
+        "x": 450,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "5m408511y8h3zinl",
+        "type": "comment",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "This subflow catches the errors",
+        "info": "",
+        "x": 450,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "9n0r7crpful3o9me",
+        "type": "comment",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "GetEndPoint (function parameters are query parameters)",
+        "info": "",
+        "x": 450,
+        "y": 390,
+        "wires": []
+    },
+    {
+        "id": "qz1fth1e99141j8l",
+        "type": "catch",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 150,
+        "y": 290,
+        "wires": [
+            [
+                "22a2139167776k89"
+            ]
+        ]
+    },
+    {
+        "id": "22a2139167776k89",
+        "type": "function",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "CreateError",
+        "func": "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\" : msg.error.message\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 290,
+        "wires": [
+            [
+                "ctassk6hp21mx5mw"
+            ]
+        ]
+    },
+    {
+        "id": "ctassk6hp21mx5mw",
+        "type": "http response",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "",
+        "statusCode": 400,
+        "headers": {},
+        "x": 650,
+        "y": 290,
+        "wires": []
+    },
+    {
+        "id": "9i4p333qyp5o2q38",
+        "type": "http in",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "",
+        "url": "/dbo.tvf_test",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 440,
+        "wires": [
+            [
+                "2g32pyw7c4vtwa87"
+            ]
+        ]
+    },
+    {
+        "id": "2g32pyw7c4vtwa87",
+        "type": "function",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "CheckFunctionParameters",
+        "func": "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined){\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.functionParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++){\n    msg.functionParameters.push(params[i]);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 440,
+        "wires": [
+            [
+                "w8s9wruif834x37d"
+            ]
+        ]
+    },
+    {
+        "id": "w8s9wruif834x37d",
+        "type": "function",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "SetQueryParameters",
+        "func": "var selectQuery = 'SELECT * FROM dbo.tvf_test(';\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0) {\n    for (let i = 0; i < msg.functionParameters.length; i++) {\n      if (msg.functionParameters[i] === 'default') {\n          functionArgs.push(`${msg.functionParameters[i]}`);\n          continue;\n       } \n\n       if (msg.functionParameters[i] === 'null'){\n           functionArgs.push(`${msg.functionParameters[i]}`);\n           continue;\n       }\n\n       functionArgs.push(`'${msg.functionParameters[i]}'`);\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ');';\nmsg.query = selectQuery;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 440,
+        "wires": [
+            [
+                "3p7yw47w2q20ks62"
+            ]
+        ]
+    },
+    {
+        "id": "3p7yw47w2q20ks62",
+        "type": "MSSQL",
+        "z": "9eb0dc1b6b1c42f2",
+        "mssqlCN": "9lq3tu1m6r53yr9a",
+        "name": "Query",
+        "outField": "payload",
+        "returnType": 0,
+        "throwErrors": 1,
+        "query": "",
+        "modeOpt": "queryMode",
+        "modeOptType": "query",
+        "queryOpt": "query",
+        "queryOptType": "msg",
+        "paramsOpt": "queryParams",
+        "paramsOptType": "none",
+        "rows": "rows",
+        "rowsType": "msg",
+        "parseMustache": true,
+        "params": [],
+        "x": 1050,
+        "y": 440,
+        "wires": [
+            [
+                "97e793z9w4bh1155"
+            ]
+        ]
+    },
+    {
+        "id": "97e793z9w4bh1155",
+        "type": "function",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "SetResponse",
+        "func": "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1350,
+        "y": 440,
+        "wires": [
+            [
+                "5g0eqvliwf2de96r"
+            ]
+        ]
+    },
+    {
+        "id": "5g0eqvliwf2de96r",
+        "type": "http response",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "",
+        "statusCode": 200,
+        "headers": {},
+        "x": 1650,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "9lq3tu1m6r53yr9a",
+        "type": "MSSQL-CN",
+        "z": "9eb0dc1b6b1c42f2",
+        "name": "",
+        "server": "localhost",
+        "port": "79",
+        "encyption": false,
+        "trustServerCertificate": false,
+        "database": "master",
+        "useUTC": false,
+        "connectTimeout": "",
+        "requestTimeout": "",
+        "cancelTimeout": "",
+        "pool": "",
+        "parseJSON": false,
+        "enableArithAbort": true
+    }
+]
