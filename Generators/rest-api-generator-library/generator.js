@@ -39,7 +39,7 @@ const Generator = class{
             throw new Error("The parameter restApiName was null or undefined!");
         }
 
-        throw new Error("generate(entityData, databaseConfiguration, restApiName must be implemented.");
+        throw new Error("generate(entityData, databaseConfiguration, restApiName) must be implemented.");
     }
 
     /**

@@ -168,7 +168,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query was stored in msg.query of the previous function node
+        let queryCode = ""; // The query was stored in msg.query of the previous function node
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
@@ -252,7 +252,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the query)
-        let createQueryFunctionCode = `var insertQuery = "INSERT INTO ${objectData.schema}.${objectData.name}";\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = [];\n\nfor (let i = 0; i < msg.queryProperties.length; i++){\n    if (msg.queryProperties[i].propertyValue === "null"){\n        propertyValues.push(msg.queryProperties[i].propertyValue);\n    } else{\n        propertyValues.push(\`\'\${msg.queryProperties[i].propertyValue}\'\`);\n    }\n}\n\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += ' VALUES ';\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ';';\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
+        let createQueryFunctionCode = `var insertQuery = "INSERT INTO ${objectData.schema}.${objectData.name}";\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = [];\n\nfor (let i = 0; i < msg.queryProperties.length; i++){\n    if (msg.queryProperties[i].propertyValue === "null"){\n        propertyValues.push(msg.queryProperties[i].propertyValue);\n    } else{\n        propertyValues.push(\`\'\${msg.queryProperties[i].propertyValue}\'\`);\n    }\n}\n\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += " VALUES ";\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ";";\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
         let createQuerynFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -261,7 +261,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query is built dynamically
+        let queryCode = ""; // The query is built dynamically
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
@@ -358,7 +358,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query is built dynamically
+        let queryCode = ""; // The query is built dynamically
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
@@ -533,7 +533,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query was stored in msg.query of the previous function node
+        let queryCode = ""; // The query was stored in msg.query of the previous function node
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);

@@ -121,7 +121,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         x += xOffset;
     
         // Step 2: Generate the function node (that checks the function parameters)
-        let functionCode = `var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined){\n    throw new Error("The parameters were not defined!");\n}\n\n\nmsg.functionParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++){\n    msg.functionParameters.push(params[i]);\n}\n\nreturn msg;`;
+        let functionCode = "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined){\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.functionParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++){\n    msg.functionParameters.push(params[i]);\n}\n\nreturn msg;";
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -139,7 +139,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // the query was built dynamically
+        let queryCode = ""; // the query was built dynamically
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);

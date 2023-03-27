@@ -189,13 +189,13 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         x += xOffset;
 
         // Step 9: Generate the function node (that sets the response in case of success)
-        let setSuccessResponseFunctionCode = `var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;`;
+        let setSuccessResponseFunctionCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;";
         let successResponseId = this.helper.generateId(16, this.usedids);
         this.usedids.push(successResponseId);
         let setSuccessResponseFunctionNode = this.nodeConfGen.generateFunctionNode(caseSuccessId, "SetResponse", x, y - 100, flowId, setSuccessResponseFunctionCode, [successResponseId]);
 
         // Step 10: Generate the function node (that sets the response in case of unsuccess)
-        let setUnsuccessResponseFunctionCode = `var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;`;
+        let setUnsuccessResponseFunctionCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;";
         let unsuccessResponseId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
         let setUnuccessResponseFunctionNode = this.nodeConfGen.generateFunctionNode(caseFailId, "SetResponse", x, y + 100, flowId, setUnsuccessResponseFunctionCode, [unsuccessResponseId]);

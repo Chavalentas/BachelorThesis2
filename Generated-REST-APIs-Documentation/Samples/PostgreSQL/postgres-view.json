@@ -1,23 +1,25 @@
 [
     {
-        "id": "04574c18676bda52",
+        "id": "72a635d0a669601a",
         "type": "tab",
-        "label": "postgres-view"
+        "label": "postgres-view",
+        "disabled": false,
+        "info": ""
     },
     {
-        "id": "7f385jx3mzy6ye5e",
+        "id": "6x846g415tfrsof5",
         "type": "comment",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "postgres-view",
         "info": "",
-        "x": 450,
+        "x": 470,
         "y": 140,
         "wires": []
     },
     {
-        "id": "mm0kd2r2c05itdwt",
+        "id": "u2bw9c9sqh9ojq5t",
         "type": "comment",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "This subflow catches the errors",
         "info": "",
         "x": 450,
@@ -25,9 +27,9 @@
         "wires": []
     },
     {
-        "id": "f9yn7kp8aty1ka18",
+        "id": "f7i6vbi0oi6sh196",
         "type": "comment",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "GetEndPoint (view attributes are query parameters)",
         "info": "",
         "x": 450,
@@ -35,9 +37,9 @@
         "wires": []
     },
     {
-        "id": "99cw0nk341y8w79z",
+        "id": "jxj1oha001u70rkl",
         "type": "comment",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "PostEndPoint (request body contains the attributes of the view, no request parameters)",
         "info": "",
         "x": 450,
@@ -45,9 +47,9 @@
         "wires": []
     },
     {
-        "id": "883rha875jq1l51x",
+        "id": "970f57vo203l5l6r",
         "type": "comment",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "PutEndPoint (request body contains the attributes of the view, request parameters the primary key)",
         "info": "",
         "x": 450,
@@ -55,9 +57,9 @@
         "wires": []
     },
     {
-        "id": "8kr1h4t4000vepy3",
+        "id": "1p173jkirhxvof2z",
         "type": "comment",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "DeleteEndPoint (no request body, request parameters contain the primary key)",
         "info": "",
         "x": 450,
@@ -65,9 +67,9 @@
         "wires": []
     },
     {
-        "id": "1722iml92bd6m8oz",
+        "id": "ve66j626w5492d3n",
         "type": "comment",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "DeleteEndPoint (view attributes are query parameters)",
         "info": "",
         "x": 450,
@@ -75,9 +77,9 @@
         "wires": []
     },
     {
-        "id": "54vd7e9l12r39y96",
+        "id": "28v218xis1kd3ciu",
         "type": "catch",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "scope": null,
         "uncaught": false,
@@ -85,14 +87,14 @@
         "y": 290,
         "wires": [
             [
-                "x7i3242ft51c7agc"
+                "20au9nbo0s83j9b4"
             ]
         ]
     },
     {
-        "id": "x7i3242ft51c7agc",
+        "id": "20au9nbo0s83j9b4",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "CreateError",
         "func": "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\" : msg.error.message\n}\nreturn msg;",
         "outputs": 1,
@@ -104,14 +106,14 @@
         "y": 290,
         "wires": [
             [
-                "efk3vq1cyr03lxo5"
+                "o3n2m5c1db729475"
             ]
         ]
     },
     {
-        "id": "efk3vq1cyr03lxo5",
+        "id": "o3n2m5c1db729475",
         "type": "http response",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "statusCode": 400,
         "headers": {},
@@ -120,9 +122,9 @@
         "wires": []
     },
     {
-        "id": "6713029313222rhq",
+        "id": "c9cq6zf8ksz8sd57",
         "type": "http in",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "url": "/public.housesview",
         "method": "get",
@@ -132,14 +134,14 @@
         "y": 440,
         "wires": [
             [
-                "8if11ba1k06fe777"
+                "x9ols117qfx9eqyd"
             ]
         ]
     },
     {
-        "id": "8if11ba1k06fe777",
+        "id": "x9ols117qfx9eqyd",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetQueryParameters",
         "func": "msg.queryProperties = [];\nvar properties = [\"houseid\",\"housename\"];\nvar queryProperties = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (msg.req.query.houseid !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"houseid\", \"propertyValue\" : `${msg.req.query.houseid}`});\n}\n\n\n\nif (msg.req.query.housename !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"housename\", \"propertyValue\" : `${msg.req.query.housename}`});\n}\n\n\nreturn msg;",
         "outputs": 1,
@@ -151,16 +153,16 @@
         "y": 440,
         "wires": [
             [
-                "iopux31yt38e3894"
+                "027r7my99s9d0jv5"
             ]
         ]
     },
     {
-        "id": "iopux31yt38e3894",
+        "id": "027r7my99s9d0jv5",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "CreateSelectQuery",
-        "func": "var selectQuery = 'SELECT * FROM public.housesview';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = `${msg.queryProperties[i].propertyName} is ${msg.queryProperties[i].propertyValue}`;\n        } else {\n            equation = `${msg.queryProperties[i].propertyName} = '${msg.queryProperties[i].propertyValue}'`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += `${equationsJoined}`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;",
+        "func": "var selectQuery = \"SELECT * FROM public.housesview\";\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \"\";\n        \n        if (msg.queryProperties[i].propertyValue === \"null\"){\n            equation = `${msg.queryProperties[i].propertyName} is ${msg.queryProperties[i].propertyValue}`;\n        } else {\n            equation = `${msg.queryProperties[i].propertyName} = '${msg.queryProperties[i].propertyValue}'`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += \" WHERE \";\n    selectQuery += `${equationsJoined}`;\n}\n\nselectQuery += \";\";\nmsg.query = selectQuery;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -170,17 +172,17 @@
         "y": 440,
         "wires": [
             [
-                "8m16b2966c69qdv8"
+                "a0d21090h49uc546"
             ]
         ]
     },
     {
-        "id": "8m16b2966c69qdv8",
+        "id": "a0d21090h49uc546",
         "type": "postgresql",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "Query",
         "query": "",
-        "postgreSQLConfig": "h4j0htvwf539q3uw",
+        "postgreSQLConfig": "33gzq215643t4z1z",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
@@ -188,14 +190,14 @@
         "y": 440,
         "wires": [
             [
-                "vzk19bnhne1y5hr2"
+                "80291050vmr1by59"
             ]
         ]
     },
     {
-        "id": "vzk19bnhne1y5hr2",
+        "id": "80291050vmr1by59",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetResponse",
         "func": "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;",
         "outputs": 1,
@@ -207,14 +209,14 @@
         "y": 440,
         "wires": [
             [
-                "01vch1e03tzy4577"
+                "6m3764i349cs307l"
             ]
         ]
     },
     {
-        "id": "01vch1e03tzy4577",
+        "id": "6m3764i349cs307l",
         "type": "http response",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "statusCode": 200,
         "headers": {},
@@ -223,9 +225,9 @@
         "wires": []
     },
     {
-        "id": "tfb98cfc097qgw63",
+        "id": "286ax4c53cq0bhor",
         "type": "http in",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "url": "/public.housesview",
         "method": "post",
@@ -235,14 +237,14 @@
         "y": 590,
         "wires": [
             [
-                "l46s31dj8ybezw91"
+                "18n10gb0nmt2avvc"
             ]
         ]
     },
     {
-        "id": "l46s31dj8ybezw91",
+        "id": "18n10gb0nmt2avvc",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetQueryParameters",
         "func": "msg.queryProperties = [];\nvar properties = [\"houseid\",\"housename\"];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (msg.req.body.houseid !== undefined){\n    msg.queryProperties.push({ \"propertyName\": \"houseid\", \"propertyValue\": `${msg.req.body.houseid}` })\n}\n\nif (msg.req.body.housename !== undefined){\n    msg.queryProperties.push({ \"propertyName\": \"housename\", \"propertyValue\": `${msg.req.body.housename}` })\n}\n\nreturn msg;",
         "outputs": 1,
@@ -254,16 +256,16 @@
         "y": 590,
         "wires": [
             [
-                "437ld3c46u57296w"
+                "n9yd86f2s09774o8"
             ]
         ]
     },
     {
-        "id": "437ld3c46u57296w",
+        "id": "n9yd86f2s09774o8",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "CreateInsertQuery",
-        "func": "var insertQuery = 'INSERT INTO public.housesview';\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = [];\n\nfor (let i = 0; i < msg.queryProperties.length; i++){\n    if (msg.queryProperties[i].propertyValue === 'null'){\n        propertyValues.push(msg.queryProperties[i].propertyValue);\n    } else{\n        propertyValues.push(`'${msg.queryProperties[i].propertyValue}'`);\n    }\n}\n\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += `(${propertyNamesJoined})`;\ninsertQuery += ' VALUES ';\ninsertQuery += `(${propertyValuesJoined})`;\ninsertQuery += ';';\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;",
+        "func": "var insertQuery = \"INSERT INTO public.housesview\";\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = [];\n\nfor (let i = 0; i < msg.queryProperties.length; i++){\n    if (msg.queryProperties[i].propertyValue === \"null\"){\n        propertyValues.push(msg.queryProperties[i].propertyValue);\n    } else{\n        propertyValues.push(`'${msg.queryProperties[i].propertyValue}'`);\n    }\n}\n\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += `(${propertyNamesJoined})`;\ninsertQuery += \" VALUES \";\ninsertQuery += `(${propertyValuesJoined})`;\ninsertQuery += \";\";\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -273,17 +275,17 @@
         "y": 590,
         "wires": [
             [
-                "076v8zsh71qth06a"
+                "y8m98713o652h9i5"
             ]
         ]
     },
     {
-        "id": "076v8zsh71qth06a",
+        "id": "y8m98713o652h9i5",
         "type": "postgresql",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "Query",
         "query": "",
-        "postgreSQLConfig": "h4j0htvwf539q3uw",
+        "postgreSQLConfig": "33gzq215643t4z1z",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
@@ -291,14 +293,14 @@
         "y": 590,
         "wires": [
             [
-                "j5n67y6sm7vmsvyu"
+                "c18po0cs82fl6z1h"
             ]
         ]
     },
     {
-        "id": "j5n67y6sm7vmsvyu",
+        "id": "c18po0cs82fl6z1h",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetResponse",
         "func": "msg.payload = undefined;\nreturn msg;",
         "outputs": 1,
@@ -310,14 +312,14 @@
         "y": 590,
         "wires": [
             [
-                "33msf3i2zg9p1lt4"
+                "p74146gv361v0400"
             ]
         ]
     },
     {
-        "id": "33msf3i2zg9p1lt4",
+        "id": "p74146gv361v0400",
         "type": "http response",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "statusCode": 201,
         "headers": {},
@@ -326,9 +328,9 @@
         "wires": []
     },
     {
-        "id": "4zp3w03k4cdq50n6",
+        "id": "6bh84prxolf75l31",
         "type": "http in",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "url": "/public.housesview/:houseid",
         "method": "put",
@@ -338,14 +340,14 @@
         "y": 740,
         "wires": [
             [
-                "7rhhb19x78e66trd"
+                "10y010u33k30zp63"
             ]
         ]
     },
     {
-        "id": "7rhhb19x78e66trd",
+        "id": "10y010u33k30zp63",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetQueryParameters",
         "func": "msg.queryProperties = [];\nvar properties = [\"houseid\",\"housename\"];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.houseid === undefined){\n    throw new Error('The query parameter \\'houseid\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"houseid\", \"propertyValue\" : msg.req.params.houseid};\n\nif (msg.req.body.houseid !== undefined){\n    msg.queryProperties.push({ \"propertyName\": \"houseid\", \"propertyValue\": `${msg.req.body.houseid}` })\n}\n\nif (msg.req.body.housename !== undefined){\n    msg.queryProperties.push({ \"propertyName\": \"housename\", \"propertyValue\": `${msg.req.body.housename}` })\n}\n\nreturn msg;",
         "outputs": 1,
@@ -357,16 +359,16 @@
         "y": 740,
         "wires": [
             [
-                "1phox485xkee58r8"
+                "p91ta1ysws512b9d"
             ]
         ]
     },
     {
-        "id": "1phox485xkee58r8",
+        "id": "p91ta1ysws512b9d",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "CreateUpdateQuery",
-        "func": "var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => p.propertyValue);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var propertyValue = '';\n\n    if (propertyValues[i] === 'null'){\n        propertyValue = propertyValues[i];\n    } else{\n        propertyValue = `'${propertyValues[i]}'`;\n    }\n\n    var equation = `${propertyNames[i]} = ${propertyValue}`;\n    equations.push(equation);\n}\n\nvar pk = '';\n\nif (msg.pk.propertyValue === 'null'){\n    pk = msg.pk.propertyValue;\n} else{\n    pk = `'${msg.pk.propertyValue}'`;\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = `UPDATE public.housesview SET ${equationsJoined} WHERE ${msg.pk.propertyName} = ${pk};`;\nmsg.query = updateQuery;\nreturn msg;",
+        "func": "var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => p.propertyValue);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var propertyValue = \"\";\n\n    if (propertyValues[i] === \"null\"){\n        propertyValue = propertyValues[i];\n    } else{\n        propertyValue = `'${propertyValues[i]}'`;\n    }\n\n    var equation = `${propertyNames[i]} = ${propertyValue}`;\n    equations.push(equation);\n}\n\nvar pk = \"\";\n\nif (msg.pk.propertyValue === \"null\"){\n    pk = msg.pk.propertyValue;\n} else{\n    pk = `'${msg.pk.propertyValue}'`;\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = `UPDATE public.housesview SET ${equationsJoined} WHERE ${msg.pk.propertyName} = ${pk};`;\nmsg.query = updateQuery;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -376,17 +378,17 @@
         "y": 740,
         "wires": [
             [
-                "klb35qru9o5010s1"
+                "5xg5yr3jmz57xo46"
             ]
         ]
     },
     {
-        "id": "klb35qru9o5010s1",
+        "id": "5xg5yr3jmz57xo46",
         "type": "postgresql",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "Query",
         "query": "",
-        "postgreSQLConfig": "h4j0htvwf539q3uw",
+        "postgreSQLConfig": "33gzq215643t4z1z",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
@@ -394,14 +396,14 @@
         "y": 740,
         "wires": [
             [
-                "l0a0gh8ysohy03c1"
+                "jret423yn7379bw3"
             ]
         ]
     },
     {
-        "id": "l0a0gh8ysohy03c1",
+        "id": "jret423yn7379bw3",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetResponse",
         "func": "msg.payload = undefined;\nreturn msg;",
         "outputs": 1,
@@ -413,14 +415,14 @@
         "y": 740,
         "wires": [
             [
-                "55u1zduqrlagu93i"
+                "w328c1a38c00clfk"
             ]
         ]
     },
     {
-        "id": "55u1zduqrlagu93i",
+        "id": "w328c1a38c00clfk",
         "type": "http response",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "statusCode": 200,
         "headers": {},
@@ -429,9 +431,9 @@
         "wires": []
     },
     {
-        "id": "g2afx4b2a631j1jp",
+        "id": "6u6mv11d484sdeo5",
         "type": "http in",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "url": "/public.housesview/:houseid",
         "method": "delete",
@@ -441,16 +443,16 @@
         "y": 890,
         "wires": [
             [
-                "85c7a432qu181b59"
+                "w35j3n5x3n8q030n"
             ]
         ]
     },
     {
-        "id": "85c7a432qu181b59",
+        "id": "w35j3n5x3n8q030n",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetQueryParameters",
-        "func": "if (msg.req.params.houseid === undefined){\n    throw new Error('The query parameter \\'houseid\\' was undefined!');\n}\n\nvar pkValue = '';\n\nif (msg.req.params.houseid === 'null'){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.houseid;\n}\n\nvar data = {\n    pk : pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;",
+        "func": "if (msg.req.params.houseid === undefined){\n    throw new Error(\"The query parameter \\'houseid\\' was undefined!\");\n}\n\nvar pkValue = \"\";\n\nif (msg.req.params.houseid === \"null\"){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.houseid;\n}\n\nvar data = {\n    pk : pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -460,17 +462,17 @@
         "y": 890,
         "wires": [
             [
-                "34qx710831fiz2dq"
+                "t19fs995q73105wq"
             ]
         ]
     },
     {
-        "id": "34qx710831fiz2dq",
+        "id": "t19fs995q73105wq",
         "type": "postgresql",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "Query",
         "query": "DELETE FROM public.housesview WHERE houseid = $pk;",
-        "postgreSQLConfig": "h4j0htvwf539q3uw",
+        "postgreSQLConfig": "33gzq215643t4z1z",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
@@ -478,14 +480,14 @@
         "y": 890,
         "wires": [
             [
-                "yx22mf4g28r04l02"
+                "a0foha99yh8zg240"
             ]
         ]
     },
     {
-        "id": "yx22mf4g28r04l02",
+        "id": "a0foha99yh8zg240",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetResponse",
         "func": "msg.payload = undefined;\nreturn msg;",
         "outputs": 1,
@@ -497,14 +499,14 @@
         "y": 890,
         "wires": [
             [
-                "yl1jyc26n5l4aoc8"
+                "l2557t23038oh7a4"
             ]
         ]
     },
     {
-        "id": "yl1jyc26n5l4aoc8",
+        "id": "l2557t23038oh7a4",
         "type": "http response",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "statusCode": 200,
         "headers": {},
@@ -513,9 +515,9 @@
         "wires": []
     },
     {
-        "id": "1nit8g2153xx7l5e",
+        "id": "oacvlmy6s6s20i1h",
         "type": "http in",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "url": "/public.housesview",
         "method": "delete",
@@ -525,14 +527,14 @@
         "y": 1040,
         "wires": [
             [
-                "76o6364z5m90k4h0"
+                "sbt0h9jz9753p1p7"
             ]
         ]
     },
     {
-        "id": "76o6364z5m90k4h0",
+        "id": "sbt0h9jz9753p1p7",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetQueryParameters",
         "func": "msg.queryProperties = [];\nvar properties = [\"houseid\",\"housename\"];\nvar queryProperties = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (msg.req.query.houseid !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"houseid\", \"propertyValue\" : `${msg.req.query.houseid}`});\n}\n\n\n\nif (msg.req.query.housename !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"housename\", \"propertyValue\" : `${msg.req.query.housename}`});\n}\n\n\nreturn msg;",
         "outputs": 1,
@@ -544,16 +546,16 @@
         "y": 1040,
         "wires": [
             [
-                "a783ezb1rwj4i00l"
+                "w7q430hlothj0723"
             ]
         ]
     },
     {
-        "id": "a783ezb1rwj4i00l",
+        "id": "w7q430hlothj0723",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "CreateDeleteQuery",
-        "func": "var deleteQuery = 'DELETE FROM public.housesview';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = `${msg.queryProperties[i].propertyName} is ${msg.queryProperties[i].propertyValue}`;\n        } else {\n            equation = `${msg.queryProperties[i].propertyName} = '${msg.queryProperties[i].propertyValue}'`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += `${equationsJoined}`;\n}\n\ndeleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;",
+        "func": "var deleteQuery = \"DELETE FROM public.housesview\";\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === \"null\"){\n            equation = `${msg.queryProperties[i].propertyName} is ${msg.queryProperties[i].propertyValue}`;\n        } else {\n            equation = `${msg.queryProperties[i].propertyName} = '${msg.queryProperties[i].propertyValue}'`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += \" WHERE \";\n    deleteQuery += `${equationsJoined}`;\n}\n\ndeleteQuery += \";\";\nmsg.query = deleteQuery;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -563,17 +565,17 @@
         "y": 1040,
         "wires": [
             [
-                "368hi8lo18ip7t01"
+                "3c432u3mq8y6x2kh"
             ]
         ]
     },
     {
-        "id": "368hi8lo18ip7t01",
+        "id": "3c432u3mq8y6x2kh",
         "type": "postgresql",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "Query",
         "query": "",
-        "postgreSQLConfig": "h4j0htvwf539q3uw",
+        "postgreSQLConfig": "33gzq215643t4z1z",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
@@ -581,14 +583,14 @@
         "y": 1040,
         "wires": [
             [
-                "j5clo3y407wkqxx1"
+                "f1t0y2814z5qec0h"
             ]
         ]
     },
     {
-        "id": "j5clo3y407wkqxx1",
+        "id": "f1t0y2814z5qec0h",
         "type": "function",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "SetResponse",
         "func": "msg.payload = undefined;\nreturn msg;",
         "outputs": 1,
@@ -600,14 +602,14 @@
         "y": 1040,
         "wires": [
             [
-                "56dexe05kvlsu483"
+                "kk1847h119yu2gzb"
             ]
         ]
     },
     {
-        "id": "56dexe05kvlsu483",
+        "id": "kk1847h119yu2gzb",
         "type": "http response",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "statusCode": 200,
         "headers": {},
@@ -616,9 +618,9 @@
         "wires": []
     },
     {
-        "id": "h4j0htvwf539q3uw",
+        "id": "33gzq215643t4z1z",
         "type": "postgreSQLConfig",
-        "z": "04574c18676bda52",
+        "z": "72a635d0a669601a",
         "name": "",
         "host": "localhost",
         "hostFieldType": "str",

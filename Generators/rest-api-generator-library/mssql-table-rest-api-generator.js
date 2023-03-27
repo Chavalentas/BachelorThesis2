@@ -168,7 +168,7 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query was stored in msg.query of the previous function node
+        let queryCode = ""; // The query was stored in msg.query of the previous function node
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
@@ -261,7 +261,7 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query is built dynamically
+        let queryCode = ""; // The query is built dynamically
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
@@ -533,7 +533,7 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query was stored in msg.query of the previous function node
+        let queryCode = ""; // The query was stored in msg.query of the previous function node
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);

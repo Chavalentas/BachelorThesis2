@@ -1,23 +1,25 @@
 [
     {
-        "id": "7fae6e4d6b6c7551",
+        "id": "5c4e4f40b43e93d2",
         "type": "tab",
-        "label": "postgres-strp"
+        "label": "postgres-strp",
+        "disabled": false,
+        "info": ""
     },
     {
-        "id": "7fkun76368n9jpvi",
+        "id": "q665hzec0tnxzx10",
         "type": "comment",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "postgres-strp",
         "info": "",
-        "x": 450,
+        "x": 470,
         "y": 140,
         "wires": []
     },
     {
-        "id": "8k48ne43j0yauwii",
+        "id": "199581v1ib6kdag8",
         "type": "comment",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "This subflow catches the errors",
         "info": "",
         "x": 450,
@@ -25,9 +27,9 @@
         "wires": []
     },
     {
-        "id": "33y7j49j450p85mr",
+        "id": "v554vk4bw7ol9u0d",
         "type": "comment",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "GetEndPoint (procedure parameters are query parameters)",
         "info": "",
         "x": 450,
@@ -35,9 +37,9 @@
         "wires": []
     },
     {
-        "id": "7b527nj02ro5999a",
+        "id": "16q4x6bj7fg2c517",
         "type": "catch",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "",
         "scope": null,
         "uncaught": false,
@@ -45,14 +47,14 @@
         "y": 290,
         "wires": [
             [
-                "q5w0797u41143njz"
+                "3y9fjc1r5d422v89"
             ]
         ]
     },
     {
-        "id": "q5w0797u41143njz",
+        "id": "3y9fjc1r5d422v89",
         "type": "function",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "CreateError",
         "func": "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\" : msg.error.message\n}\nreturn msg;",
         "outputs": 1,
@@ -64,14 +66,14 @@
         "y": 290,
         "wires": [
             [
-                "k33491bsfn7pbr3l"
+                "c3633lyxbip14ye7"
             ]
         ]
     },
     {
-        "id": "k33491bsfn7pbr3l",
+        "id": "c3633lyxbip14ye7",
         "type": "http response",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "",
         "statusCode": 400,
         "headers": {},
@@ -80,9 +82,9 @@
         "wires": []
     },
     {
-        "id": "p9jxzcu7rdvr3lq4",
+        "id": "2q64okuv9r8a1wm8",
         "type": "http in",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "",
         "url": "/public.count_procedure3",
         "method": "get",
@@ -92,14 +94,14 @@
         "y": 440,
         "wires": [
             [
-                "0si75mpw9lpg5r14"
+                "wb7c6oqw7u19492v"
             ]
         ]
     },
     {
-        "id": "0si75mpw9lpg5r14",
+        "id": "wb7c6oqw7u19492v",
         "type": "function",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "CheckProcedureParameters",
         "func": "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;",
         "outputs": 1,
@@ -111,16 +113,16 @@
         "y": 440,
         "wires": [
             [
-                "23m3jh16pf7r89se"
+                "0gavy0f267u5ne3p"
             ]
         ]
     },
     {
-        "id": "23m3jh16pf7r89se",
+        "id": "0gavy0f267u5ne3p",
         "type": "function",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "CreateProcedureQuery",
-        "func": "var callProcedureQuery = 'CALL public.count_procedure3(';\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] === 'default'){\n        continue;\n    }\n\n    if (msg.procedureParameters[i] === 'null'){\n        queryParams.push(msg.procedureParameters[i]);\n        continue;\n    }\n  \n    queryParams.push(`'${msg.procedureParameters[i]}'`);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += ');';\nmsg.query = callProcedureQuery;\nreturn msg;",
+        "func": "var callProcedureQuery = \"CALL public.count_procedure3(\";\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] === \"default\"){\n        continue;\n    }\n\n    if (msg.procedureParameters[i] === \"null\"){\n        queryParams.push(msg.procedureParameters[i]);\n        continue;\n    }\n  \n    queryParams.push(`'${msg.procedureParameters[i]}'`);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += \");\";\nmsg.query = callProcedureQuery;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -130,17 +132,17 @@
         "y": 440,
         "wires": [
             [
-                "r96j4t3m4s9ig7ir"
+                "e2c15rn2pin31270"
             ]
         ]
     },
     {
-        "id": "r96j4t3m4s9ig7ir",
+        "id": "e2c15rn2pin31270",
         "type": "postgresql",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "Query",
         "query": "",
-        "postgreSQLConfig": "91103s1029x6094d",
+        "postgreSQLConfig": "c4sj0m9q69e3p21p",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
@@ -148,14 +150,14 @@
         "y": 440,
         "wires": [
             [
-                "xc66cz66x8380jbe"
+                "d4t78d7ky01x7094"
             ]
         ]
     },
     {
-        "id": "xc66cz66x8380jbe",
+        "id": "d4t78d7ky01x7094",
         "type": "function",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "SetResponse",
         "func": "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;",
         "outputs": 1,
@@ -167,14 +169,14 @@
         "y": 440,
         "wires": [
             [
-                "7ne114382c2sysiv"
+                "p865254qhb02xm0q"
             ]
         ]
     },
     {
-        "id": "7ne114382c2sysiv",
+        "id": "p865254qhb02xm0q",
         "type": "http response",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "",
         "statusCode": 200,
         "headers": {},
@@ -183,9 +185,9 @@
         "wires": []
     },
     {
-        "id": "91103s1029x6094d",
+        "id": "c4sj0m9q69e3p21p",
         "type": "postgreSQLConfig",
-        "z": "7fae6e4d6b6c7551",
+        "z": "5c4e4f40b43e93d2",
         "name": "",
         "host": "localhost",
         "hostFieldType": "str",

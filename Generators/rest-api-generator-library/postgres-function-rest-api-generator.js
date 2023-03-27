@@ -122,7 +122,7 @@ const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenera
         x += xOffset;
     
         // Step 2: Generate the function node (that checks the function parameters)
-        let functionCode = `var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined){\n    throw new Error("The parameters were not defined!");\n}\n\n\nmsg.functionParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++){\n    msg.functionParameters.push(params[i]);\n}\n\nreturn msg;`;
+        let functionCode = "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined){\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.functionParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++){\n    msg.functionParameters.push(params[i]);\n}\n\nreturn msg;";
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -132,7 +132,7 @@ const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenera
         x += xOffset;
 
         // Step 3: Generate the function node (that sets the query parameters)
-        let queryFunctionCode = `var selectQuery = "SELECT * FROM ${objectData.schema}.${objectData.name}(";\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0){\n    for (let i = 0; i < msg.functionParameters.length; i++){\n        if (msg.functionParameters[i] === 'default'){\n          continue;\n        }\n\n        if (msg.functionParameters[i] === "null") {\n          functionArgs.push(msg.functionParameters[i]);\n          continue;\n        }\n\n        functionArgs.push(\`\'\${msg.functionParameters[i]}\'\`);\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ");";\nmsg.query = selectQuery;\nreturn msg;`;
+        let queryFunctionCode = `var selectQuery = "SELECT * FROM ${objectData.schema}.${objectData.name}(";\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0){\n    for (let i = 0; i < msg.functionParameters.length; i++){\n        if (msg.functionParameters[i] === "default"){\n          continue;\n        }\n\n        if (msg.functionParameters[i] === "null") {\n          functionArgs.push(msg.functionParameters[i]);\n          continue;\n        }\n\n        functionArgs.push(\`\'\${msg.functionParameters[i]}\'\`);\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += ");";\nmsg.query = selectQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -141,7 +141,7 @@ const PostgresFunctionRestApiGenerator = class extends gen.FunctionRestApiGenera
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let queryCode = ``; // The query was stored dynamically in msg.query as default values have to be left out in the parameters 
+        let queryCode = ""; // The query was stored dynamically in msg.query as default values have to be left out in the parameters 
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);

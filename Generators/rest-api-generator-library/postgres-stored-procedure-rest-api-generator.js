@@ -141,7 +141,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         x += xOffset;
 
         // Step 4: Generate the database node (that executes the query)
-        let query = ``;
+        let query = "";
         let databaseNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
