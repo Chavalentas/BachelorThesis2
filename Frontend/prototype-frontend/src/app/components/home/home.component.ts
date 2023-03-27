@@ -221,7 +221,7 @@ export class HomeComponent implements OnInit {
       this._dbProvider = this.firstFormGroup?.get('dbProviderControl')?.value;
 
       this.loadSchemas().subscribe({
-        next: data => {
+        next: (data) => {
           if (data.result.length == 0){
              this.secondStepSuccessMessage = 'No schemas are included in this database!';
              return;
@@ -236,7 +236,7 @@ export class HomeComponent implements OnInit {
 
           this.stepper.next();
         },
-        error: error => {
+        error: (error) => {
           if (error.error.error === undefined){
             this.firstStepSuccessMessage = 'Some error occurred during the loading of schemas!';
             return;
@@ -286,9 +286,9 @@ export class HomeComponent implements OnInit {
 
    this.selectedObjectType = this.thirdFormGroup?.get('dbObjectTypeControl')?.value;
    this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
-    next : (response) => {
+    next : (data) => {
       this.thirdStepSuccessMessage = '';
-      this.handleGetDbObjectsResponse(response);
+      this.handleGetDbObjectsResponse(data);
 
       if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
         this.fourthFormGroup?.get('dbObjectControl')?.setValue('');
@@ -325,12 +325,12 @@ export class HomeComponent implements OnInit {
 
     var reqBody = {"conn" : this._connString, "schema" : this.selectedSchema.schemaName, "dbObjectType" : this.selectedObjectType, "dbObjectName" : this.selectedDbObject.dbObjectName};
     this._httpClient.post<GetObjectInformationResponse>(`${schemaParserBackendConfig.conn}/get-db-object-information`, reqBody).subscribe({
-      next: data => {
+      next: (data) => {
         this.fourthStepSuccessMessage = '';
         this._objectData = data.result[0];
         this.stepper.next();
       },
-      error: error => {
+      error: (error) => {
         if (error.error.error === undefined){
           this.fourthStepSuccessMessage = 'Some error occurred during the fetching of database object information!';
           return;
@@ -372,13 +372,13 @@ export class HomeComponent implements OnInit {
 
     this._restApiName = this.fifthFormGroup?.get('restApiNameControl')?.value;
     this.getConfiguration(this._objectData, this._connString, this._restApiName).subscribe({
-      next : data => {
+      next : (data) => {
         this._jsonConfig = data;
         this.sixthFormGroup.get('configurationControl')?.setValue(JSON.stringify(this._jsonConfig));
         this.sixthStepSuccessMessage = '';
         this.stepper.next();
       },
-      error : error => {
+      error : (error) => {
         if (error.error.error === undefined){
           this.fifthStepSuccessMessage = 'Some error occurred during the fetching of the JSON configuration!';
           return;
@@ -394,7 +394,7 @@ export class HomeComponent implements OnInit {
    */
   public handleSchemasRefreshButtonClick() : void{
     this.loadSchemas().subscribe({
-      next: data => {
+      next: (data) => {
         this.secondStepSuccessMessage = '';
         if (data.result.length == 0){
            this.secondStepSuccessMessage = 'No schemas are included in this database!';
@@ -407,7 +407,7 @@ export class HomeComponent implements OnInit {
           this.secondFormGroup?.get('schemaNameControl')?.setValue('');
         }
       },
-      error: error => {
+      error: (error) => {
         if (error.error.error === undefined){
           this.secondStepSuccessMessage = 'Some error occurred during the loading of schemas!';
           return;
@@ -423,9 +423,9 @@ export class HomeComponent implements OnInit {
    */
   public handleDbObjectsRefreshButtonClick() : void{
     this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
-      next : (response) => {
+      next : (data) => {
         this.fourthStepSuccessMessage = '';
-        this.handleGetDbObjectsResponse(response);
+        this.handleGetDbObjectsResponse(data);
 
         if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
           this.fourthFormGroup?.get('dbObjectControl')?.setValue('');
@@ -461,10 +461,10 @@ export class HomeComponent implements OnInit {
       var nodeRedUrl = result.result;
       var nodesWithoutTab = this._jsonConfig.filter(o => o.type !== 'tab');
       this.importFlow(restApiName, nodeRedUrl + 'flow', nodesWithoutTab).subscribe({
-        next: data => {
+        next: (data) => {
           this.sixthStepSuccessMessage = `The flow was imported! Please check your Node-RED instance at ${nodeRedUrl}!`;
         },
-        error: error => {
+        error: (error) => {
           if (error.error.error === undefined){
             this.sixthStepSuccessMessage = 'Some error occurred during the import of the flow!';
             return;
