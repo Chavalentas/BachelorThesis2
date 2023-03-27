@@ -184,7 +184,7 @@ export class HomeComponent implements OnInit {
    * Represents the sixth form group.
    */
   public sixthFormGroup = this._formBuilder.group({
-    configurationControl: [''],
+    configurationControl: ['']
   });
 
   /**
