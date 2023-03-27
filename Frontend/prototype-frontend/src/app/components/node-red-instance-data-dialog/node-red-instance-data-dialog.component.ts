@@ -53,8 +53,8 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
       return;
     }
 
-    if (url[url.length - 1] != '/'){
-      url += '/';
+    if (url[url.length - 1] != "/"){
+      url += "/";
     }
 
     var result = {

@@ -68,11 +68,11 @@ export class HomeComponent implements OnInit{
    * @param _dialog The dialog.
    */
   constructor(private _formBuilder : FormBuilder, private _httpClient : HttpClient, private _helperService : HelperService, private _dialog : MatDialog){
-  this.selectedObjectType = '';
+  this.selectedObjectType = "";
   this._dbConfiguration = {} as DbConfiguration;
   this._jsonConfig = [];
-  this.selectedSchema = {schemaName : ''} as Schema;
-  this.selectedDbObject = {dbObjectName : ''} as DbObject;
+  this.selectedSchema = {schemaName : ""} as Schema;
+  this.selectedDbObject = {dbObjectName : ""} as DbObject;
  }
 
  /**
@@ -326,7 +326,7 @@ export class HomeComponent implements OnInit{
     var reqBody = {"conn" : this._connString, "schema" : this.selectedSchema.schemaName, "dbObjectType" : this.selectedObjectType, "dbObjectName" : this.selectedDbObject.dbObjectName};
     this._httpClient.post<GetObjectInformationResponse>(`${schemaParserBackendConfig.conn}/get-db-object-information`, reqBody).subscribe({
       next: (data) => {
-        this.fourthStepSuccessMessage = '';
+        this.fourthStepSuccessMessage = "";
         this._objectData = data.result[0];
         this.stepper.next();
       },
@@ -375,7 +375,7 @@ export class HomeComponent implements OnInit{
       next : (data) => {
         this._jsonConfig = data;
         this.sixthFormGroup.get("configurationControl")?.setValue(JSON.stringify(this._jsonConfig));
-        this.sixthStepSuccessMessage = '';
+        this.sixthStepSuccessMessage = "";
         this.stepper.next();
       },
       error : (error) => {
