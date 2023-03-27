@@ -41,7 +41,7 @@ const Helper = class{
      * @param {*} max The maximal value (exclusive).
      * @returns The random number.
      */
-    getRandomInt(min, max) {
+    getRandomInt(min, max){
         if (this.isNullOrUndefined(min)){
             throw new Error('The parameter min was null or undefined!');
         }

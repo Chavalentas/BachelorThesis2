@@ -9,7 +9,7 @@ const StoredProcedureRestApiGenerator = class extends routineGen.RoutineRestApiG
      */
     constructor(){
         super();
-        if (this.constructor == StoredProcedureRestApiGenerator) {
+        if (this.constructor == StoredProcedureRestApiGenerator){
             throw new Error("The abstract stored procedure generator cannot be instantiated.");
         }
     }

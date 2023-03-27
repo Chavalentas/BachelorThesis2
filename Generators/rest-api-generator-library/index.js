@@ -17,7 +17,7 @@ const helperLib = require('./helper-functions.js');
  * @param {*} provider Contains the database provider (postgres or mssql).
  * @returns The JSON configuration of the generated flow.
  */
-function generate(objectData, dbObjectType, databaseConfiguration, restApiName, provider) {
+function generate(objectData, dbObjectType, databaseConfiguration, restApiName, provider){
     const helper = new helperLib.Helper();
 
     if (helper.isNullOrUndefined(objectData)){

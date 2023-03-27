@@ -9,7 +9,7 @@ const Generator = class{
      * Represents the constructor.
      */
     constructor(){
-        if (this.constructor == Generator) {
+        if (this.constructor == Generator){
             throw new Error("The abstract generator cannot be instantiated.");
         }
 

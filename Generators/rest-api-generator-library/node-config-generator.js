@@ -3,7 +3,7 @@ const help = require('./helper-functions.js');
 /**
  * Represents the node configuration generator.
  */
-const NodeConfigGenerator = class {
+const NodeConfigGenerator = class{
     /**
      * Represents the constructor.
      */

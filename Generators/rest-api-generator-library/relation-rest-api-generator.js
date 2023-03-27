@@ -9,7 +9,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
      */
     constructor(){
         super();
-        if (this.constructor == RelationRestApiGenerator) {
+        if (this.constructor == RelationRestApiGenerator){
             throw new Error("The abstract relation generator cannot be instantiated.");
         }
     }

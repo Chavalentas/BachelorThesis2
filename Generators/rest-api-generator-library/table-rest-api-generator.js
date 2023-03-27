@@ -9,7 +9,7 @@ const TableRestApiGenerator = class extends relGen.RelationRestApiGenerator{
      */
     constructor(){
         super();
-        if (this.constructor == TableRestApiGenerator) {
+        if (this.constructor == TableRestApiGenerator){
             throw new Error("The abstract table generator cannot be instantiated.");
         }
     }

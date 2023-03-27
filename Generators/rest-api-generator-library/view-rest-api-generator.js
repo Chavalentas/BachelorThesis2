@@ -9,7 +9,7 @@ const ViewRestApiGenerator = class extends relGen.RelationRestApiGenerator{
      */
     constructor(){
         super();
-        if (this.constructor == ViewRestApiGenerator) {
+        if (this.constructor == ViewRestApiGenerator){
             throw new Error("The abstract view generator cannot be instantiated.");
         }
     }

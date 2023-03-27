@@ -9,7 +9,7 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
      */
     constructor(){
         super();
-        if (this.constructor == FunctionRestApiGenerator) {
+        if (this.constructor == FunctionRestApiGenerator){
             throw new Error("The abstract function generator cannot be instantiated.");
         }
     }
