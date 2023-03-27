@@ -462,7 +462,7 @@ export class HomeComponent implements OnInit {
       var nodesWithoutTab = this._jsonConfig.filter(o => o.type !== 'tab');
       this.importFlow(restApiName, nodeRedUrl + 'flow', nodesWithoutTab).subscribe({
         next: (data) => {
-          this.sixthStepSuccessMessage = `The flow was imported! Please check your Node-RED instance at ${nodeRedUrl}!`;
+          this.sixthStepSuccessMessage = `The flow was imported with the ID ${data.id}! Please check your Node-RED instance at ${nodeRedUrl}!`;
         },
         error: (error) => {
           if (error.error.error === undefined){
