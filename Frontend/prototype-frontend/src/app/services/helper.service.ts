@@ -3,7 +3,7 @@ import { DbConfiguration } from "../models/db-configuration.model";
 /**
  * Represents the helper service.
  */
-export class HelperService {
+export class HelperService{
   /**
    * Gets a connection string based on the database configuration.
    * @param dbConfig The database configuration (data needed to establish connection to the database).

@@ -10,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 /**
  * Represents the Node-RED instance data dialog component.
  */
-export class NodeRedInstanceDataDialogComponent implements OnInit {
+export class NodeRedInstanceDataDialogComponent implements OnInit{
   /**
    * Represents the constructor.
    * @param dialogRef Represents the dialog reference.

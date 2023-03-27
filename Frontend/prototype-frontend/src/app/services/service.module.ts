@@ -9,4 +9,4 @@ import { HelperService } from './helper.service';
 /**
  * Represents the service module.
  */
-export class ServiceModule {}
+export class ServiceModule{}

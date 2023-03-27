@@ -29,7 +29,7 @@ import { ImportFlowResponse } from 'src/app/models/import-flow-response.model';
 /**
  * Represents the home component.
  */
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit{
   /**
    * Represents the JSON configuration (array of nodes).
    */
@@ -67,7 +67,7 @@ export class HomeComponent implements OnInit {
    * @param _helperService The helper service.
    * @param _dialog The dialog.
    */
-  constructor(private _formBuilder : FormBuilder, private _httpClient : HttpClient, private _helperService : HelperService, private _dialog : MatDialog) {
+  constructor(private _formBuilder : FormBuilder, private _httpClient : HttpClient, private _helperService : HelperService, private _dialog : MatDialog){
   this.selectedObjectType = '';
   this._dbConfiguration = {} as DbConfiguration;
   this._jsonConfig = [];
