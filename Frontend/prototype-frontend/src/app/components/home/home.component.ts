@@ -449,7 +449,8 @@ export class HomeComponent implements OnInit{
   public handleImportToNodeRedButtonClick() : void{
     this.sixthStepSuccessMessage = '';
     const dialogRef = this._dialog.open(NodeRedInstanceDataDialogComponent, {
-      disableClose: true
+      disableClose: true,
+      width: '25%'
     });
 
     dialogRef.afterClosed().subscribe((result) => {
