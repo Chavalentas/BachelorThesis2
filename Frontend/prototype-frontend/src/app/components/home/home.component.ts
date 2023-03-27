@@ -406,8 +406,6 @@ export class HomeComponent implements OnInit {
         if (!this.schemas.some(s => s.schemaName == this.selectedSchema.schemaName)){
           this.secondFormGroup?.get('schemaNameControl')?.setValue('');
         }
-
-        this.secondStepSuccessMessage = '';
       },
       error: error => {
         if (error.error.error === undefined){
@@ -432,8 +430,6 @@ export class HomeComponent implements OnInit {
         if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
           this.fourthFormGroup?.get('dbObjectControl')?.setValue('');
         }
-
-        this.fourthStepSuccessMessage = '';
       },
       error : (error) => {
         if (error.error.error === undefined){
