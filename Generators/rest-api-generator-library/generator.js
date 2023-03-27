@@ -10,7 +10,7 @@ const Generator = class{
      */
     constructor(){
         if (this.constructor == Generator){
-            throw new Error("The abstract generator cannot be instantiated.");
+            throw new Error('The abstract generator cannot be instantiated.');
         }
 
         this.usedids = [];
@@ -39,7 +39,7 @@ const Generator = class{
             throw new Error('The parameter restApiName was null or undefined!');
         }
 
-        throw new Error("Method 'generate(entityData, databaseConfiguration, restApiName' must be implemented.");
+        throw new Error('generate(entityData, databaseConfiguration, restApiName must be implemented.');
     }
 
     /**

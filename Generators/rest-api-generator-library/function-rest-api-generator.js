@@ -10,7 +10,7 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
     constructor(){
         super();
         if (this.constructor == FunctionRestApiGenerator){
-            throw new Error("The abstract function generator cannot be instantiated.");
+            throw new Error('The abstract function generator cannot be instantiated.');
         }
     }
 
@@ -33,7 +33,7 @@ const FunctionRestApiGenerator = class extends routineGen.RoutineRestApiGenerato
             throw new Error('The parameter restApiName was null or undefined!');
         }
 
-        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
+        throw new Error('generate(objectData, databaseConfiguration, restApiName) must be implemented!');
     }
 }
 

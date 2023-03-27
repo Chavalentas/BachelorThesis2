@@ -10,7 +10,7 @@ const TableRestApiGenerator = class extends relGen.RelationRestApiGenerator{
     constructor(){
         super();
         if (this.constructor == TableRestApiGenerator){
-            throw new Error("The abstract table generator cannot be instantiated.");
+            throw new Error('The abstract table generator cannot be instantiated.');
         }
     }
 
@@ -34,7 +34,7 @@ const TableRestApiGenerator = class extends relGen.RelationRestApiGenerator{
             throw new Error('The parameter restApiName was null or undefined!');
         } 
 
-        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
+        throw new Error('generate(objectData, databaseConfiguration, restApiName) must be implemented!');
     }
 
     /**

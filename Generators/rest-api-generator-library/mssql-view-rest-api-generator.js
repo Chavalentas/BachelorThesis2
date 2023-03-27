@@ -320,7 +320,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         }
 
         if (!objectData.properties.some(p => p.propertyName == objectData.pk)){
-            throw new Error("Wrong primary key was specified!");
+            throw new Error('Wrong primary key was specified!');
         }
 
         let x = startX;
@@ -417,7 +417,7 @@ const MssqlViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         }
 
         if (!objectData.properties.some(p => p.propertyName == objectData.pk)){
-            throw new Error("Wrong primary key was specified!");
+            throw new Error('Wrong primary key was specified!');
         }
 
         let x = startX;

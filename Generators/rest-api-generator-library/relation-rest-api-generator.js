@@ -10,7 +10,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
     constructor(){
         super();
         if (this.constructor == RelationRestApiGenerator){
-            throw new Error("The abstract relation generator cannot be instantiated.");
+            throw new Error('The abstract relation generator cannot be instantiated.');
         }
     }
 
@@ -34,7 +34,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
             throw new Error('The parameter restApiName was null or undefined!');
         }
 
-        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
+        throw new Error('generate(objectData, databaseConfiguration, restApiName) must be implemented!');
     }
 
     /**

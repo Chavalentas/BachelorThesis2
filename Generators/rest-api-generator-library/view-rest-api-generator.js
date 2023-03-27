@@ -10,7 +10,7 @@ const ViewRestApiGenerator = class extends relGen.RelationRestApiGenerator{
     constructor(){
         super();
         if (this.constructor == ViewRestApiGenerator){
-            throw new Error("The abstract view generator cannot be instantiated.");
+            throw new Error('The abstract view generator cannot be instantiated.');
         }
     }
 
@@ -34,7 +34,7 @@ const ViewRestApiGenerator = class extends relGen.RelationRestApiGenerator{
             throw new Error('The parameter restApiName was null or undefined!');
         }
 
-        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
+        throw new Error('generate(objectData, databaseConfiguration, restApiName) must be implemented!');
     }
 
     /**
