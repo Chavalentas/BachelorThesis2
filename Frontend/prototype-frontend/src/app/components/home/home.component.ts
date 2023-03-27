@@ -506,8 +506,7 @@ export class HomeComponent implements OnInit {
       return this._httpClient.post<GetSchemaEnumsResponse>(`${schemaParserBackendConfig.conn}/get-schema-enums`, reqBody).pipe(
       map(response => {
         return response;
-      }),
-    );
+      }));
   }
 
   /**
@@ -558,8 +557,7 @@ export class HomeComponent implements OnInit {
     return this._httpClient.post<any>(`${configGeneratorBackendConfig.conn}/get-rest-config`, reqBody).pipe(
       map(response => {
         return response;
-      })
-    );
+      }));
   }
 
   /**
@@ -574,7 +572,6 @@ export class HomeComponent implements OnInit {
     return this._httpClient.post<ImportFlowResponse>(nodeRedUrl, reqBody).pipe(
       map(response => {
         return response;
-      })
-    )
+      }));
   }
 }
