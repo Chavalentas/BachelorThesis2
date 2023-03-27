@@ -10,7 +10,7 @@ const StoredProcedureRestApiGenerator = class extends routineGen.RoutineRestApiG
     constructor(){
         super();
         if (this.constructor == StoredProcedureRestApiGenerator){
-            throw new Error('The abstract stored procedure generator cannot be instantiated.');
+            throw new Error("The abstract stored procedure generator cannot be instantiated.");
         }
     }
 
@@ -23,18 +23,18 @@ const StoredProcedureRestApiGenerator = class extends routineGen.RoutineRestApiG
      */
     generate(objectData, databaseConfiguration, restApiName){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
-            throw new Error('The parameter databaseConfiguration was null or undefined!');
+            throw new Error("The parameter databaseConfiguration was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(restApiName)){
-            throw new Error('The parameter restApiName was null or undefined!');
+            throw new Error("The parameter restApiName was null or undefined!");
         }
 
-        throw new Error('generate(objectData, databaseConfiguration, restApiName) must be implemented!');
+        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
     }
 }
 

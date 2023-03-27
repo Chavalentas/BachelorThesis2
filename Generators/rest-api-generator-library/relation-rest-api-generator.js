@@ -10,7 +10,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
     constructor(){
         super();
         if (this.constructor == RelationRestApiGenerator){
-            throw new Error('The abstract relation generator cannot be instantiated.');
+            throw new Error("The abstract relation generator cannot be instantiated.");
         }
     }
 
@@ -23,18 +23,18 @@ const RelationRestApiGenerator = class extends gen.Generator{
      */
     generate(objectData, databaseConfiguration, restApiName){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
-            throw new Error('The parameter databaseConfiguration was null or undefined!');
+            throw new Error("The parameter databaseConfiguration was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(restApiName)){
-            throw new Error('The parameter restApiName was null or undefined!');
+            throw new Error("The parameter restApiName was null or undefined!");
         }
 
-        throw new Error('generate(objectData, databaseConfiguration, restApiName) must be implemented!');
+        throw new Error("generate(objectData, databaseConfiguration, restApiName) must be implemented!");
     }
 
     /**
@@ -45,11 +45,11 @@ const RelationRestApiGenerator = class extends gen.Generator{
      */
     generateQueryProperties(objectData, prefix){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(prefix)){
-            throw new Error('The parameter prefix was null or undefined!');
+            throw new Error("The parameter prefix was null or undefined!");
         }
 
         var ifCodes = [];
@@ -70,7 +70,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
      */
     generateRequestBodyPushes(properties){
         if (this.helper.isNullOrUndefined(properties)){
-            throw new Error('The parameter properties was null or undefined!');
+            throw new Error("The parameter properties was null or undefined!");
         }
         
         var ifCodes = [];

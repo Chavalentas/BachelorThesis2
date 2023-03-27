@@ -43,17 +43,17 @@ export class HomeComponent implements OnInit{
   /**
    * Represents the database provider.
    */
-  private _dbProvider : string = '';
+  private _dbProvider : string = "";
 
   /**
    * Represents the connection string.
    */
-  private _connString : string = '';
+  private _connString : string = "";
 
   /**
    * Represents the name of the REST-API.
    */
-  private _restApiName : string = '';
+  private _restApiName : string = "";
 
   /**
    * Represents the object data.
@@ -88,32 +88,32 @@ export class HomeComponent implements OnInit{
   /**
    * Represents the first step (stepper) success message.
    */
-  public firstStepSuccessMessage: string = '';
+  public firstStepSuccessMessage: string = "";
 
   /**
    * Represents the second step (stepper) success message.
    */
-  public secondStepSuccessMessage: string = '';
+  public secondStepSuccessMessage: string = "";
 
   /**
    * Represents the third step (stepper) success message.
    */
-  public thirdStepSuccessMessage: string = '';
+  public thirdStepSuccessMessage: string = "";
 
   /**
    * Represents the fourth step (stepper) success message.
    */
-  public fourthStepSuccessMessage: string = '';
+  public fourthStepSuccessMessage: string = "";
 
   /**
    * Represents the fifth step (stepper) success message.
    */
-  public fifthStepSuccessMessage: string = '';
+  public fifthStepSuccessMessage: string = "";
 
   /**
    * Represents the sixth step (stepper) success message.
    */
-  public sixthStepSuccessMessage: string = '';
+  public sixthStepSuccessMessage: string = "";
 
   /**
    * Represents the schemas.
@@ -144,47 +144,47 @@ export class HomeComponent implements OnInit{
    * Represents the first form group.
    */
   public firstFormGroup = this._formBuilder.group({
-    hostNameControl: ['', [Validators.required, createHostnameCorrectnessValidator()]],
-    portControl: ['', [Validators.required, createPortCorrectnessValidator()]],
-    userControl: ['', [Validators.required, createUsernameCorrectnessValidator()]],
-    passwordControl : ['', [Validators.required, createPasswordCorrectnessValidator()]],
-    databaseControl : ['', [Validators.required, createDatabaseCorrectnessValidator()]],
-    dbProviderControl : ['', [Validators.required]]
+    hostNameControl: ["", [Validators.required, createHostnameCorrectnessValidator()]],
+    portControl: ["", [Validators.required, createPortCorrectnessValidator()]],
+    userControl: ["", [Validators.required, createUsernameCorrectnessValidator()]],
+    passwordControl : ["", [Validators.required, createPasswordCorrectnessValidator()]],
+    databaseControl : ["", [Validators.required, createDatabaseCorrectnessValidator()]],
+    dbProviderControl : ["", [Validators.required]]
   });
 
   /**
    * Represents the second form group.
    */
   public secondFormGroup = this._formBuilder.group({
-    schemaNameControl : ['', Validators.required]
+    schemaNameControl : ["", Validators.required]
   });
 
   /**
    * Represents the third form group.
    */
   public thirdFormGroup = this._formBuilder.group({
-    dbObjectTypeControl : ['', Validators.required]
+    dbObjectTypeControl : ["", Validators.required]
   });
 
   /**
    * Represents the fourth form group.
    */
   public fourthFormGroup = this._formBuilder.group({
-    dbObjectControl : ['', Validators.required]
+    dbObjectControl : ["", Validators.required]
   });
 
   /**
    * Represents the fifth form group.
    */
   public fifthFormGroup = this._formBuilder.group({
-    restApiNameControl : ['', Validators.required]
+    restApiNameControl : ["", Validators.required]
   });
 
   /**
    * Represents the sixth form group.
    */
   public sixthFormGroup = this._formBuilder.group({
-    configurationControl: ['']
+    configurationControl: [""]
   });
 
   /**
@@ -197,7 +197,7 @@ export class HomeComponent implements OnInit{
    * Represents the ngAfterViewInit.
    */
   ngAfterViewInit(){
-    this.stepper._getIndicatorType = () => 'number';
+    this.stepper._getIndicatorType = () => "number";
   }
 
   /**
@@ -205,40 +205,40 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleDatabaseConfigNextButtonClick() : void{
-      this.firstStepSuccessMessage = '';
+      this.firstStepSuccessMessage = "";
       if (this.firstFormGroup.invalid){
-        this.firstStepSuccessMessage = 'Some of the input fields have wrong value!';
+        this.firstStepSuccessMessage = "Some of the input fields have wrong value!";
         return;
       }
 
-      this._dbConfiguration.host = this.firstFormGroup?.get('hostNameControl')?.value;
-      this._dbConfiguration.port = this.firstFormGroup?.get('portControl')?.value;
-      this._dbConfiguration.user = this.firstFormGroup?.get('userControl')?.value;
-      this._dbConfiguration.password = this.firstFormGroup?.get('passwordControl')?.value;
-      this._dbConfiguration.database = this.firstFormGroup?.get('databaseControl')?.value;
-      this._dbConfiguration.dbProvider = this.firstFormGroup?.get('dbProviderControl')?.value;
+      this._dbConfiguration.host = this.firstFormGroup?.get("hostNameControl")?.value;
+      this._dbConfiguration.port = this.firstFormGroup?.get("portControl")?.value;
+      this._dbConfiguration.user = this.firstFormGroup?.get("userControl")?.value;
+      this._dbConfiguration.password = this.firstFormGroup?.get("passwordControl")?.value;
+      this._dbConfiguration.database = this.firstFormGroup?.get("databaseControl")?.value;
+      this._dbConfiguration.dbProvider = this.firstFormGroup?.get("dbProviderControl")?.value;
       this._connString = this._helperService.buildConnectionString(this._dbConfiguration);
-      this._dbProvider = this.firstFormGroup?.get('dbProviderControl')?.value;
+      this._dbProvider = this.firstFormGroup?.get("dbProviderControl")?.value;
 
       this.loadSchemas().subscribe({
         next: (data) => {
           if (data.result.length == 0){
-             this.secondStepSuccessMessage = 'No schemas are included in this database!';
+             this.secondStepSuccessMessage = "No schemas are included in this database!";
              return;
           }
 
-          this.secondStepSuccessMessage = '';
+          this.secondStepSuccessMessage = "";
           this.handleGetSchemasResponse(data);
 
           if (!this.schemas.some(s => s.schemaName == this.selectedSchema.schemaName)){
-            this.secondFormGroup?.get('schemaNameControl')?.setValue('');
+            this.secondFormGroup?.get("schemaNameControl")?.setValue("");
           }
 
           this.stepper.next();
         },
         error: (error) => {
           if (error.error.error === undefined){
-            this.firstStepSuccessMessage = 'Some error occurred during the loading of schemas!';
+            this.firstStepSuccessMessage = "Some error occurred during the loading of schemas!";
             return;
           }
 
@@ -252,7 +252,7 @@ export class HomeComponent implements OnInit{
    * @param schema The schema of a database.
    */
   public handleSchemaClick(schema : Schema) : void{
-    this.secondFormGroup?.get('schemaNameControl')?.setValue(schema.schemaName);
+    this.secondFormGroup?.get("schemaNameControl")?.setValue(schema.schemaName);
     this.selectedSchema = schema;
   }
 
@@ -261,7 +261,7 @@ export class HomeComponent implements OnInit{
    * @param event The radio button selection change event.
    */
   public handleDbObjectTypeSelectionChange(event : any) : void{
-    this.fourthFormGroup.get('dbObjectControl')?.setValue('');
+    this.fourthFormGroup.get("dbObjectControl")?.setValue('');
   }
 
   /**
@@ -269,7 +269,7 @@ export class HomeComponent implements OnInit{
    * @param dbObject The database object.
    */
   public handleDbObjectClick(dbObject : DbObject) : void{
-    this.fourthFormGroup?.get('dbObjectControl')?.setValue(dbObject.dbObjectName);
+    this.fourthFormGroup?.get("dbObjectControl")?.setValue(dbObject.dbObjectName);
     this.selectedDbObject = dbObject;
   }
 
@@ -278,27 +278,27 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleSelectDbObjectTypeNextButtonClick() : void{
-    this.thirdStepSuccessMessage = '';
+    this.thirdStepSuccessMessage = "";
     if (this.thirdFormGroup.invalid){
-      this.thirdStepSuccessMessage = 'No database object type was selected!';
+      this.thirdStepSuccessMessage = "No database object type was selected!";
       return;
     }
 
-   this.selectedObjectType = this.thirdFormGroup?.get('dbObjectTypeControl')?.value;
+   this.selectedObjectType = this.thirdFormGroup?.get("dbObjectTypeControl")?.value;
    this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
     next : (data) => {
-      this.thirdStepSuccessMessage = '';
+      this.thirdStepSuccessMessage = "";
       this.handleGetDbObjectsResponse(data);
 
       if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
-        this.fourthFormGroup?.get('dbObjectControl')?.setValue('');
+        this.fourthFormGroup?.get("dbObjectControl")?.setValue("");
       }
 
       this.stepper.next();
     },
     error : (error) => {
       if (error.error.error === undefined){
-        this.thirdStepSuccessMessage = 'Some error occurred during the loading of the database objects!';
+        this.thirdStepSuccessMessage = "Some error occurred during the loading of the database objects!";
         return;
       }
 
@@ -313,9 +313,9 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleSelectObjectNextButtonClick() : void{
-    this.fourthStepSuccessMessage = '';
+    this.fourthStepSuccessMessage = "";
     if (this.fourthFormGroup.invalid){
-      this.fourthStepSuccessMessage = 'No database object was selected!';
+      this.fourthStepSuccessMessage = "No database object was selected!";
       return;
     }
 
@@ -332,7 +332,7 @@ export class HomeComponent implements OnInit{
       },
       error: (error) => {
         if (error.error.error === undefined){
-          this.fourthStepSuccessMessage = 'Some error occurred during the fetching of database object information!';
+          this.fourthStepSuccessMessage = "Some error occurred during the fetching of database object information!";
           return;
         }
 
@@ -346,9 +346,9 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleSelectSchemaNextButtonClick() : void{
-    this.secondStepSuccessMessage = '';
+    this.secondStepSuccessMessage = "";
     if (this.secondFormGroup.invalid){
-      this.secondStepSuccessMessage = 'No schema was selected!';
+      this.secondStepSuccessMessage = "No schema was selected!";
       return;
     }
 
@@ -364,23 +364,23 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleEnterRestApiNameNextButtonClick() : void{
-    this.fifthStepSuccessMessage = '';
+    this.fifthStepSuccessMessage = "";
     if (this.fifthFormGroup.invalid){
-      this.fifthStepSuccessMessage = 'No REST-API name was entered!';
+      this.fifthStepSuccessMessage = "No REST-API name was entered!";
       return;
     }
 
-    this._restApiName = this.fifthFormGroup?.get('restApiNameControl')?.value;
+    this._restApiName = this.fifthFormGroup?.get("restApiNameControl")?.value;
     this.getConfiguration(this._objectData, this._connString, this._restApiName).subscribe({
       next : (data) => {
         this._jsonConfig = data;
-        this.sixthFormGroup.get('configurationControl')?.setValue(JSON.stringify(this._jsonConfig));
+        this.sixthFormGroup.get("configurationControl")?.setValue(JSON.stringify(this._jsonConfig));
         this.sixthStepSuccessMessage = '';
         this.stepper.next();
       },
       error : (error) => {
         if (error.error.error === undefined){
-          this.fifthStepSuccessMessage = 'Some error occurred during the fetching of the JSON configuration!';
+          this.fifthStepSuccessMessage = "Some error occurred during the fetching of the JSON configuration!";
           return;
         }
 
@@ -395,21 +395,21 @@ export class HomeComponent implements OnInit{
   public handleSchemasRefreshButtonClick() : void{
     this.loadSchemas().subscribe({
       next: (data) => {
-        this.secondStepSuccessMessage = '';
+        this.secondStepSuccessMessage = "";
         if (data.result.length == 0){
-           this.secondStepSuccessMessage = 'No schemas are included in this database!';
+           this.secondStepSuccessMessage = "No schemas are included in this database!";
            return;
         }
 
         this.handleGetSchemasResponse(data);
 
         if (!this.schemas.some(s => s.schemaName == this.selectedSchema.schemaName)){
-          this.secondFormGroup?.get('schemaNameControl')?.setValue('');
+          this.secondFormGroup?.get("schemaNameControl")?.setValue("");
         }
       },
       error: (error) => {
         if (error.error.error === undefined){
-          this.secondStepSuccessMessage = 'Some error occurred during the loading of schemas!';
+          this.secondStepSuccessMessage = "Some error occurred during the loading of schemas!";
           return;
         }
 
@@ -424,16 +424,16 @@ export class HomeComponent implements OnInit{
   public handleDbObjectsRefreshButtonClick() : void{
     this.loadDbObjects(this.selectedSchema, this.selectedObjectType, this._connString).subscribe({
       next : (data) => {
-        this.fourthStepSuccessMessage = '';
+        this.fourthStepSuccessMessage = "";
         this.handleGetDbObjectsResponse(data);
 
         if (!this.dbObjects.some(s => s.dbObjectName == this.selectedDbObject.dbObjectName)){
-          this.fourthFormGroup?.get('dbObjectControl')?.setValue('');
+          this.fourthFormGroup?.get("dbObjectControl")?.setValue("");
         }
       },
       error : (error) => {
         if (error.error.error === undefined){
-          this.fourthStepSuccessMessage = 'Some error occurred during the loading of the database objects!';
+          this.fourthStepSuccessMessage = "Some error occurred during the loading of the database objects!";
           return;
         }
 
@@ -447,10 +447,10 @@ export class HomeComponent implements OnInit{
    * Handles the import to Node-RED button click.
    */
   public handleImportToNodeRedButtonClick() : void{
-    this.sixthStepSuccessMessage = '';
+    this.sixthStepSuccessMessage = "";
     const dialogRef = this._dialog.open(NodeRedInstanceDataDialogComponent, {
       disableClose: true,
-      width: '25%'
+      width: "25%"
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -460,14 +460,14 @@ export class HomeComponent implements OnInit{
 
       var restApiName = this._restApiName;
       var nodeRedUrl = result.result;
-      var nodesWithoutTab = this._jsonConfig.filter(o => o.type !== 'tab');
-      this.importFlow(restApiName, nodeRedUrl + 'flow', nodesWithoutTab).subscribe({
+      var nodesWithoutTab = this._jsonConfig.filter(o => o.type !== "tab");
+      this.importFlow(restApiName, nodeRedUrl + "flow", nodesWithoutTab).subscribe({
         next: (data) => {
           this.sixthStepSuccessMessage = `The flow was imported with the ID ${data.id}! Please check your Node-RED instance at ${nodeRedUrl}!`;
         },
         error: (error) => {
           if (error.error.error === undefined){
-            this.sixthStepSuccessMessage = 'Some error occurred during the import of the flow!';
+            this.sixthStepSuccessMessage = "Some error occurred during the import of the flow!";
             return;
           }
 

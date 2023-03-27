@@ -13,15 +13,15 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
      */
     generate(objectData, databaseConfiguration, restApiName){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
-            throw new Error('The parameter databaseConfiguration was null or undefined!');
+            throw new Error("The parameter databaseConfiguration was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(restApiName)){
-            throw new Error('The parameter restApiName was null or undefined!');
+            throw new Error("The parameter restApiName was null or undefined!");
         }
 
         let config = [];
@@ -84,27 +84,27 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
      */
     generateGetEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
-            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+            throw new Error("The parameter dbConfigNodeId was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startX)){
-            throw new Error('The parameter startX was null or undefined!');
+            throw new Error("The parameter startX was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(xOffset)){
-            throw new Error('The parameter xOffset was null or undefined!');
+            throw new Error("The parameter xOffset was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startY)){
-            throw new Error('The parameter startY was null or undefined!');
+            throw new Error("The parameter startY was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(flowId)){
-            throw new Error('The parameter flowId was null or undefined!');
+            throw new Error("The parameter flowId was null or undefined!");
         }
         
         let x = startX;
@@ -116,27 +116,27 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'get', x, y, flowId, [nextNodeId]);
+        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, "get", x, y, flowId, [nextNodeId]);
 
 
         x += xOffset;
     
         // Step 2: Generate the function node (that checks the procedure parameters)
-        let functionCode = `var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;`;
+        let functionCode = "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;";
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'CheckProcedureParameters', x, y, flowId, functionCode, [nextNodeId]);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, "CheckProcedureParameters", x, y, flowId, functionCode, [nextNodeId]);
 
 
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the procedure query)
-        let queryFunctionCode = `var callProcedureQuery = 'CALL ${objectData.schema}.${objectData.name}(';\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] === 'default'){\n        continue;\n    }\n\n    if (msg.procedureParameters[i] === 'null'){\n        queryParams.push(msg.procedureParameters[i]);\n        continue;\n    }\n  \n    queryParams.push(\`\'\${msg.procedureParameters[i]}\'\`);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += ');';\nmsg.query = callProcedureQuery;\nreturn msg;`;
+        let queryFunctionCode = `var callProcedureQuery = "CALL ${objectData.schema}.${objectData.name}(";\nvar queryParams = [];\n\nfor (let i = 0; i < msg.procedureParameters.length; i++){\n    if (msg.procedureParameters[i] === "default"){\n        continue;\n    }\n\n    if (msg.procedureParameters[i] === "null"){\n        queryParams.push(msg.procedureParameters[i]);\n        continue;\n    }\n  \n    queryParams.push(\`\'\${msg.procedureParameters[i]}\'\`);\n}\n\ncallProcedureQuery += queryParams.join(\",\");\ncallProcedureQuery += ");";\nmsg.query = callProcedureQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, 'CreateProcedureQuery', x, y, flowId, queryFunctionCode, [nextNodeId]);
+        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, "CreateProcedureQuery", x, y, flowId, queryFunctionCode, [nextNodeId]);
 
         x += xOffset;
 
@@ -145,16 +145,16 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         let databaseNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let databaseNode = this.nodeConfGen.generatePostgresqlNode(databaseNodeId, 'Query', x, y, flowId, query, dbConfigNodeId, [nextNodeId]);
+        let databaseNode = this.nodeConfGen.generatePostgresqlNode(databaseNodeId, "Query", x, y, flowId, query, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
         // Step 5: Generate the function node (that sets the response)
-        let setResponseCode = `var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;`;
+        let setResponseCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;";
         let setResponseNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let setResponseFunctionNode = this.nodeConfGen.generateFunctionNode(setResponseNodeId, 'SetResponse', x, y, flowId, setResponseCode, [nextNodeId]);
+        let setResponseFunctionNode = this.nodeConfGen.generateFunctionNode(setResponseNodeId, "SetResponse", x, y, flowId, setResponseCode, [nextNodeId]);
 
         x += xOffset;
 

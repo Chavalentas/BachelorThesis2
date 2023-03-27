@@ -21,13 +21,13 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
   /**
    * Represents the success message.
    */
-  public successMessage : string = '';
+  public successMessage : string = "";
 
   /**
    * Represents the Node-RED instance data form group.
    */
   public nodeRedInstanceDataFormGroup = new FormGroup({
-    entityURL: new FormControl('', [Validators.required])
+    entityURL: new FormControl("", [Validators.required])
   });
 
   /**
@@ -42,14 +42,14 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
    */
   public handleOkButtonClick() : void{
     if (this.nodeRedInstanceDataFormGroup.invalid){
-      this.successMessage = 'The URL of the Node-RED instance was empty!';
+      this.successMessage = "The URL of the Node-RED instance was empty!";
       return;
     }
 
-    var url = this.nodeRedInstanceDataFormGroup?.get('entityURL')?.value;
+    var url = this.nodeRedInstanceDataFormGroup?.get("entityURL")?.value;
 
     if (url === null || url === undefined){
-      this.successMessage = 'The URL of the Node-RED instance was empty!';
+      this.successMessage = "The URL of the Node-RED instance was empty!";
       return;
     }
 

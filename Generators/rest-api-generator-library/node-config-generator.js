@@ -358,13 +358,13 @@ const NodeConfigGenerator = class{
      */
     generateDatabaseConfigNode(databaseConfiguration, id, provider){
         if (this.helper.isNullOrUndefined(provider)){
-            throw new Error('The parameter provider was null or undefined!');
+            throw new Error("The parameter provider was null or undefined!");
         }
 
         switch (provider){
-            case 'postgres':
+            case "postgres":
                 return this.generatePostgresqlConfigurationNode(databaseConfiguration, id);
-            case 'mssql':
+            case "mssql":
                 return this.generateMssqlConfigurationNode(databaseConfiguration, id);
             default:
                 throw new Error("Unknown database provider identified!");
@@ -378,7 +378,7 @@ const NodeConfigGenerator = class{
      */
     getWires(array){
         if (this.helper.isNullOrUndefined(array)){
-            throw new Error('The parameter array was null or undefined!');
+            throw new Error("The parameter array was null or undefined!");
         }
 
         let result = [];

@@ -13,15 +13,15 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
      */
     generate(objectData, databaseConfiguration, restApiName){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(databaseConfiguration)){
-            throw new Error('The parameter databaseConfiguration was null or undefined!');
+            throw new Error("The parameter databaseConfiguration was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(restApiName)){
-            throw new Error('The parameter restApiName was null or undefined!');
+            throw new Error("The parameter restApiName was null or undefined!");
         }
 
         let config = [];
@@ -113,27 +113,27 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
      */
     generateGetEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
-            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+            throw new Error("The parameter dbConfigNodeId was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startX)){
-            throw new Error('The parameter startX was null or undefined!');
+            throw new Error("The parameter startX was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(xOffset)){
-            throw new Error('The parameter xOffset was null or undefined!');
+            throw new Error("The parameter xOffset was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startY)){
-            throw new Error('The parameter startY was null or undefined!');
+            throw new Error("The parameter startY was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(flowId)){
-            throw new Error('The parameter flowId was null or undefined!');
+            throw new Error("The parameter flowId was null or undefined!");
         }
 
         let x = startX;
@@ -145,25 +145,25 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'get', x, y, flowId, [nextNodeId]);
+        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, "get", x, y, flowId, [nextNodeId]);
 
         x += xOffset;
     
         // Step 2: Generate the function node (that sets the query parameters)
-        let functionCode = this.generateQueryProperties(objectData, 'msg.req.query');
+        let functionCode = this.generateQueryProperties(objectData, "msg.req.query");
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, "SetQueryParameters", x, y, flowId, functionCode, [nextNodeId]);
 
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the select query)
-        let queryFunctionCode = `var selectQuery = 'SELECT * FROM ${objectData.schema}.${objectData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += ' WHERE ';\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ';';\nmsg.query = selectQuery;\nreturn msg;`;
+        let queryFunctionCode = `var selectQuery = "SELECT * FROM ${objectData.schema}.${objectData.name}";\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = "";\n        \n        if (msg.queryProperties[i].propertyValue === "null"){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    selectQuery += " WHERE ";\n    selectQuery += \`\${equationsJoined}\`;\n}\n\nselectQuery += ";";\nmsg.query = selectQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, 'CreateSelectQuery', x, y, flowId, queryFunctionCode, [nextNodeId]);
+        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, "CreateSelectQuery", x, y, flowId, queryFunctionCode, [nextNodeId]);
 
         x += xOffset;
 
@@ -172,14 +172,14 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
+        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, "Query", x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;', [nextNodeId]);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;", [nextNodeId]);
 
         x += xOffset;
 
@@ -203,27 +203,27 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
      */
     generatePostEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
-            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+            throw new Error("The parameter dbConfigNodeId was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startX)){
-            throw new Error('The parameter startX was null or undefined!');
+            throw new Error("The parameter startX was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(xOffset)){
-            throw new Error('The parameter xOffset was null or undefined!');
+            throw new Error("The parameter xOffset was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startY)){
-            throw new Error('The parameter startY was null or undefined!');
+            throw new Error("The parameter startY was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(flowId)){
-            throw new Error('The parameter flowId was null or undefined!');
+            throw new Error("The parameter flowId was null or undefined!");
         }
 
         let x = startX;
@@ -235,7 +235,7 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'post', x, y, flowId, [nextNodeId]);
+        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, "post", x, y, flowId, [nextNodeId]);
 
         x += xOffset;
 
@@ -247,16 +247,16 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, "SetQueryParameters", x, y, flowId, functionCode, [nextNodeId]);
 
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the query)
-        let createQueryFunctionCode = `var insertQuery = 'INSERT INTO ${objectData.schema}.${objectData.name}';\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = [];\n\nfor (let i = 0; i < msg.queryProperties.length; i++){\n    if (msg.queryProperties[i].propertyValue === 'null'){\n        propertyValues.push(msg.queryProperties[i].propertyValue);\n    } else{\n        propertyValues.push(\`\'\${msg.queryProperties[i].propertyValue}\'\`);\n    }\n}\n\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += ' VALUES ';\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ';';\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
+        let createQueryFunctionCode = `var insertQuery = "INSERT INTO ${objectData.schema}.${objectData.name}";\nvar propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = [];\n\nfor (let i = 0; i < msg.queryProperties.length; i++){\n    if (msg.queryProperties[i].propertyValue === "null"){\n        propertyValues.push(msg.queryProperties[i].propertyValue);\n    } else{\n        propertyValues.push(\`\'\${msg.queryProperties[i].propertyValue}\'\`);\n    }\n}\n\nvar propertyNamesJoined = propertyNames.join(\",\");\nvar propertyValuesJoined = propertyValues.join(\",\");\ninsertQuery += \`(\${propertyNamesJoined})\`;\ninsertQuery += " VALUES ";\ninsertQuery += \`(\${propertyValuesJoined})\`;\ninsertQuery += ";";\nconsole.log(insertQuery);\nmsg.query = insertQuery;\nreturn msg;`;
         let createQuerynFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let createQueryFunctionNode = this.nodeConfGen.generateFunctionNode(createQuerynFunctionNodeId, 'CreateInsertQuery', x, y, flowId, createQueryFunctionCode, [nextNodeId]);
+        let createQueryFunctionNode = this.nodeConfGen.generateFunctionNode(createQuerynFunctionNodeId, "CreateInsertQuery", x, y, flowId, createQueryFunctionCode, [nextNodeId]);
 
         x += xOffset;
 
@@ -265,14 +265,14 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
+        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, "Query", x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "msg.payload = undefined;\nreturn msg;", [nextNodeId]);
         
         x += xOffset;
 
@@ -296,31 +296,31 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
      */
     generatePutEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
-            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+            throw new Error("The parameter dbConfigNodeId was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startX)){
-            throw new Error('The parameter startX was null or undefined!');
+            throw new Error("The parameter startX was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(xOffset)){
-            throw new Error('The parameter xOffset was null or undefined!');
+            throw new Error("The parameter xOffset was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startY)){
-            throw new Error('The parameter startY was null or undefined!');
+            throw new Error("The parameter startY was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(flowId)){
-            throw new Error('The parameter flowId was null or undefined!');
+            throw new Error("The parameter flowId was null or undefined!");
         }
 
         if (!objectData.properties.some(p => p.propertyName == objectData.pk)){
-            throw new Error('Wrong primary key was specified!');
+            throw new Error("Wrong primary key was specified!");
         }
 
         let x = startX;
@@ -332,7 +332,7 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'put', x, y, flowId, [nextNodeId]);
+        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, "put", x, y, flowId, [nextNodeId]);
 
         x += xOffset;
 
@@ -340,16 +340,16 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         let propertyNames = objectData.properties.map(p => `\"${p.propertyName}\"`);
         let propertyNamesJoined = propertyNames.join(",");
         let propertiesCheck = this.generateRequestBodyPushes(objectData.properties);
-        let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"${objectData.pk}\", \"propertyValue\" : msg.req.params.${objectData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
+        let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${objectData.pk} === undefined){\n    throw new Error("The query parameter \\'${objectData.pk}\\' was undefined!");\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"${objectData.pk}\", \"propertyValue\" : msg.req.params.${objectData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, "SetQueryParameters", x, y, flowId, functionCode, [nextNodeId]);
 
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the query)
-        let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => p.propertyValue);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var propertyValue = '';\n\n    if (propertyValues[i] === 'null'){\n        propertyValue = propertyValues[i];\n    } else{\n        propertyValue = \`\'\${propertyValues[i]}\'\`;\n    }\n\n    var equation = \`\${propertyNames[i]} = \${propertyValue}\`;\n    equations.push(equation);\n}\n\nvar pk = '';\n\nif (msg.pk.propertyValue === 'null'){\n    pk = msg.pk.propertyValue;\n} else{\n    pk = \`\'\${msg.pk.propertyValue}\'\`;\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${objectData.schema}.${objectData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${pk};\`;\nmsg.query = updateQuery;\nreturn msg;`;
+        let createQueryFunctionCode = `var propertyNames = msg.queryProperties.map(p => p.propertyName);\nvar propertyValues = msg.queryProperties.map(p => p.propertyValue);\nvar equations = [];\n\nfor (let i = 0; i < propertyNames.length; i++){\n    var propertyValue = "";\n\n    if (propertyValues[i] === "null"){\n        propertyValue = propertyValues[i];\n    } else{\n        propertyValue = \`\'\${propertyValues[i]}\'\`;\n    }\n\n    var equation = \`\${propertyNames[i]} = \${propertyValue}\`;\n    equations.push(equation);\n}\n\nvar pk = "";\n\nif (msg.pk.propertyValue === "null"){\n    pk = msg.pk.propertyValue;\n} else{\n    pk = \`\'\${msg.pk.propertyValue}\'\`;\n}\n\nvar equationsJoined = equations.join(\",\");\nvar updateQuery = \`UPDATE ${objectData.schema}.${objectData.name} SET \${equationsJoined} WHERE \${msg.pk.propertyName} = \${pk};\`;\nmsg.query = updateQuery;\nreturn msg;`;
         let createQuerynFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -362,14 +362,14 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
+        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, "Query", x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
        
         x += xOffset;
 
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "msg.payload = undefined;\nreturn msg;", [nextNodeId]);
                 
         x += xOffset;
 
@@ -393,31 +393,31 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
      */
     generateDeleteEndPoint(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
-            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+            throw new Error("The parameter dbConfigNodeId was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startX)){
-            throw new Error('The parameter startX was null or undefined!');
+            throw new Error("The parameter startX was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(xOffset)){
-            throw new Error('The parameter xOffset was null or undefined!');
+            throw new Error("The parameter xOffset was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startY)){
-            throw new Error('The parameter startY was null or undefined!');
+            throw new Error("The parameter startY was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(flowId)){
-            throw new Error('The parameter flowId was null or undefined!');
+            throw new Error("The parameter flowId was null or undefined!");
         }
 
         if (!objectData.properties.some(p => p.propertyName == objectData.pk)){
-            throw new Error('Wrong primary key was specified!');
+            throw new Error("Wrong primary key was specified!");
         }
 
         let x = startX;
@@ -429,16 +429,16 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'delete', x, y, flowId, [nextNodeId]);
+        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, "delete", x, y, flowId, [nextNodeId]);
 
         x += xOffset;
 
         // Step 2: Generate the function node (that sets the query parameters)
-        let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nvar pkValue = '';\n\nif (msg.req.params.${objectData.pk} === 'null'){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.${objectData.pk};\n}\n\nvar data = {\n    pk : pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
+        let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error("The query parameter \\'${objectData.pk}\\' was undefined!");\n}\n\nvar pkValue = "";\n\nif (msg.req.params.${objectData.pk} === "null"){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.${objectData.pk};\n}\n\nvar data = {\n    pk : pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, "SetQueryParameters", x, y, flowId, functionCode, [nextNodeId]);
 
         x += xOffset;
 
@@ -447,14 +447,14 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
+        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, "Query", x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
         // Step 4:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "msg.payload = undefined;\nreturn msg;", [nextNodeId]);
                 
         x += xOffset;
 
@@ -478,27 +478,27 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
      */
     generateDeleteEndPointWithQueryParams(objectData, dbConfigNodeId, startX, xOffset, startY, flowId){
         if (this.helper.isNullOrUndefined(objectData)){
-            throw new Error('The parameter objectData was null or undefined!');
+            throw new Error("The parameter objectData was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(dbConfigNodeId)){
-            throw new Error('The parameter dbConfigNodeId was null or undefined!');
+            throw new Error("The parameter dbConfigNodeId was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startX)){
-            throw new Error('The parameter startX was null or undefined!');
+            throw new Error("The parameter startX was null or undefined!");
         }
 
         if (this.helper.isNullOrUndefined(xOffset)){
-            throw new Error('The parameter xOffset was null or undefined!');
+            throw new Error("The parameter xOffset was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(startY)){
-            throw new Error('The parameter startY was null or undefined!');
+            throw new Error("The parameter startY was null or undefined!");
         }
     
         if (this.helper.isNullOrUndefined(flowId)){
-            throw new Error('The parameter flowId was null or undefined!');
+            throw new Error("The parameter flowId was null or undefined!");
         }
 
         let x = startX;
@@ -510,25 +510,25 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         this.usedids.push(httpInNodeId);
         let nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, 'delete', x, y, flowId, [nextNodeId]);
+        let httpInNode = this.nodeConfGen.generateHttpInNode(httpInNodeId, httpInNodeUrl, "delete", x, y, flowId, [nextNodeId]);
 
         x += xOffset;
     
         // Step 2: Generate the function node (that sets the query parameters)
-        let functionCode = this.generateQueryProperties(objectData, 'msg.req.query');
+        let functionCode = this.generateQueryProperties(objectData, "msg.req.query");
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, 'SetQueryParameters', x, y, flowId, functionCode, [nextNodeId]);
+        let functionNode = this.nodeConfGen.generateFunctionNode(functionNodeId, "SetQueryParameters", x, y, flowId, functionCode, [nextNodeId]);
 
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the delete query)
-        let queryFunctionCode = `var deleteQuery = 'DELETE FROM ${objectData.schema}.${objectData.name}';\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === 'null'){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += ' WHERE ';\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\ndeleteQuery += ';';\nmsg.query = deleteQuery;\nreturn msg;`;
+        let queryFunctionCode = `var deleteQuery = "DELETE FROM ${objectData.schema}.${objectData.name}";\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = '';\n        \n        if (msg.queryProperties[i].propertyValue === "null"){\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`\${msg.queryProperties[i].propertyName} = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n        \n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += " WHERE ";\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\ndeleteQuery += ";";\nmsg.query = deleteQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
-        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, 'CreateDeleteQuery', x, y, flowId, queryFunctionCode, [nextNodeId]);
+        let queryFunctionNode = this.nodeConfGen.generateFunctionNode(queryFunctionNodeId, "CreateDeleteQuery", x, y, flowId, queryFunctionCode, [nextNodeId]);
 
         x += xOffset;
 
@@ -537,14 +537,14 @@ const PostgresTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         let queryNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
         this.usedids.push(nextNodeId);
-        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, 'Query', x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
+        let queryNode = this.nodeConfGen.generatePostgresqlNode(queryNodeId, "Query", x, y, flowId, queryCode, dbConfigNodeId, [nextNodeId]);
 
         x += xOffset;
 
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, 'SetResponse', x, y, flowId, 'msg.payload = undefined;\nreturn msg;', [nextNodeId]);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "msg.payload = undefined;\nreturn msg;", [nextNodeId]);
                 
         x += xOffset;
 

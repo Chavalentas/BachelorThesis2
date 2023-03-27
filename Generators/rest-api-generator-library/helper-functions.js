@@ -10,11 +10,11 @@ const Helper = class{
      */
     generateId(length, except){
         if (this.isNullOrUndefined(length)){
-            throw new Error('The parameter length was null or undefined!');
+            throw new Error("The parameter length was null or undefined!");
         }
 
         if (this.isNullOrUndefined(except)){
-            throw new Error('The parameter except was null or undefined!');
+            throw new Error("The parameter except was null or undefined!");
         }
 
         var id = "";
@@ -43,11 +43,11 @@ const Helper = class{
      */
     getRandomInt(min, max){
         if (this.isNullOrUndefined(min)){
-            throw new Error('The parameter min was null or undefined!');
+            throw new Error("The parameter min was null or undefined!");
         }
 
         if (this.isNullOrUndefined(max)){
-            throw new Error('The parameter max was null or undefined!');
+            throw new Error("The parameter max was null or undefined!");
         }
 
         min = Math.ceil(min);
