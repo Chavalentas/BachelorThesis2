@@ -8,7 +8,7 @@
         <img mat-card-image src="./assets/images/msgis_logo.png" alt="company_logo">
       </picture>
       <mat-horizontal-stepper [linear]="isLinear" #stepper>
-        <mat-step class="step" [stepControl]="firstFormGroup"  label="Fill out the database data">
+        <mat-step [stepControl]="firstFormGroup"  label="Fill out the database data">
           <form [formGroup]="firstFormGroup">
             <div>
             <p>
@@ -62,16 +62,14 @@
             </mat-form-field>
           </p>
         </div>
-          </form>
-          <div class="stepper-bar">
-            <div *ngIf="loading" class="spinner">
+        </form>
+          <div *ngIf="loading" class="spinner">
             <mat-spinner  diameter="50"></mat-spinner>
           </div>
-            <div class="success-message">
-                {{firstStepSuccessMessage}}
-            </div>
-            <button  class="buttons" mat-raised-button color="black" (click)="handleDatabaseConfigNextButtonClick()">Next</button>
+          <div class="success-message">
+              {{firstStepSuccessMessage}}
           </div>
+          <button  class="buttons" mat-raised-button color="black" (click)="handleDatabaseConfigNextButtonClick()">Next</button>
         </mat-step>
         <mat-step [stepControl]="secondFormGroup" label="Select the schema">
           <form [formGroup]="secondFormGroup">
@@ -86,20 +84,18 @@
               <label>No schemas could be found!</label>
             </div>
           </form>
-          <div class="stepper-bar">
-            <div *ngIf="loading" class="spinner">
-              <mat-spinner  diameter="50"></mat-spinner>
-            </div>
-            <div class="success-message">
-                {{secondStepSuccessMessage}}
-            </div>
-            <button  matStepperPrevious class="buttons" mat-raised-button color="black">Back</button>
-            <button (click)="handleSelectSchemaNextButtonClick()" class="buttons" mat-raised-button color="black">Next</button>
-            <button class="buttons" mat-raised-button color="black" (click)="handleSchemasRefreshButtonClick()"><span class="material-icons">refresh</span></button>
+          <div *ngIf="loading" class="spinner">
+            <mat-spinner  diameter="50"></mat-spinner>
           </div>
+          <div class="success-message">
+              {{secondStepSuccessMessage}}
+          </div>
+          <button  matStepperPrevious class="buttons" mat-raised-button color="black">Back</button>
+          <button (click)="handleSelectSchemaNextButtonClick()" class="buttons" mat-raised-button color="black">Next</button>
+          <button class="buttons" mat-raised-button color="black" (click)="handleSchemasRefreshButtonClick()"><span class="material-icons">refresh</span></button>
         </mat-step>
         <mat-step [stepControl]="thirdFormGroup" label="Select the database object type">
-          <form [formGroup]="thirdFormGroup">
+          <form id="db-object-type-form-control" [formGroup]="thirdFormGroup">
             <div>
             <mat-radio-group (change)="handleDbObjectTypeSelectionChange($event)" aria-label="Select an option" formControlName="dbObjectTypeControl">
               <p><mat-radio-button value="table">Table</mat-radio-button></p>
@@ -110,16 +106,14 @@
             <label *ngIf="thirdFormGroup.get('dbObjectTypeControl')?.errors?.['required']">No database object type was selected!</label>
           </div>
           </form>
-          <div class="stepper-bar">
-            <div *ngIf="loading" class="spinner">
-              <mat-spinner  diameter="50"></mat-spinner>
-            </div>
-            <div class="success-message">
-              {{thirdStepSuccessMessage}}
-            </div>
-            <button matStepperPrevious  class="buttons" mat-raised-button color="black">Back</button>
-            <button  class="buttons" mat-raised-button color="black" (click)="handleSelectDbObjectTypeNextButtonClick()">Next</button>
+          <div *ngIf="loading" class="spinner">
+            <mat-spinner  diameter="50"></mat-spinner>
           </div>
+          <div class="success-message">
+            {{thirdStepSuccessMessage}}
+          </div>
+          <button matStepperPrevious  class="buttons" mat-raised-button color="black">Back</button>
+          <button  class="buttons" mat-raised-button color="black" (click)="handleSelectDbObjectTypeNextButtonClick()">Next</button>
         </mat-step>
         <mat-step [stepControl]="fourthFormGroup" label="Select the object">
           <form [formGroup]="fourthFormGroup">
@@ -134,20 +128,18 @@
               <label>No database objects of the given type could be found!</label>
             </div>
           </form>
-          <div class="stepper-bar">
-            <div *ngIf="loading" class="spinner">
-              <mat-spinner  diameter="50"></mat-spinner>
-            </div>
-            <div class="success-message">
-              {{fourthStepSuccessMessage}}
+          <div *ngIf="loading" class="spinner">
+            <mat-spinner  diameter="50"></mat-spinner>
           </div>
-            <button  matStepperPrevious class="buttons" mat-raised-button color="black">Back</button>
-            <button  class="buttons" mat-raised-button color="black" (click)="handleSelectObjectNextButtonClick()">Next</button>
-            <button class="buttons" mat-raised-button color="black" (click)="handleDbObjectsRefreshButtonClick()"><span class="material-icons">refresh</span></button>
+          <div class="success-message">
+            {{fourthStepSuccessMessage}}
           </div>
+          <button  matStepperPrevious class="buttons" mat-raised-button color="black">Back</button>
+          <button  class="buttons" mat-raised-button color="black" (click)="handleSelectObjectNextButtonClick()">Next</button>
+          <button class="buttons" mat-raised-button color="black" (click)="handleDbObjectsRefreshButtonClick()"><span class="material-icons">refresh</span></button>
         </mat-step>
         <mat-step [stepControl]="fifthFormGroup" label="Enter the name of the REST-API">
-          <form [formGroup]="fifthFormGroup">
+          <form id="rest-api-name-form-control" [formGroup]="fifthFormGroup">
             <div>
             <p>
             <mat-form-field id="rest-api-name-formfield" class="rest-api-name-entry-field" appearance="fill">
@@ -158,16 +150,14 @@
           </p>
            </div>
           </form>
-          <div class="stepper-bar">
-            <div *ngIf="loading" class="spinner">
+          <div *ngIf="loading" class="spinner">
               <mat-spinner  diameter="50"></mat-spinner>
-            </div>
-            <div class="success-message">
-                {{fifthStepSuccessMessage}}
-            </div>
-            <button matStepperPrevious  class="buttons" mat-raised-button color="black">Back</button>
-            <button  class="buttons" mat-raised-button color="black" (click)="handleEnterRestApiNameNextButtonClick()">Next</button>
           </div>
+          <div class="success-message">
+              {{fifthStepSuccessMessage}}
+          </div>
+          <button matStepperPrevious  class="buttons" mat-raised-button color="black">Back</button>
+          <button  class="buttons" mat-raised-button color="black" (click)="handleEnterRestApiNameNextButtonClick()">Next</button>
         </mat-step>
         <mat-step [stepControl]="sixthFormGroup" label="Get the configuration">
           <form [formGroup]="sixthFormGroup">
@@ -185,16 +175,14 @@
               </div>
             </div>
           </form>
-          <div class="stepper-bar">
-            <div *ngIf="loading" class="spinner">
-              <mat-spinner  diameter="50"></mat-spinner>
-            </div>
-            <div class="success-message">
-              {{sixthStepSuccessMessage}}
-           </div>
-            <button  matStepperPrevious class="buttons" mat-raised-button color="black">Back</button>
-            <button  (click)="stepper.reset()" class="buttons" mat-raised-button color="black">Reset</button>
+          <div *ngIf="loading" class="spinner">
+            <mat-spinner  diameter="50"></mat-spinner>
           </div>
+          <div class="success-message">
+            {{sixthStepSuccessMessage}}
+          </div>
+          <button  matStepperPrevious class="buttons" mat-raised-button color="black">Back</button>
+          <button  (click)="stepper.reset()" class="buttons" mat-raised-button color="black">Reset</button>
         </mat-step>
       </mat-horizontal-stepper>
     </mat-card-content>
