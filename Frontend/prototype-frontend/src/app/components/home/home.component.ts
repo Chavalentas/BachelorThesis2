@@ -114,32 +114,32 @@ export class HomeComponent implements OnInit{
   /**
    * Represents the first step (stepper) success message.
    */
-  public firstStepSuccessMessage: string = "";
+  public firstStepSuccessMessage : string = "";
 
   /**
    * Represents the second step (stepper) success message.
    */
-  public secondStepSuccessMessage: string = "";
+  public secondStepSuccessMessage : string = "";
 
   /**
    * Represents the third step (stepper) success message.
    */
-  public thirdStepSuccessMessage: string = "";
+  public thirdStepSuccessMessage : string = "";
 
   /**
    * Represents the fourth step (stepper) success message.
    */
-  public fourthStepSuccessMessage: string = "";
+  public fourthStepSuccessMessage : string = "";
 
   /**
    * Represents the fifth step (stepper) success message.
    */
-  public fifthStepSuccessMessage: string = "";
+  public fifthStepSuccessMessage : string = "";
 
   /**
    * Represents the sixth step (stepper) success message.
    */
-  public sixthStepSuccessMessage: string = "";
+  public sixthStepSuccessMessage : string = "";
 
   /**
    * Represents the schemas.
@@ -170,9 +170,9 @@ export class HomeComponent implements OnInit{
    * Represents the first form group.
    */
   public firstFormGroup = this._formBuilder.group({
-    hostNameControl: ["", [Validators.required, createHostnameCorrectnessValidator()]],
-    portControl: ["", [Validators.required, createPortCorrectnessValidator()]],
-    userControl: ["", [Validators.required, createUsernameCorrectnessValidator()]],
+    hostNameControl : ["", [Validators.required, createHostnameCorrectnessValidator()]],
+    portControl : ["", [Validators.required, createPortCorrectnessValidator()]],
+    userControl : ["", [Validators.required, createUsernameCorrectnessValidator()]],
     passwordControl : ["", [Validators.required, createPasswordCorrectnessValidator()]],
     databaseControl : ["", [Validators.required, createDatabaseCorrectnessValidator()]],
     dbProviderControl : ["", [Validators.required]]
@@ -210,7 +210,7 @@ export class HomeComponent implements OnInit{
    * Represents the sixth form group.
    */
   public sixthFormGroup = this._formBuilder.group({
-    configurationControl: [""]
+    configurationControl : [""]
   });
 
   /**
@@ -248,7 +248,7 @@ export class HomeComponent implements OnInit{
 
       this.loading = true;
       this.loadSchemas(httpsSchemaParserBackendConfig.conn).subscribe({
-        next: (data) => {
+        next : (data) => {
           this.loading = false;
           if (data.result.length == 0){
              this.secondStepSuccessMessage = "No schemas are included in this database!";
@@ -264,7 +264,7 @@ export class HomeComponent implements OnInit{
 
           this.stepper.next();
         },
-        error: (error) => {
+        error : (error) => {
           this.loading = false;
           if (error.error.error === undefined){
             this.firstStepSuccessMessage = "Some error occurred during the loading of schemas!";
@@ -358,13 +358,13 @@ export class HomeComponent implements OnInit{
     this.loading = true;
     var reqBody = {"conn" : this._connString, "schema" : this.selectedSchema.schemaName, "dbObjectType" : this.selectedObjectType, "dbObjectName" : this.selectedDbObject.dbObjectName};
     this._httpClient.post<GetObjectInformationResponse>(`${httpsSchemaParserBackendConfig.conn}/get-db-object-information`, reqBody).subscribe({
-      next: (data) => {
+      next : (data) => {
         this.loading = false;
         this.fourthStepSuccessMessage = "";
         this._objectData = data.result[0];
         this.stepper.next();
       },
-      error: (error) => {
+      error : (error) => {
         this.loading = false;
         if (error.error.error === undefined){
           this.fourthStepSuccessMessage = "Some error occurred during the fetching of database object information!";
@@ -433,7 +433,7 @@ export class HomeComponent implements OnInit{
   public handleSchemasRefreshButtonClick() : void{
     this.loading = true;
     this.loadSchemas(httpsSchemaParserBackendConfig.conn).subscribe({
-      next: (data) => {
+      next : (data) => {
         this.loading = false;
         this.secondStepSuccessMessage = "";
         if (data.result.length == 0){
@@ -447,7 +447,7 @@ export class HomeComponent implements OnInit{
           this.secondFormGroup?.get("schemaNameControl")?.setValue("");
         }
       },
-      error: (error) => {
+      error : (error) => {
         this.loading = false;
         if (error.error.error === undefined){
           this.secondStepSuccessMessage = "Some error occurred during the loading of schemas!";
@@ -493,8 +493,8 @@ export class HomeComponent implements OnInit{
   public handleImportToNodeRedButtonClick() : void{
     this.sixthStepSuccessMessage = "";
     const dialogRef = this._dialog.open(NodeRedInstanceDataDialogComponent, {
-      disableClose: true,
-      width: "25%"
+      disableClose : true,
+      width : "25%"
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -507,11 +507,11 @@ export class HomeComponent implements OnInit{
       var nodesWithoutTab = this._jsonConfig.filter(o => o.type !== "tab");
       this.loading = true;
       this.importFlow(restApiName, nodeRedUrl + "flow", nodesWithoutTab).subscribe({
-        next: (data) => {
+        next : (data) => {
           this.loading = false;
           this.sixthStepSuccessMessage = `The flow was imported with the ID ${data.id}! Please check your Node-RED instance at ${nodeRedUrl}!`;
         },
-        error: (error) => {
+        error : (error) => {
           this.loading = false;
           if (error.error.error === undefined){
             this.sixthStepSuccessMessage = "Some error occurred during the import of the flow!";

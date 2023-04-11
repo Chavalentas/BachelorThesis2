@@ -15,7 +15,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
    * Represents the constructor.
    * @param dialogRef Represents the dialog reference.
    */
-  constructor(public dialogRef: MatDialogRef<NodeRedInstanceDataDialogComponent>){
+  constructor(public dialogRef : MatDialogRef<NodeRedInstanceDataDialogComponent>){
   }
 
   /**
@@ -27,7 +27,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
    * Represents the Node-RED instance data form group.
    */
   public nodeRedInstanceDataFormGroup = new FormGroup({
-    entityURL: new FormControl("", [Validators.required])
+    entityURL : new FormControl("", [Validators.required])
   });
 
   /**
