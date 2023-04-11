@@ -44,7 +44,7 @@ The body has the following structure:
 ```
 **conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"<br />
 **schema**: the schema of the database object<br />
-**dbObjectType**: table, view, function or strp
+**dbObjectType**: "table", "view", "function" or "strp"
 
 ### The response type
 ```javascript
@@ -66,7 +66,7 @@ The body has the following structure:
 ```
 **conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"<br />
 **schema**: the schema of the database object<br />
-**dbObjectType**: table, view, function or strp<br />
+**dbObjectType**: "table", "view", "function" or "strp"<br />
 **dbObjectName** : name of the database object
 
 ### The response type
