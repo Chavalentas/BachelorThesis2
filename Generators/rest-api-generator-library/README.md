@@ -39,7 +39,7 @@ The property **pk** denotes the name of the primary key (has to be the name of o
 Currently, only one primary key is supported (so passing an array of more primary keys won't work).
 **NOTE**: The names of the properties has to correspond exactly to the names of the attributes.
 
-**dbObjectType** : table, view, function or strp (for stored procedure)
+**dbObjectType** : "table", "view", "function" or "strp" (for stored procedure)
 
 **databaseConfiguration** : contains the data needed to connect to the database, 
 use the following structure
@@ -80,7 +80,7 @@ The property **pk** denotes the name of the primary key (has to be the name of o
 Currently, only one primary key is supported (so passing an array of more primary keys won't work).
 **NOTE**: The names of the properties has to correspond exactly to the names of the attributes.
 
-**dbObjectType** : table, view, function or strp (for stored procedure)
+**dbObjectType** : "table", "view", "function" or "strp" (for stored procedure)
 
 **databaseConfiguration** : contains the data needed to connect to the database, 
 use the following structure
@@ -112,7 +112,7 @@ var objectData = {
 }
 ```
 
-**dbObjectType** : table, view, function or strp (for stored procedure)
+**dbObjectType** : "table", "view", "function" or "strp" (for stored procedure)
 
 **databaseConfiguration** : contains the data needed to connect to the database, 
 use the following structure
@@ -144,7 +144,7 @@ var objectData = {
 }
 ```
 
-**dbObjectType** : table, view, function or strp (for stored procedure)
+**dbObjectType** : "table", "view", "function" or "strp" (for stored procedure)
 
 **databaseConfiguration** : contains the data needed to connect to the database, 
 use the following structure
