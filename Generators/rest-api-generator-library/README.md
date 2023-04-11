@@ -54,7 +54,7 @@ var databaseConfiguration = {
 ```
 **restApiName** : name of the REST-API
 
-**provider**: used provider (postgres or mssql)
+**provider**: used provider ("postgres" or "mssql")
 
 ## The generator of the REST-API for SQL views
 Currenty two providers are supported: PostgreSQL and Microsoft SQL Server.
@@ -95,7 +95,7 @@ var databaseConfiguration = {
 ```
 **restApiName** : name of the REST-API
 
-**provider**: used provider (postgres or mssql)
+**provider**: used provider ("postgres" or "mssql")
 
 ## The generator of the REST-API for SQL functions
 Currenty two providers are supported: PostgreSQL and Microsoft SQL Server.
@@ -127,7 +127,7 @@ var databaseConfiguration = {
 ```
 **restApiName** : name of the REST-API
 
-**provider**: used provider (postgres or mssql)
+**provider**: used provider ("postgres" or "mssql")
 
 ## The generator of the REST-API for SQL stored procedures
 Currenty two providers are supported: PostgreSQL and Microsoft SQL Server.
@@ -159,4 +159,4 @@ var databaseConfiguration = {
 ```
 **restApiName** : name of the REST-API
 
-**provider**: used provider (postgres or mssql)
+**provider**: used provider ("postgres" or "mssql")
