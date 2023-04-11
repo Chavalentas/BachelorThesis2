@@ -315,6 +315,7 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleSelectDbObjectTypeNextButtonClick() : void{
+    this.thirdFormGroup.markAllAsTouched();
     this.thirdStepSuccessMessage = "";
     if (this.thirdFormGroup.invalid){
       this.thirdStepSuccessMessage = "No database object type was selected!";
@@ -353,6 +354,7 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleSelectObjectNextButtonClick() : void{
+    this.fourthFormGroup.markAllAsTouched();
     this.fourthStepSuccessMessage = "";
     if (this.fourthFormGroup.invalid){
       this.fourthStepSuccessMessage = "No database object was selected!";
@@ -389,6 +391,7 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleSelectSchemaNextButtonClick() : void{
+    this.secondFormGroup.markAllAsTouched();
     this.secondStepSuccessMessage = "";
     if (this.secondFormGroup.invalid){
       this.secondStepSuccessMessage = "No schema was selected!";
