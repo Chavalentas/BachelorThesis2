@@ -12,7 +12,7 @@ module.exports = {
 ```
 E.g., if you want to use the REST-API generator for SQL tables, use: 
 ```javascript
-var generator = generate(objectData, dbObjectType, databaseConfiguration, restApiName, provider);
+var config = generate(objectData, dbObjectType, databaseConfiguration, restApiName, provider);
 ```
 
 ## The generator of the REST-API for SQL tables 
