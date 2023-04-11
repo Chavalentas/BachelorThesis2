@@ -21,6 +21,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { NodeRedInstanceDataDialogComponent } from '../node-red-instance-data-dialog/node-red-instance-data-dialog.component';
 import { ImportFlowResponse } from 'src/app/models/import-flow-response.model';
 import { MatSelectChange } from '@angular/material/select';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { DefaultErrorMatcher } from 'src/app/error-state-matchers/default.error-matcher';
 
 @Component({
   selector: 'app-home',
@@ -100,6 +102,11 @@ export class HomeComponent implements OnInit{
   * Represents the stepper.
   */
   @ViewChild(MatStepper) stepper!: MatStepper;
+
+  /**
+   * Represents the error state matcher.
+   */
+  public matcher = new DefaultErrorMatcher();
 
   /**
    * Represents a boolean indicating whether the stepper is linear.

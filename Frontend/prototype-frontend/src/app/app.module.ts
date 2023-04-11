@@ -23,6 +23,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import { ServiceModule } from './services/service.module';
 import { NodeRedInstanceDataDialogComponent } from './components/node-red-instance-data-dialog/node-red-instance-data-dialog.component';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { DefaultErrorMatcher } from './error-state-matchers/default.error-matcher';
 
 @NgModule({
   declarations: [
