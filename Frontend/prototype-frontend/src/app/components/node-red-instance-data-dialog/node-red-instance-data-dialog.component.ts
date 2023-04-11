@@ -47,6 +47,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleOkButtonClick() : void{
+    this.nodeRedInstanceDataFormGroup.markAllAsTouched();
     if (this.nodeRedInstanceDataFormGroup.invalid){
       this.successMessage = "The URL of the Node-RED instance was empty!";
       return;

@@ -238,6 +238,7 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleDatabaseConfigNextButtonClick() : void{
+      this.firstFormGroup.markAllAsTouched();
       this.firstStepSuccessMessage = "";
       if (this.firstFormGroup.invalid){
         this.firstStepSuccessMessage = "Some of the input fields have wrong value!";
@@ -406,6 +407,7 @@ export class HomeComponent implements OnInit{
    * @returns Leaves the method.
    */
   public handleEnterRestApiNameNextButtonClick() : void{
+    this.fifthFormGroup.markAllAsTouched();
     this.fifthStepSuccessMessage = "";
     if (this.fifthFormGroup.invalid){
       this.fifthStepSuccessMessage = "No REST-API name was entered!";
