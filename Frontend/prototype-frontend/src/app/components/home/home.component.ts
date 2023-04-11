@@ -21,7 +21,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { NodeRedInstanceDataDialogComponent } from '../node-red-instance-data-dialog/node-red-instance-data-dialog.component';
 import { ImportFlowResponse } from 'src/app/models/import-flow-response.model';
 import { MatSelectChange } from '@angular/material/select';
-import { ErrorStateMatcher } from '@angular/material/core';
 import { DefaultErrorMatcher } from 'src/app/error-state-matchers/default.error-matcher';
 
 @Component({
