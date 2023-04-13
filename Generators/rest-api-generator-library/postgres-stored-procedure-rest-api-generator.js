@@ -122,7 +122,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         x += xOffset;
     
         // Step 2: Generate the function node (that checks the procedure parameters)
-        let functionCode = "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;";
+        let functionCode = "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;";
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -150,7 +150,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         x += xOffset;
 
         // Step 5: Generate the function node (that sets the response)
-        let setResponseCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;";
+        let setResponseCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\n\nreturn msg;";
         let setResponseNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

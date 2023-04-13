@@ -54,12 +54,12 @@ const RelationRestApiGenerator = class extends gen.Generator{
 
         var ifCodes = [];
         for (let i = 0; i < objectData.properties.length; i++){
-            var ifCode = `\nif (${prefix}.${objectData.properties[i].propertyName} !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"${objectData.properties[i].propertyName}\", \"propertyValue\" : \`\${${prefix}.${objectData.properties[i].propertyName}}\`});\n}\n`;
+            var ifCode = `if (${prefix}.${objectData.properties[i].propertyName} !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"${objectData.properties[i].propertyName}\", \"propertyValue\" : \`\${${prefix}.${objectData.properties[i].propertyName}}\`});\n}`;
             ifCodes.push(ifCode);
         }
 
         var propertiesInString = objectData.properties.map(p => `\"${p.propertyName}\"`);
-        var code = `msg.queryProperties = [];\nvar properties = [${propertiesInString.join(",")}];\nvar queryProperties = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n${ifCodes.join("\n\n")}\n\nreturn msg;`;
+        var code = `msg.queryProperties = [];\nvar properties = [${propertiesInString.join(",")}];\nvar queryProperties = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\nif (queryProperties.some(p => !properties.some(p1 => p1 == p))){\n    throw new Error(\"Invalid query property detected!\");\n}\n\n${ifCodes.join("\n\n")}\n\nreturn msg;`;
         return code;
     }
 

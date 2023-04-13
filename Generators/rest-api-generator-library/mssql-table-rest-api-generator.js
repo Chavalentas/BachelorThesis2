@@ -179,7 +179,7 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\nreturn msg;", [nextNodeId]);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\n\nreturn msg;", [nextNodeId]);
                 
         x += xOffset;
 
@@ -524,7 +524,7 @@ const MssqlTableRestApiGenerator = class extends gen.TableRestApiGenerator{
         x += xOffset;
 
         // Step 3: Generate the function node (that creates the delete query)
-        let queryFunctionCode =  `var deleteQuery = \"DELETE FROM ${objectData.schema}.${objectData.name}\";\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \"\";\n\n        if (msg.queryProperties[i].propertyValue === \"null\") {\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`CONVERT(VARCHAR, \${msg.queryProperties[i].propertyName}) = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += \" WHERE \";\n    deleteQuery += \`\${equationsJoined}\`;\n}\ndeleteQuery += \";\";\nmsg.query = deleteQuery;\nreturn msg;`;
+        let queryFunctionCode =  `var deleteQuery = \"DELETE FROM ${objectData.schema}.${objectData.name}\";\nvar equations = [];\n\nif (msg.queryProperties.length > 0){\n    for (let i = 0; i < msg.queryProperties.length; i++){\n        let equation = \"\";\n\n        if (msg.queryProperties[i].propertyValue === \"null\") {\n            equation = \`\${msg.queryProperties[i].propertyName} is \${msg.queryProperties[i].propertyValue}\`;\n        } else {\n            equation = \`CONVERT(VARCHAR, \${msg.queryProperties[i].propertyName}) = '\${msg.queryProperties[i].propertyValue}'\`;\n        }\n\n        equations.push(equation);\n    }\n    \n    var equationsJoined = equations.join(\" AND \");\n    deleteQuery += \" WHERE \";\n    deleteQuery += \`\${equationsJoined}\`;\n}\n\ndeleteQuery += \";\";\nmsg.query = deleteQuery;\nreturn msg;`;
         let queryFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

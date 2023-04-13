@@ -121,7 +121,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         x += xOffset;
     
         // Step 2: Generate the function node (that checks the procedure parameters)
-        let functionCode = "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;";
+        let functionCode = "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryParameters.some(p => p != \"param\")) {\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined) {\n    throw new Error(\"The parameters were not defined!\");\n}\n\nmsg.procedureParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++) {\n    msg.procedureParameters.push(params[i]);\n}\n\nreturn msg;";
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -130,7 +130,7 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         x += xOffset;
 
         // Step 3: Generate the function node (that sets the query parameters to retrieve the parameter names of the stored procedure)
-        let paramFunctionCode = `msg.queryParameters = {\n    \"schema\" : "${objectData.schema}",\n    \"procName\" : "${objectData.name}"\n};\nreturn msg;`;
+        let paramFunctionCode = `msg.queryParameters = {\n    \"schema\" : "${objectData.schema}",\n    \"procName\" : "${objectData.name}"\n};\n\nreturn msg;`;
         let paramFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -189,13 +189,13 @@ const MssqlStoredProcedureRestApiGenerator = class extends gen.StoredProcedureRe
         x += xOffset;
 
         // Step 9: Generate the function node (that sets the response in case of success)
-        let setSuccessResponseFunctionCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;";
+        let setSuccessResponseFunctionCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\n\nreturn msg;";
         let successResponseId = this.helper.generateId(16, this.usedids);
         this.usedids.push(successResponseId);
         let setSuccessResponseFunctionNode = this.nodeConfGen.generateFunctionNode(caseSuccessId, "SetResponse", x, y - 100, flowId, setSuccessResponseFunctionCode, [successResponseId]);
 
         // Step 10: Generate the function node (that sets the response in case of unsuccess)
-        let setUnsuccessResponseFunctionCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\nreturn msg;";
+        let setUnsuccessResponseFunctionCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response.recordsets\n};\n\nreturn msg;";
         let unsuccessResponseId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
         let setUnuccessResponseFunctionNode = this.nodeConfGen.generateFunctionNode(caseFailId, "SetResponse", x, y + 100, flowId, setUnsuccessResponseFunctionCode, [unsuccessResponseId]);
