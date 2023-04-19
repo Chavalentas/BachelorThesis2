@@ -1,13 +1,13 @@
 [
     {
-        "id": "c82f1a6c441263dc",
+        "id": "d9a9aafda542f775",
         "type": "tab",
         "label": "postgres-function"
     },
     {
-        "id": "25657j7hr0492477",
+        "id": "5m8q9wv6qygub88q",
         "type": "comment",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "postgres-function",
         "info": "",
         "x": 450,
@@ -15,9 +15,9 @@
         "wires": []
     },
     {
-        "id": "sc64bo176j02v1v8",
+        "id": "xkc34mml3abc11a8",
         "type": "comment",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "This subflow catches the errors",
         "info": "",
         "x": 450,
@@ -25,9 +25,9 @@
         "wires": []
     },
     {
-        "id": "6i823vym3603d869",
+        "id": "saxk63fi3oo1okp8",
         "type": "comment",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "GetEndPoint (function parameters are query parameters)",
         "info": "",
         "x": 450,
@@ -35,9 +35,9 @@
         "wires": []
     },
     {
-        "id": "g24l8k0gdf9p14a0",
+        "id": "rj3s1h0x23565n62",
         "type": "catch",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "",
         "scope": null,
         "uncaught": false,
@@ -45,16 +45,16 @@
         "y": 290,
         "wires": [
             [
-                "n0z4ypx0vjwbyd6d"
+                "7gnm5o18u7y913s1"
             ]
         ]
     },
     {
-        "id": "n0z4ypx0vjwbyd6d",
+        "id": "7gnm5o18u7y913s1",
         "type": "function",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "CreateError",
-        "func": "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\" : msg.error.message\n}\n\nreturn msg;",
+        "func": "// Store the error message \n// in the payload property.\nmsg.payload = {\n    \"error\": msg.error.message\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -64,14 +64,14 @@
         "y": 290,
         "wires": [
             [
-                "03y1704ag0mds8wt"
+                "62v878bes877o7xq"
             ]
         ]
     },
     {
-        "id": "03y1704ag0mds8wt",
+        "id": "62v878bes877o7xq",
         "type": "http response",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "",
         "statusCode": 400,
         "headers": {},
@@ -80,9 +80,9 @@
         "wires": []
     },
     {
-        "id": "y2m57jeb3xayv2e7",
+        "id": "p4czvx5v9e88337i",
         "type": "http in",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "",
         "url": "/public.tvf_test",
         "method": "get",
@@ -92,14 +92,14 @@
         "y": 440,
         "wires": [
             [
-                "uiy5nyzi8nc611lr"
+                "k07tbhmoyjl516as"
             ]
         ]
     },
     {
-        "id": "uiy5nyzi8nc611lr",
+        "id": "k07tbhmoyjl516as",
         "type": "function",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "CheckFunctionParameters",
         "func": "var queryParameters = Object.getOwnPropertyNames(msg.req.query);\n\nif (queryParameters.some(p => p != \"param\")){\n    throw new Error(\"Invalid query parameter detected!\");\n}\n\nif (msg.req.query.param === undefined){\n    throw new Error(\"The parameters were not defined!\");\n}\n\nmsg.functionParameters = [];\nvar params = msg.req.query.param;\n\nfor (let i = 0; i < params.length; i++){\n    msg.functionParameters.push(params[i]);\n}\n\nreturn msg;",
         "outputs": 1,
@@ -111,14 +111,14 @@
         "y": 440,
         "wires": [
             [
-                "nsw9h4050ndy68n3"
+                "l68e7k1183vi7760"
             ]
         ]
     },
     {
-        "id": "nsw9h4050ndy68n3",
+        "id": "l68e7k1183vi7760",
         "type": "function",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "SetQueryParameters",
         "func": "var selectQuery = \"SELECT * FROM public.tvf_test(\";\nvar functionArgs = [];\n\nif (msg.functionParameters.length > 0){\n    for (let i = 0; i < msg.functionParameters.length; i++){\n        if (msg.functionParameters[i] === \"default\"){\n          continue;\n        }\n\n        if (msg.functionParameters[i] === \"null\") {\n          functionArgs.push(msg.functionParameters[i]);\n          continue;\n        }\n\n        functionArgs.push(`'${msg.functionParameters[i]}'`);\n    }\n}\n\nselectQuery += functionArgs.join(\",\");\nselectQuery += \");\";\nmsg.query = selectQuery;\nreturn msg;",
         "outputs": 1,
@@ -130,17 +130,17 @@
         "y": 440,
         "wires": [
             [
-                "1e7302al31v074x2"
+                "592364gs89ph819c"
             ]
         ]
     },
     {
-        "id": "1e7302al31v074x2",
+        "id": "592364gs89ph819c",
         "type": "postgresql",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "Query",
         "query": "",
-        "postgreSQLConfig": "ut69juxne1p9qo40",
+        "postgreSQLConfig": "a96qep47609kt257",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
@@ -148,16 +148,16 @@
         "y": 440,
         "wires": [
             [
-                "o917x8d4il3112s3"
+                "840xb8smi835rm7i"
             ]
         ]
     },
     {
-        "id": "o917x8d4il3112s3",
+        "id": "840xb8smi835rm7i",
         "type": "function",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "SetResponse",
-        "func": "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\n\nreturn msg;",
+        "func": "var response = msg.payload;\nmsg.payload = {\n  \"result\": response  \n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -167,14 +167,14 @@
         "y": 440,
         "wires": [
             [
-                "8h156olri36hq365"
+                "k35kcb1vsv48511o"
             ]
         ]
     },
     {
-        "id": "8h156olri36hq365",
+        "id": "k35kcb1vsv48511o",
         "type": "http response",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "",
         "statusCode": 200,
         "headers": {},
@@ -183,9 +183,9 @@
         "wires": []
     },
     {
-        "id": "ut69juxne1p9qo40",
+        "id": "a96qep47609kt257",
         "type": "postgreSQLConfig",
-        "z": "c82f1a6c441263dc",
+        "z": "d9a9aafda542f775",
         "name": "",
         "host": "localhost",
         "hostFieldType": "str",
