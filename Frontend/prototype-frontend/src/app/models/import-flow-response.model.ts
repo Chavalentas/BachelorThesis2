@@ -5,5 +5,5 @@ export interface ImportFlowResponse{
   /**
    * The ID of the flow.
    */
-  id : string;
+  id: string;
 }

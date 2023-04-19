@@ -9,7 +9,7 @@ export class HelperService{
    * @param dbConfig The database configuration (data needed to establish connection to the database).
    * @returns The connection string.
    */
-  public buildConnectionString(dbConfig : DbConfiguration) : string{
+  public buildConnectionString(dbConfig: DbConfiguration): string{
       if (dbConfig === undefined || dbConfig == null){
         throw new Error("The database configuration was undefined!");
       }

@@ -10,7 +10,7 @@ export class DefaultErrorMatcher implements ErrorStateMatcher{
    * @param form The form.
    * @returns Boolean indicating whether there is an error state.
    */
-  public isErrorState(control : FormControl | null, form : FormGroupDirective | NgForm | null) : boolean{
+  public isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean{
     return !!(control && control.invalid && control.touched);
   }
 }

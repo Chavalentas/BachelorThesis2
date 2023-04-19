@@ -5,30 +5,30 @@ export interface DbConfiguration{
   /**
    * Represents the host name.
    */
-  host : string;
+  host: string;
 
   /**
    * Represents the port number.
    */
-  port : number;
+  port: number;
 
   /**
    * Represents the user name.
    */
-  user : string;
+  user: string;
 
   /**
    * Represents the password.
    */
-  password : string;
+  password: string;
 
   /**
    * Represents the database name.
    */
-  database : string;
+  database: string;
 
   /**
    * Represents the database provider.
    */
-  dbProvider : string;
+  dbProvider: string;
 }

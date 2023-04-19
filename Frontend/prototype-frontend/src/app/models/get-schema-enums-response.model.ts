@@ -7,5 +7,5 @@ export interface GetSchemaEnumsResponse{
   /**
    * Represents the object containing an array of the database objects.
    */
-   result :  Array<DbObject>;
+   result:  Array<DbObject>;
 }

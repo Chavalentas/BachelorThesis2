@@ -16,13 +16,13 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
    * Represents the constructor.
    * @param dialogRef Represents the dialog reference.
    */
-  constructor(public dialogRef : MatDialogRef<NodeRedInstanceDataDialogComponent>){
+  constructor(public dialogRef: MatDialogRef<NodeRedInstanceDataDialogComponent>){
   }
 
   /**
    * Represents the success message.
    */
-  public successMessage : string = "";
+  public successMessage: string = "";
 
   /**
    * Represents the error state matcher.
@@ -33,7 +33,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
    * Represents the Node-RED instance data form group.
    */
   public nodeRedInstanceDataFormGroup = new FormGroup({
-    entityURL : new FormControl("", [Validators.required])
+    entityURL: new FormControl("", [Validators.required])
   });
 
   /**
@@ -46,7 +46,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
    * Handles the OK button click.
    * @returns Leaves the method.
    */
-  public handleOkButtonClick() : void{
+  public handleOkButtonClick(): void{
     this.nodeRedInstanceDataFormGroup.markAllAsTouched();
     if (this.nodeRedInstanceDataFormGroup.invalid){
       this.successMessage = "The URL of the Node-RED instance was empty!";
@@ -65,7 +65,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
     }
 
     var result = {
-      result : url
+      result: url
     };
 
     this.dialogRef.close(result);
@@ -74,7 +74,7 @@ export class NodeRedInstanceDataDialogComponent implements OnInit{
   /**
    * Handles the cancel button click.
    */
-  public handleCancelButtonClick() : void{
+  public handleCancelButtonClick(): void{
     this.dialogRef.close();
   }
 }

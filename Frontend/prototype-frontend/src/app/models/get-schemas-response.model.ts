@@ -7,5 +7,5 @@ export interface GetSchemasResponse{
   /**
    * Represents the object containing an array of the schemas.
    */
-   result :  Array<Schema>;
+   result:  Array<Schema>;
 }

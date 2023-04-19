@@ -5,5 +5,5 @@ export interface DbObject{
   /**
    * Represents the database object name.
    */
-  dbObjectName : string;
+  dbObjectName: string;
 }

@@ -5,5 +5,5 @@ export interface GetDbProviderResponse{
   /**
    * An array containing the name of the database provider.
    */
-   result :  Array<string>;
+   result:  Array<string>;
 }
