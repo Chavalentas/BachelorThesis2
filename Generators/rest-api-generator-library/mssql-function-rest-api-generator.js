@@ -150,7 +150,7 @@ const MssqlFunctionRestApiGenerator = class extends gen.FunctionRestApiGenerator
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionCode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\n\nreturn msg;", [nextNodeId]);
+        let responseFunctionCode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "var response = msg.payload;\nmsg.payload = {\n  \"result\": response  \n};\n\nreturn msg;", [nextNodeId]);
 
         x += xOffset;
 

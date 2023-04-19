@@ -133,5 +133,5 @@ function generateForMssql(objectData, databaseConfiguration, dbObjectType, restA
 }
 
 module.exports = {
-    generate : generate
+    generate: generate
 };

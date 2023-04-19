@@ -54,7 +54,7 @@ const RelationRestApiGenerator = class extends gen.Generator{
 
         var ifCodes = [];
         for (let i = 0; i < objectData.properties.length; i++){
-            var ifCode = `if (${prefix}.${objectData.properties[i].propertyName} !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"${objectData.properties[i].propertyName}\", \"propertyValue\" : \`\${${prefix}.${objectData.properties[i].propertyName}}\`});\n}`;
+            var ifCode = `if (${prefix}.${objectData.properties[i].propertyName} !== undefined){\n    msg.queryProperties.push({\"propertyName\": \"${objectData.properties[i].propertyName}\", \"propertyValue\": \`\${${prefix}.${objectData.properties[i].propertyName}}\`});\n}`;
             ifCodes.push(ifCode);
         }
 

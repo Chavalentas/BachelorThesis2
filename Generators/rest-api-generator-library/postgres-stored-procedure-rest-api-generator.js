@@ -150,7 +150,7 @@ const PostgresStoredProcedureRestApiGenerator = class extends gen.StoredProcedur
         x += xOffset;
 
         // Step 5: Generate the function node (that sets the response)
-        let setResponseCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\n\nreturn msg;";
+        let setResponseCode = "var response = msg.payload;\nmsg.payload = {\n  \"result\": response  \n};\n\nreturn msg;";
         let setResponseNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);

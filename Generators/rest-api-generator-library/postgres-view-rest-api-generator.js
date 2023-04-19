@@ -179,7 +179,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         // Step 5:  Create the function node (that sets the response payload)
         let responseFunctionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16,  this.usedids);
-        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "var response = msg.payload;\nmsg.payload = {\n  \"result\" : response  \n};\n\nreturn msg;", [nextNodeId]);
+        let responseFunctionNode = this.nodeConfGen.generateFunctionNode(responseFunctionNodeId, "SetResponse", x, y, flowId, "var response = msg.payload;\nmsg.payload = {\n  \"result\": response  \n};\n\nreturn msg;", [nextNodeId]);
 
         x += xOffset;
 
@@ -340,7 +340,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         let propertyNames = objectData.properties.map(p => `\"${p.propertyName}\"`);
         let propertyNamesJoined = propertyNames.join(",");
         let propertiesCheck = this.generateRequestBodyPushes(objectData.properties);
-        let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\" : \"${objectData.pk}\", \"propertyValue\" : msg.req.params.${objectData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
+        let functionCode = `msg.queryProperties = [];\nvar properties = [${propertyNamesJoined}];\nvar queryPropertyNames = Object.getOwnPropertyNames(msg.req.body);\n\nif (msg.req.params.${objectData.pk} === undefined){\n    throw new Error('The query parameter \\'${objectData.pk}\\' was undefined!');\n}\n\nif (queryPropertyNames.some(p => !properties.some(p1 => p1 == p))) {\n    throw new Error(\"Invalid query property detected!\");\n}\n\nmsg.pk = {\"propertyName\": \"${objectData.pk}\", \"propertyValue\": msg.req.params.${objectData.pk}};\n\n${propertiesCheck}\n\nreturn msg;`;
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
@@ -434,7 +434,7 @@ const PostgresViewRestApiGenerator = class extends gen.ViewRestApiGenerator{
         x += xOffset;
 
         // Step 2: Generate the function node (that sets the query parameters)
-        let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error("The query parameter \\'${objectData.pk}\\' was undefined!");\n}\n\nvar pkValue = "";\n\nif (msg.req.params.${objectData.pk} === "null"){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.${objectData.pk};\n}\n\nvar data = {\n    pk : pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
+        let functionCode = `if (msg.req.params.${objectData.pk} === undefined){\n    throw new Error("The query parameter \\'${objectData.pk}\\' was undefined!");\n}\n\nvar pkValue = "";\n\nif (msg.req.params.${objectData.pk} === "null"){\n    pkValue = null;\n} else{\n    pkValue = msg.req.params.${objectData.pk};\n}\n\nvar data = {\n    pk: pkValue\n};\n\nmsg.queryParameters = data;\nreturn msg;`;
         let functionNodeId = nextNodeId;
         nextNodeId = this.helper.generateId(16, this.usedids);
         this.usedids.push(nextNodeId);
