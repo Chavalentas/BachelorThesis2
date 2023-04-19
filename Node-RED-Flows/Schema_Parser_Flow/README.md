@@ -5,7 +5,7 @@ Gets database schemas based on connection data.
 The body has the following structure:
 ```javascript
 {
-    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres;Provider=[mssql | postgres]"
+    "conn": "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres;Provider=[mssql | postgres]"
 }
 ```
 **conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"
@@ -21,7 +21,7 @@ Gets the database provider based on connection data.
 The body has the following structure:
 ```javascript
 {
-    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres"
+    "conn": "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres"
 }
 ```
 **conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database"
@@ -37,9 +37,9 @@ Gets a list of entities stored in a database schema.
 The body has the following structure:
 ```javascript
 {
-    "conn" : "Host=localhost;Port=1433;User=sa;Pw=strongPassword123!;Db=master;Provider=[mssql | postgres]",
-    "schema" : "dbo",
-    "dbObjectType" : "view"
+    "conn": "Host=localhost;Port=1433;User=sa;Pw=strongPassword123!;Db=master;Provider=[mssql | postgres]",
+    "schema": "dbo",
+    "dbObjectType": "view"
 }
 ```
 **conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"<br />
@@ -58,16 +58,16 @@ Gets the information about the database object based on the connection informati
 The body has the following structure:
 ```javascript
 {
-    "conn" : "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres;Provider=[mssql | postgres]",
-    "schema" : "public",
-    "dbObjectType" : "strp",
-    "dbObjectName" : "count_procedure3"
+    "conn": "Host=localhost;Port=5432;User=admin;Pw=secret;Db=postgres;Provider=[mssql | postgres]",
+    "schema": "public",
+    "dbObjectType": "strp",
+    "dbObjectName": "count_procedure3"
 }
 ```
 **conn**: the connection string has always this form -> "Host=hostname;Port=port;User=user;Pw=password;Db=database;Provider=dbprovider"<br />
 **schema**: the schema of the database object<br />
 **dbObjectType**: "table", "view", "function" or "strp"<br />
-**dbObjectName** : name of the database object
+**dbObjectName**: name of the database object
 
 ### The response type
 For tables and views:
